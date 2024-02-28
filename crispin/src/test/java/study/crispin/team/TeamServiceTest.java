@@ -6,11 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.Assert;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import study.crispin.fixture.TestTeamFixture;
+import study.crispin.mock.FakeTeamRepository;
+import study.crispin.team.application.request.TeamRegistrationRequest;
+import study.crispin.team.application.service.TeamServiceImpl;
+import study.crispin.team.infrastructure.repository.TeamRepository;
+import study.crispin.team.presentation.port.TeamService;
+import study.crispin.team.presentation.response.TeamRegistrationResponse;
 
 @DisplayName("팀 서비스 테스트")
 class TeamServiceTest {
@@ -36,7 +38,7 @@ class TeamServiceTest {
             @DisplayName("팀 등록에 성공하면, 요청 정보를 갖는 팀이 저장되어야한다.")
             void 팀_등록_성공_테스트() {
                 // given
-                TeamRegistrationRequest request = new TeamRegistrationRequest("테스트 1팀");
+                TeamRegistrationRequest request = new TeamRegistrationRequest("테스트1팀");
 
                 // when
                 TeamRegistrationResponse response = teamService.registration(request);
@@ -61,7 +63,7 @@ class TeamServiceTest {
             @DisplayName("팀 등록 시 이미 등록되어 있는 이름을 사용하면 예외가 발생해야한다.")
             void 팀_이름_중복_등록_실패_테스트() {
                 // given
-                팀_등록_요청(1L, "테스트1팀", "테스트1팀매니저");
+                teamRepository.save(TestTeamFixture.팀_생성_요청(1L, "테스트1팀", "테스트1팀매니저"));
                 TeamRegistrationRequest request = new TeamRegistrationRequest("테스트1팀");
 
                 // when & then
@@ -72,93 +74,4 @@ class TeamServiceTest {
         }
     }
 
-    private void 팀_등록_요청(Long id, String name, String manager) {
-        Team team = Team.of(id, name, manager);
-        teamRepository.save(team);
-    }
-
-    private record TeamRegistrationRequest(String name) {
-    }
-
-    private record Team(Long id, String name, String manager) {
-
-        public static Team of(String name) {
-            return new Team(null, name, null);
-        }
-        public static Team of(Long id, String name, String manager) {
-            return new Team(id, name, manager);
-        }
-    }
-
-    private interface TeamService {
-        TeamRegistrationResponse registration(TeamRegistrationRequest request);
-    }
-
-    private class TeamServiceImpl implements TeamService {
-
-        private final TeamRepository repository;
-
-        private TeamServiceImpl(TeamRepository repository) {
-            this.repository = repository;
-        }
-
-        @Override
-        public TeamRegistrationResponse registration(TeamRegistrationRequest request) {
-            Assert.notNull(request, "요청값은 필수입니다.");
-            Assert.notNull(request.name(), "이름은 필수입니다.");
-
-            verifyDuplicateTeamName(request.name());
-
-            Team team = Team.of(request.name());
-            Team savedTeam = repository.save(team);
-
-            return new TeamRegistrationResponse(savedTeam.id(), savedTeam.name(), savedTeam.manager());
-        }
-
-        private void verifyDuplicateTeamName(String name) {
-            Assert.notNull(name, "이름은 필수입니다.");
-
-            if(teamRepository.findByName(name).isPresent()) {
-                throw new IllegalArgumentException("이미 존재하는 팀 이름 입니다.");
-            }
-        }
-    }
-
-    private record TeamRegistrationResponse(Long id, String name, String manager) {
-    }
-
-    private interface TeamRepository {
-        Team save(Team team);
-        Optional<Team> findByName(String name);
-    }
-
-    private class FakeTeamRepository implements TeamRepository {
-
-        private final Map<Long, Team> storage = new HashMap<>();
-        private Long sequence = 0L;
-
-        @Override
-        public Team save(Team team) {
-            if (team.id() == null || storage.get(team.id()) == null) {
-                Team newTeam = Team.of(
-                        ++sequence,
-                        team.name(),
-                        team.manager()
-                );
-                storage.put(sequence, newTeam);
-                return storage.get(sequence);
-            } else {
-                storage.put(team.id(), team);
-                return storage.get(team.id());
-            }
-        }
-
-        @Override
-        public Optional<Team> findByName(String name) {
-            return storage.values()
-                    .stream()
-                    .filter(team -> team.name().equals(name))
-                    .findFirst();
-        }
-    }
 }
