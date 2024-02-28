@@ -30,4 +30,19 @@ public class TeamApiTest extends ApiTest {
         // then
         assertThat(팀_등록_응답.statusCode()).isEqualTo(200);
     }
+
+    @Test
+    void 팀을_조회한다() {
+        // given
+        // when
+        final ExtractableResponse<Response> 팀_조회_응답 = RestAssured.given().log().all()
+                .when()
+                .get("/api/v1/teams")
+                .then()
+                .log().all()
+                .extract();
+
+        // then
+        assertThat(팀_조회_응답.statusCode()).isEqualTo(200);
+    }
 }
