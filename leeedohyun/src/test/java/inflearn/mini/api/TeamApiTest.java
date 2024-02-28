@@ -1,12 +1,12 @@
 package inflearn.mini.api;
 
+import static inflearn.mini.api.steps.TeamSteps.*;
+import static inflearn.mini.api.steps.TeamSteps.팀_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 
 import inflearn.mini.team.dto.request.TeamRegisterRequestDto;
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
@@ -18,14 +18,7 @@ public class TeamApiTest extends ApiTest {
         final TeamRegisterRequestDto 팀_등록_요청 = new TeamRegisterRequestDto("팀");
 
         // when
-        final ExtractableResponse<Response> 팀_등록_응답 = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(팀_등록_요청)
-                .when()
-                .post("/api/v1/teams/register")
-                .then()
-                .log().all()
-                .extract();
+        final ExtractableResponse<Response> 팀_등록_응답 = 팀_등록(팀_등록_요청);
 
         // then
         assertThat(팀_등록_응답.statusCode()).isEqualTo(200);
@@ -35,12 +28,7 @@ public class TeamApiTest extends ApiTest {
     void 팀을_조회한다() {
         // given
         // when
-        final ExtractableResponse<Response> 팀_조회_응답 = RestAssured.given().log().all()
-                .when()
-                .get("/api/v1/teams")
-                .then()
-                .log().all()
-                .extract();
+        final ExtractableResponse<Response> 팀_조회_응답 = 팀_조회();
 
         // then
         assertThat(팀_조회_응답.statusCode()).isEqualTo(200);

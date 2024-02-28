@@ -1,5 +1,7 @@
 package inflearn.mini.employee.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,12 +37,15 @@ class EmployeeControllerTest {
         // given
         final EmployeeRegisterRequestDto request = EmployeeRegisterRequestDto.builder()
                 .employeeName("홍길동")
+                .teamName("개발팀")
                 .isManager(false)
                 .birthday(LocalDate.of(1990, 1, 1))
                 .workStartDate(LocalDate.of(2021, 1, 1))
                 .build();
 
         // when
+        doNothing().when(employeeService).registerEmployee(any());
+
         // then
         mockMvc.perform(post("/api/v1/employees/register")
                         .contentType(MediaType.APPLICATION_JSON)
