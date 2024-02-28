@@ -18,6 +18,12 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    /**
+     * H2 데이터베이스 의존성 추가
+     * 미션진행 중 테스트와 개발에 모두 사용할 예정
+     */
+    runtimeOnly 'com.h2database:h2'
 }
 
 tasks.named('test') {
