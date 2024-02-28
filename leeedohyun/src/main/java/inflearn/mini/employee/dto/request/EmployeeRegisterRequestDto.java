@@ -7,11 +7,17 @@ import lombok.Builder;
 
 @Builder
 public record EmployeeRegisterRequestDto(String employeeName,
+                                         String teamName,
                                          boolean isManager,
                                          LocalDate workStartDate,
                                          LocalDate birthday) {
 
     public Employee toEntity() {
-        return new Employee(employeeName, isManager, workStartDate, birthday);
+        return Employee.builder()
+                .name(employeeName)
+                .isManager(isManager)
+                .workStartDate(workStartDate)
+                .birthday(birthday)
+                .build();
     }
 }
