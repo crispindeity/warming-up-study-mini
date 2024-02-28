@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 
 import inflearn.mini.team.domain.Team;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,11 +38,17 @@ public class Employee {
     @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
+    @Builder
     public Employee(final String name, final boolean isManager, final LocalDate workStartDate,
                     final LocalDate birthday) {
         this.name = name;
         this.isManager = isManager;
         this.workStartDate = workStartDate;
         this.birthday = birthday;
+    }
+
+    public void joinTeam(final Team team) {
+        this.team = team;
+        team.addEmployee(this);
     }
 }

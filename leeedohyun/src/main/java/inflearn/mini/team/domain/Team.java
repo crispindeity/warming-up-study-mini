@@ -34,4 +34,27 @@ public class Team {
     public Team(final String name) {
         this.name = name;
     }
+
+    public void addEmployee(final Employee employee) {
+        employees.add(employee);
+    }
+
+    public int countEmployees() {
+        return employees.size();
+    }
+
+    public String getManagerName() {
+        final Employee manager = findManager();
+        if (manager != null) {
+            return manager.getName();
+        }
+        return null;
+    }
+
+    private Employee findManager() {
+        return employees.stream()
+                .filter(Employee::isManager)
+                .findFirst()
+                .orElse(null);
+    }
 }
