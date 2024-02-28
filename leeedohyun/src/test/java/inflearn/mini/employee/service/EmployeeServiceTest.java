@@ -88,18 +88,19 @@ class EmployeeServiceTest {
         final Team team = new Team("개발팀");
         final Employee employee1 = Employee.builder()
                 .name("홍길동")
-                .team(team)
                 .isManager(false)
                 .birthday(LocalDate.of(1990, 1, 1))
                 .workStartDate(LocalDate.of(2021, 1, 1))
                 .build();
         final Employee employee2 = Employee.builder()
                 .name("김철수")
-                .team(team)
                 .isManager(true)
                 .birthday(LocalDate.of(1980, 1, 1))
                 .workStartDate(LocalDate.of(2018, 1, 1))
                 .build();
+
+        employee1.joinTeam(team);
+        employee2.joinTeam(team);
 
         given(employeeRepository.findAll())
                 .willReturn(List.of(employee1, employee2));

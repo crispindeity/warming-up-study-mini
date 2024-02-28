@@ -39,13 +39,11 @@ public class Employee {
     private Team team;
 
     @Builder
-    public Employee(final String name, final boolean isManager, final LocalDate workStartDate, final LocalDate birthday,
-                    final Team team) {
+    public Employee(final String name, final boolean isManager, final LocalDate workStartDate, final LocalDate birthday) {
         this.name = name;
         this.isManager = isManager;
         this.workStartDate = workStartDate;
         this.birthday = birthday;
-        this.team = team;
     }
 
     public void joinTeam(final Team team) {
