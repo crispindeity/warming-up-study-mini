@@ -48,9 +48,15 @@ public class Employee {
         this.team = team;
     }
 
-
     public void joinTeam(final Team team) {
         this.team = team;
         team.addEmployee(this);
+    }
+
+    public String getRole() {
+        if (isManager) {
+            return "MANAGER";
+        }
+        return "MEMBER";
     }
 }
