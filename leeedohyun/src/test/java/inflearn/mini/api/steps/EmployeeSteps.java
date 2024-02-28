@@ -21,4 +21,13 @@ public class EmployeeSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 모든_직원_조회() {
+        return given().log().all()
+                .when()
+                .get(EMPLOYEE_BASE_URL)
+                .then()
+                .log().all()
+                .extract();
+    }
 }

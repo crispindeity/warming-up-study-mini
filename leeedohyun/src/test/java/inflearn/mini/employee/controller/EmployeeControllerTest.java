@@ -3,6 +3,7 @@ package inflearn.mini.employee.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -76,6 +77,16 @@ class EmployeeControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    void 모든_직원을_조회한다() throws Exception {
+        // given
+        // when
+        // then
+        mockMvc.perform(get("/api/v1/employees"))
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }

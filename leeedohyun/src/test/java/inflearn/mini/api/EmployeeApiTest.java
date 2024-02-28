@@ -1,5 +1,6 @@
 package inflearn.mini.api;
 
+import static inflearn.mini.api.steps.EmployeeSteps.모든_직원_조회;
 import static inflearn.mini.api.steps.TeamSteps.팀_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -50,5 +51,15 @@ class EmployeeApiTest extends ApiTest {
 
         // then
         assertThat(직원_등록_응답.statusCode()).isEqualTo(NOT_FOUND.value());
+    }
+
+    @Test
+    void 모든_직원을_조회한다() {
+        // given
+        // when
+        final var 직원_조회_응답 = 모든_직원_조회();
+
+        // then
+        assertThat(직원_조회_응답.statusCode()).isEqualTo(OK.value());
     }
 }
