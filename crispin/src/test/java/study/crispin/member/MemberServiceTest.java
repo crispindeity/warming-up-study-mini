@@ -161,7 +161,7 @@ class MemberServiceTest {
 
                 @Test
                 @DisplayName("팀에 소속되지 않은 멤버의 룰을 수정하면 예외가 발생해야 한다.")
-                void 멤버_룰_수정_성공_테스트() {
+                void 멤버_룰_수정_실패_테스트() {
                     // given
                     memberRepository.save(TestMemberFixture.멤버_생성(
                             1L,
