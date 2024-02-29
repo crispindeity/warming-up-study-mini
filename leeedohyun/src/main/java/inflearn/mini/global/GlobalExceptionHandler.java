@@ -16,16 +16,16 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(TeamNotFoundException.class)
-    public ResponseEntity<Error> handleTeamNotFoundException(final TeamNotFoundException e) {
+    public ResponseEntity<ExceptionResponse> handleTeamNotFoundException(final TeamNotFoundException e) {
         log.error("TeamNotFoundException: {}", e.getMessage());
         return ResponseEntity.status(NOT_FOUND)
-                .body(new Error(NOT_FOUND.value(), e.getMessage()));
+                .body(new ExceptionResponse(NOT_FOUND.value(), e.getMessage()));
     }
 
     @ExceptionHandler(TeamAlreadyExistException.class)
-    public ResponseEntity<Error> handleTeamAlreadyExistsException(final TeamAlreadyExistException e) {
+    public ResponseEntity<ExceptionResponse> handleTeamAlreadyExistsException(final TeamAlreadyExistException e) {
         log.error("TeamAlreadyExistsException: {}", e.getMessage());
         return ResponseEntity.status(BAD_REQUEST)
-                .body(new Error(BAD_REQUEST.value(), e.getMessage()));
+                .body(new ExceptionResponse(BAD_REQUEST.value(), e.getMessage()));
     }
 }
