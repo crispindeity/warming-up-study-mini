@@ -1,5 +1,6 @@
 package org.example.yeonghuns.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.yeonghuns.dto.team.request.CreateTeamRequest;
 import org.example.yeonghuns.dto.team.response.GetAllTeamsResponse;
 import org.example.yeonghuns.service.team.TeamService;
@@ -10,13 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class TeamController {
 
     private final TeamService teamService;
-
-    public TeamController(TeamService teamService) {
-        this.teamService = teamService;
-    }
 
     @PostMapping("/team")
     public ResponseEntity<Void> createTeam(@RequestBody CreateTeamRequest request) {
@@ -29,4 +27,5 @@ public class TeamController {
         List<GetAllTeamsResponse> allTeamsList = teamService.getAllTeams();
         return ResponseEntity.ok().body(allTeamsList);
     }
+
 }

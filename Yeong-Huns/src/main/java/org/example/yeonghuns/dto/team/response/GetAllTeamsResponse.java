@@ -1,18 +1,15 @@
 package org.example.yeonghuns.dto.team.response;
 
 import lombok.Builder;
-import lombok.Getter;
+import org.example.yeonghuns.domain.Team;
 
-@Getter
-public class GetAllTeamsResponse {
-    private final String name;
-    private final String manager;
-    private final int memberCount;
-
-    @Builder
-    public GetAllTeamsResponse(String name, String manager, int memberCount) {
-        this.name = name;
-        this.manager = manager;
-        this.memberCount = memberCount;
+@Builder
+public record GetAllTeamsResponse(String name, String manager, int memberCount) {
+    public static GetAllTeamsResponse from(Team team) {
+        return GetAllTeamsResponse.builder()
+                .name(team.getName())
+                .manager(team.getManager())
+                .memberCount(team.getMemberList().size())
+                .build();
     }
 }

@@ -18,13 +18,10 @@ public class Member {
     protected Member() {}
 
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String name;
-
-    private String teamName;
 
     private boolean role;
 
@@ -36,22 +33,9 @@ public class Member {
     @ManyToOne
     private Team team;
 
-    public GetAllMembersResponse toResponse() {
-        String isManager = this.role ? "MANAGER" : "MEMBER";
-
-        return GetAllMembersResponse.builder()
-                .name(name)
-                .teamName(teamName)
-                .role(isManager)
-                .birthday(birthday)
-                .workStartDate(workStartDate)
-                .build();
-    }
-
     @Builder
-    public Member(String name, String teamName, boolean role, LocalDate birthday, Team team) {
+    public Member(String name, boolean role, LocalDate birthday, Team team) {
         this.name = name;
-        this.teamName = teamName;
         this.role = role;
         this.birthday = birthday;
         this.team = team;

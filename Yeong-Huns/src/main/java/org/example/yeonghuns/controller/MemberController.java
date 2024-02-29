@@ -1,5 +1,6 @@
 package org.example.yeonghuns.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.yeonghuns.dto.member.request.SaveMemberRequest;
 import org.example.yeonghuns.dto.member.response.GetAllMembersResponse;
 import org.example.yeonghuns.service.member.MemberService;
@@ -13,17 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
-
     @PostMapping("/member")
     public ResponseEntity<Void> saveMember(@RequestBody SaveMemberRequest request) {
-        System.out.println(request.getTeamname());
         memberService.saveMember(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

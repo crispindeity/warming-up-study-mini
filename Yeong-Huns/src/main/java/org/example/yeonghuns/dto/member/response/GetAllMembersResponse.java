@@ -1,25 +1,24 @@
 package org.example.yeonghuns.dto.member.response;
 
 import lombok.Builder;
-import lombok.Getter;
+import org.example.yeonghuns.domain.Member;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-@Getter
-public class GetAllMembersResponse {
-    public final String name;
-    public final String teamName;
-    public final String role;
-    public final LocalDate birthday;
-    public final LocalDate workStartDate;
 
-    @Builder
-    public GetAllMembersResponse(String name, String teamName, String role, LocalDate birthday, LocalDateTime workStartDate) {
-        this.name = name;
-        this.teamName = teamName;
-        this.role = role;
-        this.birthday = birthday;
-        this.workStartDate = workStartDate.toLocalDate();
+@Builder
+public record GetAllMembersResponse(String name, String teamName, String role, LocalDate birthday,
+                                    LocalDate workStartDate) {
+
+    public static GetAllMembersResponse from(Member member){
+        String isManager = member.isRole() ? "MANAGER" : "MEMBER";
+
+        return GetAllMembersResponse.builder()
+                .name(member.getName())
+                .teamName(member.getTeam().getName())
+                .role(isManager)
+                .birthday(member.getBirthday())
+                .workStartDate(member.getWorkStartDate().toLocalDate())
+                .build();
     }
 }

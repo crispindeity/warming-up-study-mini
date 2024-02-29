@@ -23,7 +23,7 @@ public class Team {
     private String manager;
 
     @OneToMany(mappedBy = "team")
-    List<Member> memberList = new ArrayList<>();
+    private List<Member> memberList = new ArrayList<>();
 
     @Builder
     public Team(String name) {
@@ -34,11 +34,4 @@ public class Team {
         this.manager = manager;
     }
 
-    public GetAllTeamsResponse toResponse() {
-        return GetAllTeamsResponse.builder()
-                .name(name)
-                .manager(manager)
-                .memberCount(memberList.size())
-                .build();
-    }
 }
