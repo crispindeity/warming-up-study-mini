@@ -3,6 +3,7 @@ package inflearn.mini.api;
 import static inflearn.mini.api.steps.TeamSteps.팀_등록;
 import static inflearn.mini.api.steps.TeamSteps.팀_조회;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,19 @@ public class TeamApiTest extends ApiTest {
 
         // then
         assertThat(팀_등록_응답.statusCode()).isEqualTo(OK.value());
+    }
+
+    @Test
+    void 팀_등록_시_이미_등록된_팀이면_실패한다() {
+        // given
+        팀_등록(new TeamRegisterRequestDto("팀"));
+        final TeamRegisterRequestDto 팀_등록_요청 = new TeamRegisterRequestDto("팀");
+
+        // when
+        final ExtractableResponse<Response> 팀_등록_응답 = 팀_등록(팀_등록_요청);
+
+        // then
+        assertThat(팀_등록_응답.statusCode()).isEqualTo(BAD_REQUEST.value());
     }
 
     @Test

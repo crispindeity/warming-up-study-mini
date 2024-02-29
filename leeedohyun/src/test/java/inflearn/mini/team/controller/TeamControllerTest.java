@@ -1,6 +1,7 @@
 package inflearn.mini.team.controller;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import inflearn.mini.team.dto.request.TeamRegisterRequestDto;
 import inflearn.mini.team.dto.response.TeamResponseDto;
+import inflearn.mini.team.exception.TeamAlreadyExistException;
 import inflearn.mini.team.service.TeamService;
 
 @WebMvcTest(TeamController.class)
@@ -46,6 +48,24 @@ class TeamControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void 팀_등록_시_이미_등록된_팀이면_실패한다() throws Exception {
+        // given
+        final TeamRegisterRequestDto request = new TeamRegisterRequestDto("팀");
+
+        doThrow(new TeamAlreadyExistException("이미 등록된 팀입니다."))
+                .when(teamService).registerTeam(request);
+
+        // when
+
+        // then
+        mockMvc.perform(post("/api/v1/teams/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 
