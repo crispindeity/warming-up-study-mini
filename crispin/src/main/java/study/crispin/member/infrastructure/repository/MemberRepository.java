@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface MemberRepository {
     Member save(Member member);
 
-    Optional<Member> findByNameAndBirthdayAndworkStartDate(String name, LocalDate birthday, LocalDate workStartDate);
+    Optional<Member> findByNameAndBirthdayAndWorkStartDate(String name, LocalDate birthday, LocalDate workStartDate);
 }
