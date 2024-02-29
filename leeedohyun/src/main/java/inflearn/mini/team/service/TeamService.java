@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import inflearn.mini.team.domain.Team;
 import inflearn.mini.team.dto.request.TeamRegisterRequestDto;
 import inflearn.mini.team.dto.response.TeamResponseDto;
+import inflearn.mini.team.exception.TeamAlreadyExistException;
 import inflearn.mini.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,9 @@ public class TeamService {
 
     @Transactional
     public void registerTeam(final TeamRegisterRequestDto request) {
+        teamRepository.findByName(request.teamName()).ifPresent(team -> {
+            throw new TeamAlreadyExistException("이미 등록된 팀입니다.");
+        });
         teamRepository.save(request.toEntity());
     }
 
