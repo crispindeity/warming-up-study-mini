@@ -51,10 +51,10 @@ public class Employee {
         team.addEmployee(this);
     }
 
-    public String getRole() {
+    public Role getRole() {
         if (isManager) {
-            return "MANAGER";
+            return Role.MANAGER;
         }
-        return "MEMBER";
+        return Role.MEMBER;
     }
 }

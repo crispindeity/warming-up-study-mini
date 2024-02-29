@@ -14,10 +14,10 @@ class EmployeeTest {
                 .build();
 
         // when
-        final String role = employee.getRole();
+        final Role role = employee.getRole();
 
         // then
-        assertThat(role).isEqualTo("MANAGER");
+        assertThat(role).isEqualTo(Role.MANAGER);
     }
 
     @Test
@@ -28,9 +28,9 @@ class EmployeeTest {
                 .build();
 
         // when
-        final String role = employee.getRole();
+        final Role role = employee.getRole();
 
         // then
-        assertThat(role).isEqualTo("MEMBER");
+        assertThat(role).isEqualTo(Role.MEMBER);
     }
 }
