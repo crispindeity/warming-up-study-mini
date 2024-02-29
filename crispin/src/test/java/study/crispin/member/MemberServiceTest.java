@@ -13,7 +13,7 @@ import study.crispin.member.application.request.MemberUpdateRequest;
 import study.crispin.member.application.service.MemberServiceImpl;
 import study.crispin.member.domain.Role;
 import study.crispin.member.infrastructure.repository.MemberRepository;
-import study.crispin.member.presentation.port.MemberService;
+import study.crispin.member.application.service.MemberService;
 import study.crispin.member.presentation.response.MemberRegistrationResponse;
 import study.crispin.member.presentation.response.MemberUpdateResponse;
 import study.crispin.mock.FakeMemberRepository;

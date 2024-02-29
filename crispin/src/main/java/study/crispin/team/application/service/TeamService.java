@@ -1,4 +1,4 @@
-package study.crispin.team.presentation.port;
+package study.crispin.team.application.service;
 
 import study.crispin.team.application.request.TeamRegistrationRequest;
 import study.crispin.team.presentation.response.TeamRegistrationResponse;

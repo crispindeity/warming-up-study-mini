@@ -1,4 +1,4 @@
-package study.crispin.member.presentation.port;
+package study.crispin.member.application.service;
 
 import study.crispin.member.application.request.MemberRegistrationRequest;
 import study.crispin.member.application.request.MemberUpdateRequest;

@@ -4,7 +4,6 @@ import org.springframework.util.Assert;
 import study.crispin.team.application.request.TeamRegistrationRequest;
 import study.crispin.team.domain.Team;
 import study.crispin.team.infrastructure.repository.TeamRepository;
-import study.crispin.team.presentation.port.TeamService;
 import study.crispin.team.presentation.response.TeamRegistrationResponse;
 
 public class TeamServiceImpl implements TeamService {

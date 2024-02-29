@@ -11,7 +11,7 @@ import study.crispin.mock.FakeTeamRepository;
 import study.crispin.team.application.request.TeamRegistrationRequest;
 import study.crispin.team.application.service.TeamServiceImpl;
 import study.crispin.team.infrastructure.repository.TeamRepository;
-import study.crispin.team.presentation.port.TeamService;
+import study.crispin.team.application.service.TeamService;
 import study.crispin.team.presentation.response.TeamRegistrationResponse;
 
 @DisplayName("팀 서비스 테스트")
