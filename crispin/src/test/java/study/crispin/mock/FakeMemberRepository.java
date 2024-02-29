@@ -32,15 +32,13 @@ public class FakeMemberRepository implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findByNameAndBirthdayAndworkStartDate(
+    public Optional<Member> findByNameAndBirthdayAndWorkStartDate(
             String name,
             LocalDate birthday,
             LocalDate workStartDate
     ) {
         return storage.values().stream()
-                .filter(member -> member.name().equals(name) &&
-                        member.birthday().equals(birthday) &&
-                        member.workStartDate().equals(workStartDate))
+                .filter(member -> member.isDuplicateMember(member))
                 .findFirst();
     }
 }

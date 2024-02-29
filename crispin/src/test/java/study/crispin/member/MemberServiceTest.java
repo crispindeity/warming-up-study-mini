@@ -9,11 +9,13 @@ import org.junit.jupiter.api.Test;
 import study.crispin.fixture.TestMemberFixture;
 import study.crispin.fixture.TestTeamFixture;
 import study.crispin.member.application.request.MemberRegistrationRequest;
+import study.crispin.member.application.request.MemberUpdateRequest;
 import study.crispin.member.application.service.MemberServiceImpl;
 import study.crispin.member.domain.Role;
 import study.crispin.member.infrastructure.repository.MemberRepository;
 import study.crispin.member.presentation.port.MemberService;
 import study.crispin.member.presentation.response.MemberRegistrationResponse;
+import study.crispin.member.presentation.response.MemberUpdateResponse;
 import study.crispin.mock.FakeMemberRepository;
 import study.crispin.mock.FakeTeamRepository;
 
@@ -116,4 +118,70 @@ class MemberServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("멤버 수정 테스트")
+    class MemberUpdateTest {
+
+        @Nested
+        @DisplayName("멤버 룰 수정 테스트")
+        class MemberRoleUpdateTest {
+
+            @Nested
+            @DisplayName("멤버 룰 수정 성공 테스트")
+            class MemberRoleUpdateSuccessTest {
+
+                @Test
+                @DisplayName("멤머의 룰을 수정하면, 수정된 룰로 변경되어야 한다.")
+                void 멤버_룰_수정_성공_테스트() {
+                    // given
+                    memberRepository.save(TestMemberFixture.멤버_생성(
+                            1L,
+                            "테스트멤버1",
+                            "테스트1팀",
+                            LocalDate.of(1999, 9, 9),
+                            LocalDate.of(2024, 2, 29)
+                    ));
+                    MemberUpdateRequest request = MemberUpdateRequest.of(
+                            "테스트멤버1",
+                            LocalDate.of(1999, 9, 9),
+                            LocalDate.of(2024, 2, 29)
+                    );
+
+                    // when
+                    MemberUpdateResponse response = memberService.updateRole(request);
+
+                    // then
+                    Assertions.assertThat(response.role()).isEqualTo(Role.MANAGER);
+                }
+            }
+
+            @Nested
+            @DisplayName("멤버 룰 수정 실패 테스트")
+            class MemberRoleUpdateFailTest {
+
+                @Test
+                @DisplayName("팀에 소속되지 않은 멤버의 룰을 수정하면 예외가 발생해야 한다.")
+                void 멤버_룰_수정_성공_테스트() {
+                    // given
+                    memberRepository.save(TestMemberFixture.멤버_생성(
+                            1L,
+                            "테스트멤버1",
+                            null,
+                            LocalDate.of(1999, 9, 9),
+                            LocalDate.of(2024, 2, 29)
+                    ));
+                    MemberUpdateRequest request = MemberUpdateRequest.of(
+                            "테스트멤버1",
+                            LocalDate.of(1999, 9, 9),
+                            LocalDate.of(2024, 2, 29)
+                    );
+
+                    // when & then
+                    Assertions.assertThatThrownBy(() -> memberService.updateRole(request))
+                            .isInstanceOf(IllegalArgumentException.class)
+                            .hasMessage("팀에 소속된 멤버가 아닙니다.");
+                }
+            }
+        }
+    }
 }
