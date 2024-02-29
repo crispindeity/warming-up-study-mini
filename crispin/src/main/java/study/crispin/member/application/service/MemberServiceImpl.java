@@ -45,7 +45,9 @@ public class MemberServiceImpl implements MemberService {
         if (teamName == null) {
             return;
         }
-        teamRepository.findByName(teamName).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀 이름입니다."));
+        if (teamRepository.findByName(teamName).isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 팀 이름입니다.");
+        }
     }
 
     private void verifyAlreadyRegisteredMember(String name, LocalDate birthday, LocalDate workStartDate) {
