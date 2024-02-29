@@ -42,6 +42,9 @@ public class TeamApiTest extends ApiTest {
     @Test
     void 팀을_조회한다() {
         // given
+        팀_등록(new TeamRegisterRequestDto("개발팀"));
+        팀_등록(new TeamRegisterRequestDto("영업팀"));
+
         // when
         final ExtractableResponse<Response> 팀_조회_응답 = 팀_조회();
 
