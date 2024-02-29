@@ -63,7 +63,7 @@ class TeamServiceTest {
             @DisplayName("팀 등록 시 이미 등록되어 있는 이름을 사용하면 예외가 발생해야한다.")
             void 팀_이름_중복_등록_실패_테스트() {
                 // given
-                teamRepository.save(TestTeamFixture.팀_생성_요청(1L, "테스트1팀", "테스트1팀매니저"));
+                teamRepository.save(TestTeamFixture.팀_생성(1L, "테스트1팀", "테스트1팀매니저"));
                 TeamRegistrationRequest request = new TeamRegistrationRequest("테스트1팀");
 
                 // when & then

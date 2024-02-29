@@ -6,10 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import study.crispin.fixture.TestMemberFixture;
 import study.crispin.fixture.TestTeamFixture;
 import study.crispin.member.application.request.MemberRegistrationRequest;
 import study.crispin.member.application.service.MemberServiceImpl;
-import study.crispin.member.domain.Member;
 import study.crispin.member.domain.Role;
 import study.crispin.member.infrastructure.repository.MemberRepository;
 import study.crispin.member.presentation.port.MemberService;
@@ -31,7 +31,7 @@ class MemberServiceTest {
         FakeTeamRepository teamRepository = new FakeTeamRepository();
         memberRepository = new FakeMemberRepository();
         memberService = new MemberServiceImpl(teamRepository, memberRepository);
-        teamRepository.save(TestTeamFixture.팀_생성_요청(1L, "테스트1팀", null));
+        teamRepository.save(TestTeamFixture.팀_생성(1L, "테스트1팀", null));
     }
 
     @Nested
@@ -93,7 +93,7 @@ class MemberServiceTest {
             @DisplayName("멤버 등록 요청 시, 이미 등록되어 있는 멤버일 경우 예외가 발생해야한다.")
             void 멤버_등록_실패_이미_등록된_멤버() {
                 // given
-                memberRepository.save(TestMemberFixture.멤버_생성_요청(
+                memberRepository.save(TestMemberFixture.멤버_생성(
                         1L,
                         "테스트멤버1",
                         "테스트1팀",
@@ -116,9 +116,4 @@ class MemberServiceTest {
         }
     }
 
-    public class TestMemberFixture {
-        public static Member 멤버_생성_요청(Long id, String name, String teamName, LocalDate birthday, LocalDate workStartDate) {
-            return Member.of(id, name, teamName, birthday, workStartDate);
-        }
-    }
 }
