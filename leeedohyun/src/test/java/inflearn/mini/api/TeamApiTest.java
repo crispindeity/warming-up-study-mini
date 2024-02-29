@@ -1,8 +1,9 @@
 package inflearn.mini.api;
 
-import static inflearn.mini.api.steps.TeamSteps.*;
 import static inflearn.mini.api.steps.TeamSteps.팀_등록;
+import static inflearn.mini.api.steps.TeamSteps.팀_조회;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.OK;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ public class TeamApiTest extends ApiTest {
         final ExtractableResponse<Response> 팀_등록_응답 = 팀_등록(팀_등록_요청);
 
         // then
-        assertThat(팀_등록_응답.statusCode()).isEqualTo(200);
+        assertThat(팀_등록_응답.statusCode()).isEqualTo(OK.value());
     }
 
     @Test
@@ -31,6 +32,6 @@ public class TeamApiTest extends ApiTest {
         final ExtractableResponse<Response> 팀_조회_응답 = 팀_조회();
 
         // then
-        assertThat(팀_조회_응답.statusCode()).isEqualTo(200);
+        assertThat(팀_조회_응답.statusCode()).isEqualTo(OK.value());
     }
 }
