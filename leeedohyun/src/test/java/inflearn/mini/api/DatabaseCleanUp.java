@@ -7,18 +7,21 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Table;
 import jakarta.persistence.metamodel.EntityType;
+import jakarta.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 
 import com.google.common.base.CaseFormat;
 
-@Service
-@Profile("test")
+@Component
 public class DatabaseCleanUp implements InitializingBean {
+
+    private static final String TRUNCATE_SQL_MESSAGE = "TRUNCATE TABLE %s";
+    private static final String SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE = "SET FOREIGN_KEY_CHECKS = %s";
+    private static final String DISABLE_REFERENTIAL_QUERY = String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, false);
+    private static final String ENABLE_REFERENTIAL_QUERY = String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, true);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -35,15 +38,25 @@ public class DatabaseCleanUp implements InitializingBean {
 
     @Transactional
     public void execute() {
-        entityManager.flush();
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+        disableReferentialIntegrity();
+        executeTruncate();
+        enableReferentialIntegrity();
+    }
 
+    private void disableReferentialIntegrity() {
+        entityManager.createNativeQuery(DISABLE_REFERENTIAL_QUERY);
+    }
+
+    private void executeTruncate() {
         for (final String tableName : tableNames) {
-            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery(
-                    "ALTER TABLE " + tableName + " ALTER COLUMN " + tableName + "_ID RESTART WITH 1").executeUpdate();
+            final String TRUNCATE_QUERY = String.format(TRUNCATE_SQL_MESSAGE, tableName);
+
+            entityManager.createNativeQuery(TRUNCATE_QUERY);
         }
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+    }
+
+    private void enableReferentialIntegrity() {
+        entityManager.createNativeQuery(ENABLE_REFERENTIAL_QUERY);
     }
 
     private String getTableName(final EntityType<?> e) {
