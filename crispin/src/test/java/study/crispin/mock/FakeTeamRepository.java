@@ -1,5 +1,6 @@
 package study.crispin.mock;
 
+import study.crispin.member.domain.Member;
 import study.crispin.team.domain.Team;
 import study.crispin.team.infrastructure.repository.TeamRepository;
 
@@ -40,5 +41,13 @@ public class FakeTeamRepository implements TeamRepository {
     @Override
     public List<Team> findAll() {
         return List.copyOf(storage.values());
+    }
+
+    @Override
+    public void updateTeamManager(Member member) {
+        Team team = findByName(member.teamName())
+                .orElseThrow(() -> new IllegalArgumentException("소속된 팀이 없습니다."));
+        Team updatedTeam = team.updateManager(member);
+        save(updatedTeam);
     }
 }

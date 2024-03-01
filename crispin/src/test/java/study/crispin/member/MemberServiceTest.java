@@ -19,6 +19,7 @@ import study.crispin.member.presentation.response.MemberRetrieveResponses;
 import study.crispin.member.presentation.response.MemberUpdateResponse;
 import study.crispin.mock.FakeMemberRepository;
 import study.crispin.mock.FakeTeamRepository;
+import study.crispin.team.infrastructure.repository.TeamRepository;
 
 import java.time.LocalDate;
 
@@ -26,12 +27,13 @@ import java.time.LocalDate;
 class MemberServiceTest {
 
     private MemberService memberService;
+    private TeamRepository teamRepository;
     private MemberRepository memberRepository;
 
 
     @BeforeEach
     void setup() {
-        FakeTeamRepository teamRepository = new FakeTeamRepository();
+        teamRepository = new FakeTeamRepository();
         memberRepository = new FakeMemberRepository();
         memberService = new MemberServiceImpl(teamRepository, memberRepository);
         teamRepository.save(TestTeamFixture.팀_생성("테스트1팀", null));
@@ -131,7 +133,7 @@ class MemberServiceTest {
             class MemberRoleUpdateSuccessTest {
 
                 @Test
-                @DisplayName("멤머의 룰을 수정하면, 수정된 룰로 변경되어야 한다.")
+                @DisplayName("멤버의 룰을 수정하면, 수정된 룰로 변경되어야 한다.")
                 void 멤버_룰_수정_성공_테스트() {
                     // given
                     memberRepository.save(TestMemberFixture.멤버_생성(
@@ -151,6 +153,58 @@ class MemberServiceTest {
 
                     // then
                     Assertions.assertThat(response.role()).isEqualTo(Role.MANAGER);
+                }
+
+                @Test
+                @DisplayName("멤버의 룰을 Manager 로 수정하면, 팀 정보에도 반영되어야 한다.")
+                void 멤버_룰_수정_팀_매니저_반영_테스트() {
+                    // given
+                    memberRepository.save(TestMemberFixture.멤버_생성(
+                            "테스트멤버1",
+                            "테스트1팀",
+                            LocalDate.of(1999, 9, 9),
+                            LocalDate.of(2024, 2, 29)
+                    ));
+
+                    MemberUpdateRequest request = MemberUpdateRequest.of(
+                            "테스트멤버1",
+                            LocalDate.of(1999, 9, 9),
+                            LocalDate.of(2024, 2, 29)
+                    );
+
+                    // when
+                    memberService.updateRole(request);
+
+                    // then
+                    Assertions.assertThat(teamRepository.findByName("테스트1팀").get().manager())
+                            .isEqualTo("테스트멤버1");
+                }
+
+                @Test
+                @DisplayName("멤버의 룰을 Member 로 수정하면, 팀 정보에도 반영되어야 한다.")
+                void 멤버_룰_수정_팀_멤버_반영_테스트() {
+                    // given
+                    teamRepository.save(TestTeamFixture.팀_생성("테스트1팀", "테스트멤버1"));
+                    memberRepository.save(TestMemberFixture.멤버_생성(
+                            "테스트멤버1",
+                            "테스트1팀",
+                            LocalDate.of(1999, 9, 9),
+                            LocalDate.of(2024, 2, 29)
+                    ));
+
+                    MemberUpdateRequest request = MemberUpdateRequest.of(
+                            "테스트멤버1",
+                            LocalDate.of(1999, 9, 9),
+                            LocalDate.of(2024, 2, 29)
+                    );
+                    memberService.updateRole(request);
+
+                    // when
+                    memberService.updateRole(request);
+
+                    // then
+                    Assertions.assertThat(teamRepository.findByName("테스트1팀").get().manager())
+                            .isNull();
                 }
             }
 
