@@ -23,7 +23,10 @@ import java.time.LocalDate;
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AttributeOverride(name = "createdAt", column = @Column(name = "work_start_date", nullable = false, updatable = false, columnDefinition = "회사에 들어온 일자"))
+@AttributeOverrides({
+        @AttributeOverride(name = "createdAt", column = @Column(name = "work_start_date", nullable = false, updatable = false, columnDefinition = "회사에 들어온 일자")),
+        @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at", nullable = false, columnDefinition = "직원 정보가 최종 수정된 날짜"))
+})
 public class Employee extends BaseDateTimeEntity {
 
     @Id
