@@ -61,6 +61,8 @@ public class MemberServiceImpl implements MemberService {
         Member updatedMember = findedMember.updateRole();
         Member savedMember = memberRepository.save(updatedMember);
 
+        teamRepository.updateTeamManager(savedMember);
+
         return MemberUpdateResponse.of(savedMember.name(), savedMember.teamName(), savedMember.role());
     }
 

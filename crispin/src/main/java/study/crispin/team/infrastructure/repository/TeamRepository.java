@@ -1,5 +1,6 @@
 package study.crispin.team.infrastructure.repository;
 
+import study.crispin.member.domain.Member;
 import study.crispin.team.domain.Team;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface TeamRepository {
     Optional<Team> findByName(String name);
 
     List<Team> findAll();
+
+    void updateTeamManager(Member member);
 }
