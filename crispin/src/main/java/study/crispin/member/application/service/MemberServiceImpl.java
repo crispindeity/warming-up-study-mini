@@ -6,10 +6,13 @@ import study.crispin.member.application.request.MemberUpdateRequest;
 import study.crispin.member.domain.Member;
 import study.crispin.member.infrastructure.repository.MemberRepository;
 import study.crispin.member.presentation.response.MemberRegistrationResponse;
+import study.crispin.member.presentation.response.MemberRetrieveResponse;
+import study.crispin.member.presentation.response.MemberRetrieveResponses;
 import study.crispin.member.presentation.response.MemberUpdateResponse;
 import study.crispin.team.infrastructure.repository.TeamRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class MemberServiceImpl implements MemberService {
 
@@ -48,9 +51,9 @@ public class MemberServiceImpl implements MemberService {
         Assert.notNull(request.name(), "이름은 필수입니다.");
 
         Member findedMember = memberRepository.findByNameAndBirthdayAndWorkStartDate(
-                request.name(),
-                request.birthday(),
-                request.workStartDate())
+                        request.name(),
+                        request.birthday(),
+                        request.workStartDate())
                 .orElseThrow();
 
         verifyTeamAffiliation(findedMember);
@@ -59,6 +62,22 @@ public class MemberServiceImpl implements MemberService {
         Member savedMember = memberRepository.save(updatedMember);
 
         return MemberUpdateResponse.of(savedMember.name(), savedMember.teamName(), savedMember.role());
+    }
+
+    @Override
+    public MemberRetrieveResponses retrieve() {
+        List<Member> findMembers = memberRepository.findAll();
+
+        List<MemberRetrieveResponse> responses = findMembers.stream()
+                .map(member -> MemberRetrieveResponse.of(
+                        member.name(),
+                        member.teamName(),
+                        member.role(),
+                        member.birthday(),
+                        member.workStartDate()))
+                .toList();
+
+        return MemberRetrieveResponses.of(responses);
     }
 
     private void verifyUnregisteredTeamName(String teamName) {
