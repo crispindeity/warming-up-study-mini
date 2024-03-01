@@ -15,6 +15,7 @@ import study.crispin.member.domain.Role;
 import study.crispin.member.infrastructure.repository.MemberRepository;
 import study.crispin.member.application.service.MemberService;
 import study.crispin.member.presentation.response.MemberRegistrationResponse;
+import study.crispin.member.presentation.response.MemberRetrieveResponses;
 import study.crispin.member.presentation.response.MemberUpdateResponse;
 import study.crispin.mock.FakeMemberRepository;
 import study.crispin.mock.FakeTeamRepository;
@@ -96,7 +97,6 @@ class MemberServiceTest {
             void 멤버_등록_실패_이미_등록된_멤버() {
                 // given
                 memberRepository.save(TestMemberFixture.멤버_생성(
-                        1L,
                         "테스트멤버1",
                         "테스트1팀",
                         LocalDate.of(1999, 9, 9),
@@ -135,7 +135,6 @@ class MemberServiceTest {
                 void 멤버_룰_수정_성공_테스트() {
                     // given
                     memberRepository.save(TestMemberFixture.멤버_생성(
-                            1L,
                             "테스트멤버1",
                             "테스트1팀",
                             LocalDate.of(1999, 9, 9),
@@ -164,7 +163,6 @@ class MemberServiceTest {
                 void 멤버_룰_수정_실패_테스트() {
                     // given
                     memberRepository.save(TestMemberFixture.멤버_생성(
-                            1L,
                             "테스트멤버1",
                             null,
                             LocalDate.of(1999, 9, 9),
@@ -181,6 +179,40 @@ class MemberServiceTest {
                             .isInstanceOf(IllegalArgumentException.class)
                             .hasMessage("팀에 소속된 멤버가 아닙니다.");
                 }
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("멤버 조회 테스트")
+    class MemberRetrieveTest {
+
+        @Nested
+        @DisplayName("멤버 조회 성공 테스트")
+        class MemberRetrieveSuccessTest {
+
+            @Test
+            @DisplayName("멤버 조회 시, 등록된 모든 멤버의 정보가 반환되어야 한다.")
+            void 멤버_조회_성공_테스트() {
+                // given
+                memberRepository.save(TestMemberFixture.멤버_생성(
+                        "테스트멤버1",
+                        "테스트1팀",
+                        LocalDate.of(1999, 9, 9),
+                        LocalDate.of(2024, 2, 29)
+                ));
+                memberRepository.save(TestMemberFixture.멤버_생성(
+                        "테스트멤버1",
+                        "테스트1팀",
+                        LocalDate.of(1999, 9, 9),
+                        LocalDate.of(2024, 2, 29)
+                ));
+
+                // when
+                MemberRetrieveResponses responses = memberService.retrieve();
+
+                // then
+                Assertions.assertThat(responses.responses()).hasSize(2);
             }
         }
     }

@@ -4,9 +4,7 @@ import study.crispin.member.domain.Member;
 import study.crispin.member.infrastructure.repository.MemberRepository;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class FakeMemberRepository implements MemberRepository {
 
@@ -40,5 +38,10 @@ public class FakeMemberRepository implements MemberRepository {
         return storage.values().stream()
                 .filter(member -> member.isDuplicateMember(member))
                 .findFirst();
+    }
+
+    @Override
+    public List<Member> findAll() {
+        return List.copyOf(storage.values());
     }
 }
