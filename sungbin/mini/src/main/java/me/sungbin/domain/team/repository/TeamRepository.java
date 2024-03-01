@@ -15,4 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * 3/1/24       rovert         최초 생성
  */
 public interface TeamRepository extends JpaRepository<Team, Long> {
+    boolean existsByName(String name);
 }
