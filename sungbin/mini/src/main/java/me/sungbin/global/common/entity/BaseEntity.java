@@ -24,7 +24,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @MappedSuperclass
 @EntityListeners(value = AuditingEntityListener.class)
-public class BaseEntity extends BaseDateTimeEntity {
+public abstract class BaseEntity extends BaseDateTimeEntity {
 
     @CreatedBy
     @Comment("생성한 직원")

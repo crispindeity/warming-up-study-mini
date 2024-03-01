@@ -2,6 +2,7 @@ package me.sungbin.domain.member.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import me.sungbin.domain.team.entity.Team;
 import me.sungbin.global.common.entity.BaseDateTimeEntity;
 import org.hibernate.annotations.Comment;
 
@@ -24,8 +25,8 @@ import java.time.LocalDate;
 @EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverrides({
-        @AttributeOverride(name = "createdAt", column = @Column(name = "work_start_date", nullable = false, updatable = false, columnDefinition = "회사에 들어온 일자")),
-        @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at", nullable = false, columnDefinition = "직원 정보가 최종 수정된 날짜"))
+        @AttributeOverride(name = "createdAt", column = @Column(name = "work_start_date", nullable = false, updatable = false)),
+        @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at", nullable = false))
 })
 public class Employee extends BaseDateTimeEntity {
 
@@ -45,6 +46,9 @@ public class Employee extends BaseDateTimeEntity {
 
     @Column(nullable = false)
     private LocalDate birthday;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Team team;
 
     @Builder
     public Employee(String name, boolean isManager, LocalDate birthday) {

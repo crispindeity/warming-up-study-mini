@@ -2,8 +2,12 @@ package me.sungbin.domain.team.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import me.sungbin.domain.member.entity.Employee;
 import me.sungbin.global.common.entity.BaseDateTimeEntity;
 import org.hibernate.annotations.Comment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author : rovert
@@ -22,8 +26,8 @@ import org.hibernate.annotations.Comment;
 @EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverrides({
-        @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "팀이 생성된 날짜")),
-        @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at", nullable = false, columnDefinition = "팀 정보가 업데이트 된 날짜"))
+        @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false, updatable = false)),
+        @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at", nullable = false))
 })
 public class Team extends BaseDateTimeEntity {
 
@@ -36,6 +40,9 @@ public class Team extends BaseDateTimeEntity {
     @Comment("팀 이름")
     @Column(name = "team_name", nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "team")
+    private List<Employee> employees = new ArrayList<>();
 
     @Builder
     public Team(String name) {
