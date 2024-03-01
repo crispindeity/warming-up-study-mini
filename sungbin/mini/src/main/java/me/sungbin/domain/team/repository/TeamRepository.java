@@ -3,6 +3,8 @@ package me.sungbin.domain.team.repository;
 import me.sungbin.domain.team.entity.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 /**
  * @author : rovert
  * @packageName : me.sungbin.domain.team.repository
@@ -16,4 +18,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface TeamRepository extends JpaRepository<Team, Long> {
     boolean existsByName(String name);
+
+    Optional<Team> findByName(String name);
 }

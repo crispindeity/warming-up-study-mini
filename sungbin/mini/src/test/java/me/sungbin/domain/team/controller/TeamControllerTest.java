@@ -4,18 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.domain.team.model.request.RegisterTeamRequestDto;
 import me.sungbin.domain.team.repository.TeamRepository;
+import me.sungbin.global.annotation.IntegrationTest;
 import me.sungbin.global.exception.GlobalExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,10 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 3/1/24       rovert         최초 생성
  */
 
-@Transactional
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles(value = "test")
+@IntegrationTest
 class TeamControllerTest {
 
     @Autowired

@@ -44,6 +44,11 @@ public class Team extends BaseDateTimeEntity {
     @OneToMany(mappedBy = "team")
     private List<Employee> employees = new ArrayList<>();
 
+    public void addEmployee(Employee employee) {
+        this.employees.add(employee);
+        employee.updateTeam(this);
+    }
+
     @Builder
     public Team(String name) {
         this.name = name;

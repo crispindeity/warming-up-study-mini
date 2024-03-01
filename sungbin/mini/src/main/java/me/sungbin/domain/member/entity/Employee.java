@@ -50,6 +50,10 @@ public class Employee extends BaseDateTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
+    public void updateTeam(Team team) {
+        this.team = team;
+    }
+
     @Builder
     public Employee(String name, boolean isManager, LocalDate birthday) {
         this.name = name;
