@@ -12,4 +12,6 @@ public interface MemberRepository {
     Optional<Member> findByNameAndBirthdayAndWorkStartDate(String name, LocalDate birthday, LocalDate workStartDate);
 
     List<Member> findAll();
+
+    Long countByTeamName(String name);
 }

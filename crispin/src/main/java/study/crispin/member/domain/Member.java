@@ -26,4 +26,8 @@ public record Member(Long id, String name, String teamName, Role role, LocalDate
                 this.birthday.equals(member.birthday()) &&
                 this.workStartDate.equals(member.workStartDate());
     }
+
+    public boolean isTeamMember(String teamName) {
+        return this.teamName.equals(teamName);
+    }
 }
