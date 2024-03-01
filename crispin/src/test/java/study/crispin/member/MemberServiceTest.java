@@ -34,7 +34,7 @@ class MemberServiceTest {
         FakeTeamRepository teamRepository = new FakeTeamRepository();
         memberRepository = new FakeMemberRepository();
         memberService = new MemberServiceImpl(teamRepository, memberRepository);
-        teamRepository.save(TestTeamFixture.팀_생성(1L, "테스트1팀", null));
+        teamRepository.save(TestTeamFixture.팀_생성("테스트1팀", null));
     }
 
     @Nested

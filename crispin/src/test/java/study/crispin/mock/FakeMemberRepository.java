@@ -44,4 +44,11 @@ public class FakeMemberRepository implements MemberRepository {
     public List<Member> findAll() {
         return List.copyOf(storage.values());
     }
+
+    @Override
+    public Long countByTeamName(String teamName) {
+        return storage.values().stream()
+                .filter(member -> member.isTeamMember(teamName))
+                .count();
+    }
 }

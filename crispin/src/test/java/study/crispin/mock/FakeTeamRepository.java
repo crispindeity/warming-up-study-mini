@@ -4,6 +4,7 @@ import study.crispin.team.domain.Team;
 import study.crispin.team.infrastructure.repository.TeamRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,7 +33,12 @@ public class FakeTeamRepository implements TeamRepository {
     public Optional<Team> findByName(String name) {
         return storage.values()
                 .stream()
-                .filter(team -> team.name().equals(name))
+                .filter(team -> team.isEqualByName(name))
                 .findFirst();
+    }
+
+    @Override
+    public List<Team> findAll() {
+        return List.copyOf(storage.values());
     }
 }
