@@ -1,10 +1,8 @@
-package me.sungbin.domain.team.controller;
+package me.sungbin.domain.member.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import me.sungbin.domain.member.model.request.RegisterEmployeeRequestDto;
 import me.sungbin.domain.team.entity.Team;
-import me.sungbin.domain.team.model.request.RegisterTeamRequestDto;
 import me.sungbin.domain.team.repository.TeamRepository;
-import me.sungbin.global.common.annotation.IntegrationTest;
 import me.sungbin.global.common.controller.BaseControllerTest;
 import me.sungbin.global.exception.GlobalExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -21,8 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * @author : rovert
- * @packageName : me.sungbin.domain.team.controller
- * @fileName : TeamControllerTest
+ * @packageName : me.sungbin.domain.member.controller
+ * @fileName : EmployeeControllerTest
  * @date : 3/1/24
  * @description :
  * ===========================================================
@@ -31,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 3/1/24       rovert         최초 생성
  */
 
-class TeamControllerTest extends BaseControllerTest {
+class EmployeeControllerTest extends BaseControllerTest {
 
     @Autowired
     private TeamRepository teamRepository;
@@ -43,11 +42,11 @@ class TeamControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("팀 등록 테스트 - 실패 (팀 이름이 공란)")
-    void register_team_test_fail_caused_by_team_name_is_empty() throws Exception {
-        RegisterTeamRequestDto requestDto = new RegisterTeamRequestDto("");
+    @DisplayName("직원 등록 테스트 - 실패 (잘못된 입력 값)")
+    void register_employee_test_fail_caused_by_wrong_input() throws Exception {
+        RegisterEmployeeRequestDto requestDto = new RegisterEmployeeRequestDto("", "", false, LocalDate.of(1996, 5, 22));
 
-        this.mockMvc.perform(post("/api/team/register")
+        this.mockMvc.perform(post("/api/employee/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -62,11 +61,11 @@ class TeamControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("팀 등록 테스트 - 실패 (이미 존재하는 팀)")
-    void register_team_test_fail_caused_by_already_exists_team() throws Exception {
-        RegisterTeamRequestDto requestDto = new RegisterTeamRequestDto("개발팀");
+    @DisplayName("직원 등록 테스트 - 실패 (존재하지 않는 팀에 등록)")
+    void register_employee_test_fail_caused_by_register_not_exists_team() throws Exception {
+        RegisterEmployeeRequestDto requestDto = new RegisterEmployeeRequestDto("장그래", "영업팀", false, LocalDate.of(1992, 2, 22));
 
-        this.mockMvc.perform(post("/api/team/register")
+        this.mockMvc.perform(post("/api/employee/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -81,11 +80,11 @@ class TeamControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("팀 등록 테스트 - 성공")
-    void register_team_test_success() throws Exception {
-        RegisterTeamRequestDto requestDto = new RegisterTeamRequestDto("디자인팀");
+    @DisplayName("직원 등록 테스트 - 성공")
+    void register_employee_test_success() throws Exception {
+        RegisterEmployeeRequestDto requestDto = new RegisterEmployeeRequestDto("양성빈", "개발팀", false, LocalDate.of(1996, 5, 22));
 
-        this.mockMvc.perform(post("/api/team/register")
+        this.mockMvc.perform(post("/api/employee/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
