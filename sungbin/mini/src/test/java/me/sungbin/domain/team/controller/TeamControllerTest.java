@@ -1,10 +1,8 @@
 package me.sungbin.domain.team.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.domain.team.model.request.RegisterTeamRequestDto;
 import me.sungbin.domain.team.repository.TeamRepository;
-import me.sungbin.global.common.annotation.IntegrationTest;
 import me.sungbin.global.common.controller.BaseControllerTest;
 import me.sungbin.global.exception.GlobalExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,8 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -89,6 +87,16 @@ class TeamControllerTest extends BaseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("팀 정보 조회 테스트 - 성공")
+    void find_team_info_test_success() throws Exception {
+        this.mockMvc.perform(get("/api/team")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

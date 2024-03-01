@@ -49,6 +49,22 @@ public class Team extends BaseDateTimeEntity {
         employee.updateTeam(this);
     }
 
+    public String getManagerName() {
+        return employees.stream()
+                .filter(Employee::isManager)
+                .map(Employee::getName)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public boolean hasManager() {
+        return this.employees.stream().anyMatch(Employee::isManager);
+    }
+
+    public int getEmployeeCount() {
+        return employees != null ? employees.size() : 0;
+    }
+
     @Builder
     public Team(String name) {
         this.name = name;

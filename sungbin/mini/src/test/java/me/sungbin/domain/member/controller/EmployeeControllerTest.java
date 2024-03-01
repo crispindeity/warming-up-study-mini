@@ -1,6 +1,8 @@
 package me.sungbin.domain.member.controller;
 
+import me.sungbin.domain.member.entity.Employee;
 import me.sungbin.domain.member.model.request.RegisterEmployeeRequestDto;
+import me.sungbin.domain.member.repository.EmployeeRepository;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.domain.team.repository.TeamRepository;
 import me.sungbin.global.common.controller.BaseControllerTest;
@@ -34,6 +36,9 @@ class EmployeeControllerTest extends BaseControllerTest {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @BeforeEach
     void setup() {

@@ -6,6 +6,7 @@ import me.sungbin.domain.member.model.request.RegisterEmployeeRequestDto;
 import me.sungbin.domain.member.repository.EmployeeRepository;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.domain.team.repository.TeamRepository;
+import me.sungbin.global.exception.custom.AlreadyExistsManagerException;
 import me.sungbin.global.exception.custom.TeamNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,11 +35,16 @@ public class EmployeeService {
     @Transactional
     public void registerEmployee(RegisterEmployeeRequestDto requestDto) {
         Employee employee = requestDto.toEntity();
-        this.employeeRepository.save(employee);
 
         Team team = this.teamRepository.findByName(requestDto.teamName()).orElseThrow(TeamNotFoundException::new);
-        team.addEmployee(employee);
 
+        // 매니저가 이미 존재하는 경우 예외 발생
+        if (employee.isManager() && team.hasManager()) {
+            throw new AlreadyExistsManagerException("이미 매니저가 해당 팀에 존재합니다.");
+        }
+
+        this.employeeRepository.save(employee);
+        team.addEmployee(employee);
         this.teamRepository.save(team);
     }
 }
