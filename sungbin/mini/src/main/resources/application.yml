@@ -4,7 +4,6 @@ spring:
       dev: "dev, common"
       prod: "prod, common"
     active: dev
-
 ---
 spring:
   config:
