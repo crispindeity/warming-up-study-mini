@@ -2,6 +2,7 @@ package me.sungbin.domain.member.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import me.sungbin.domain.member.type.Role;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.global.common.entity.BaseDateTimeEntity;
 import org.hibernate.annotations.Comment;
@@ -52,6 +53,14 @@ public class Employee extends BaseDateTimeEntity {
 
     public void updateTeam(Team team) {
         this.team = team;
+    }
+
+    public String getTeamName() {
+        return this.team.getName();
+    }
+
+    public String getRole() {
+        return isManager ? Role.MANAGER.name() : Role.MEMBER.name();
     }
 
     @Builder

@@ -2,12 +2,12 @@ package me.sungbin.domain.member.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import me.sungbin.domain.member.model.FindEmployeesInfoResponseDto;
 import me.sungbin.domain.member.model.request.RegisterEmployeeRequestDto;
 import me.sungbin.domain.member.service.EmployeeService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author : rovert
@@ -31,5 +31,10 @@ public class EmployeeController {
     @PostMapping("/register")
     public void registerEmployee(@RequestBody @Valid RegisterEmployeeRequestDto requestDto) {
         this.employeeService.registerEmployee(requestDto);
+    }
+
+    @GetMapping
+    public List<FindEmployeesInfoResponseDto> findEmployeesInfo() {
+        return this.employeeService.findEmployeesInfo();
     }
 }

@@ -2,6 +2,7 @@ package me.sungbin.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
 import me.sungbin.domain.member.entity.Employee;
+import me.sungbin.domain.member.model.FindEmployeesInfoResponseDto;
 import me.sungbin.domain.member.model.request.RegisterEmployeeRequestDto;
 import me.sungbin.domain.member.repository.EmployeeRepository;
 import me.sungbin.domain.team.entity.Team;
@@ -10,6 +11,9 @@ import me.sungbin.global.exception.custom.AlreadyExistsManagerException;
 import me.sungbin.global.exception.custom.TeamNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author : rovert
@@ -46,5 +50,11 @@ public class EmployeeService {
         this.employeeRepository.save(employee);
         team.addEmployee(employee);
         this.teamRepository.save(team);
+    }
+
+    public List<FindEmployeesInfoResponseDto> findEmployeesInfo() {
+        List<Employee> employees = this.employeeRepository.findAll();
+
+        return employees.stream().map(FindEmployeesInfoResponseDto::new).collect(Collectors.toList());
     }
 }
