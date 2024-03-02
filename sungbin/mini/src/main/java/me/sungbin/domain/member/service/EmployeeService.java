@@ -2,8 +2,8 @@ package me.sungbin.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
 import me.sungbin.domain.member.entity.Employee;
-import me.sungbin.domain.member.model.FindEmployeesInfoResponseDto;
-import me.sungbin.domain.member.model.request.RegisterEmployeeRequestDto;
+import me.sungbin.domain.member.model.request.EmployeesInfoResponseDto;
+import me.sungbin.domain.member.model.request.RegistrationEmployeeRequestDto;
 import me.sungbin.domain.member.repository.EmployeeRepository;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.domain.team.repository.TeamRepository;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author : rovert
@@ -37,7 +36,7 @@ public class EmployeeService {
     private final TeamRepository teamRepository;
 
     @Transactional
-    public void registerEmployee(RegisterEmployeeRequestDto requestDto) {
+    public void registerEmployee(RegistrationEmployeeRequestDto requestDto) {
         Employee employee = requestDto.toEntity();
 
         Team team = this.teamRepository.findByName(requestDto.teamName()).orElseThrow(TeamNotFoundException::new);
@@ -52,9 +51,9 @@ public class EmployeeService {
         this.teamRepository.save(team);
     }
 
-    public List<FindEmployeesInfoResponseDto> findEmployeesInfo() {
+    public List<EmployeesInfoResponseDto> findEmployeesInfo() {
         List<Employee> employees = this.employeeRepository.findAll();
 
-        return employees.stream().map(FindEmployeesInfoResponseDto::new).collect(Collectors.toList());
+        return employees.stream().map(EmployeesInfoResponseDto::new).toList();
     }
 }

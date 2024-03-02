@@ -1,4 +1,4 @@
-package me.sungbin.domain.member.model;
+package me.sungbin.domain.member.model.request;
 
 import me.sungbin.domain.member.entity.Employee;
 
@@ -15,9 +15,9 @@ import java.time.LocalDate;
  * -----------------------------------------------------------
  * 3/1/24       rovert         최초 생성
  */
-public record FindEmployeesInfoResponseDto(String name, String teamName, String role, LocalDate birthDay, LocalDate workStartDate) {
+public record EmployeesInfoResponseDto(String name, String teamName, String role, LocalDate birthDay, LocalDate workStartDate) {
 
-    public FindEmployeesInfoResponseDto(Employee employee) {
+    public EmployeesInfoResponseDto(Employee employee) {
         this(employee.getName(), employee.getTeamName(), employee.getRole(), employee.getBirthday(), employee.getCreatedAt());
     }
 }

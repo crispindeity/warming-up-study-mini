@@ -15,7 +15,7 @@ import me.sungbin.domain.team.entity.Team;
  * -----------------------------------------------------------
  * 3/1/24       rovert         최초 생성
  */
-public record RegisterTeamRequestDto(
+public record RegistrationTeamRequestDto(
         @NotBlank(message = "이름은 공란일 수 없습니다.")
         @NotNull(message = "이름은 null일 수 없습니다.")
         String name

@@ -1,7 +1,6 @@
 package me.sungbin.domain.member.controller;
 
-import me.sungbin.domain.member.entity.Employee;
-import me.sungbin.domain.member.model.request.RegisterEmployeeRequestDto;
+import me.sungbin.domain.member.model.request.RegistrationEmployeeRequestDto;
 import me.sungbin.domain.member.repository.EmployeeRepository;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.domain.team.repository.TeamRepository;
@@ -50,7 +49,7 @@ class EmployeeControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("직원 등록 테스트 - 실패 (잘못된 입력 값)")
     void register_employee_test_fail_caused_by_wrong_input() throws Exception {
-        RegisterEmployeeRequestDto requestDto = new RegisterEmployeeRequestDto("", "", false, LocalDate.of(1996, 5, 22));
+        RegistrationEmployeeRequestDto requestDto = new RegistrationEmployeeRequestDto("", "", false, LocalDate.of(1996, 5, 22));
 
         this.mockMvc.perform(post("/api/employee/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +68,7 @@ class EmployeeControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("직원 등록 테스트 - 실패 (존재하지 않는 팀에 등록)")
     void register_employee_test_fail_caused_by_register_not_exists_team() throws Exception {
-        RegisterEmployeeRequestDto requestDto = new RegisterEmployeeRequestDto("장그래", "영업팀", false, LocalDate.of(1992, 2, 22));
+        RegistrationEmployeeRequestDto requestDto = new RegistrationEmployeeRequestDto("장그래", "영업팀", false, LocalDate.of(1992, 2, 22));
 
         this.mockMvc.perform(post("/api/employee/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -88,7 +87,7 @@ class EmployeeControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("직원 등록 테스트 - 성공")
     void register_employee_test_success() throws Exception {
-        RegisterEmployeeRequestDto requestDto = new RegisterEmployeeRequestDto("양성빈", "개발팀", false, LocalDate.of(1996, 5, 22));
+        RegistrationEmployeeRequestDto requestDto = new RegistrationEmployeeRequestDto("양성빈", "개발팀", false, LocalDate.of(1996, 5, 22));
 
         this.mockMvc.perform(post("/api/employee/register")
                         .contentType(MediaType.APPLICATION_JSON)

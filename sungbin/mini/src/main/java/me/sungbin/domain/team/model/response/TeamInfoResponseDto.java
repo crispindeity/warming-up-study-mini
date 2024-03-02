@@ -13,9 +13,9 @@ import me.sungbin.domain.team.entity.Team;
  * -----------------------------------------------------------
  * 3/1/24       rovert         최초 생성
  */
-public record FindTeamInfoResponseDto(String name, String manager, int memberCount) {
+public record TeamInfoResponseDto(String name, String manager, int memberCount) {
 
-    public FindTeamInfoResponseDto(Team team) {
+    public TeamInfoResponseDto(Team team) {
         this(team.getName(), team.getManagerName(), team.getEmployeeCount());
     }
 }

@@ -3,6 +3,7 @@ package me.sungbin.global.exception;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import me.sungbin.global.exception.custom.AlreadyExistsManagerException;
+import me.sungbin.global.exception.custom.EmployeeNotFoundException;
 import me.sungbin.global.exception.custom.TeamAlreadyExistsException;
 import me.sungbin.global.exception.custom.TeamNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -89,6 +90,16 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
                 ExceptionResponse.of(INVALID_INPUT_VALUE, e.getMessage()),
+                INVALID_INPUT_VALUE.getHttpStatus()
+        );
+    }
+
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    protected ResponseEntity<ExceptionResponse> handleEmployeeNotFoundException(EmployeeNotFoundException e) {
+        log.error("handle EmployeeNotFoundException");
+
+        return new ResponseEntity<>(
+                ExceptionResponse.of(INVALID_INPUT_VALUE, "존재하는 직원이 없습니다."),
                 INVALID_INPUT_VALUE.getHttpStatus()
         );
     }

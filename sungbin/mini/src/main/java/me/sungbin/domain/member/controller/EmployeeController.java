@@ -2,8 +2,8 @@ package me.sungbin.domain.member.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import me.sungbin.domain.member.model.FindEmployeesInfoResponseDto;
-import me.sungbin.domain.member.model.request.RegisterEmployeeRequestDto;
+import me.sungbin.domain.member.model.request.EmployeesInfoResponseDto;
+import me.sungbin.domain.member.model.request.RegistrationEmployeeRequestDto;
 import me.sungbin.domain.member.service.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,12 +29,12 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @PostMapping("/register")
-    public void registerEmployee(@RequestBody @Valid RegisterEmployeeRequestDto requestDto) {
+    public void registerEmployee(@RequestBody @Valid RegistrationEmployeeRequestDto requestDto) {
         this.employeeService.registerEmployee(requestDto);
     }
 
     @GetMapping
-    public List<FindEmployeesInfoResponseDto> findEmployeesInfo() {
+    public List<EmployeesInfoResponseDto> findEmployeesInfo() {
         return this.employeeService.findEmployeesInfo();
     }
 }

@@ -48,6 +48,13 @@ public class Employee extends BaseDateTimeEntity {
     @Column(nullable = false)
     private LocalDate birthday;
 
+    @Builder
+    public Employee(String name, boolean isManager, LocalDate birthday) {
+        this.name = name;
+        this.isManager = isManager;
+        this.birthday = birthday;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
@@ -61,12 +68,5 @@ public class Employee extends BaseDateTimeEntity {
 
     public String getRole() {
         return isManager ? Role.MANAGER.name() : Role.MEMBER.name();
-    }
-
-    @Builder
-    public Employee(String name, boolean isManager, LocalDate birthday) {
-        this.name = name;
-        this.isManager = isManager;
-        this.birthday = birthday;
     }
 }

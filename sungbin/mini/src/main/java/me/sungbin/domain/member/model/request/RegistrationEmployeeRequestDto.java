@@ -18,7 +18,7 @@ import java.time.LocalDate;
  * -----------------------------------------------------------
  * 3/1/24       rovert         최초 생성
  */
-public record RegisterEmployeeRequestDto(
+public record RegistrationEmployeeRequestDto(
 
         @NotBlank(message = "이름은 공란일 수 없습니다.")
         @NotNull(message = "이름은 null일 수 없습니다.")
