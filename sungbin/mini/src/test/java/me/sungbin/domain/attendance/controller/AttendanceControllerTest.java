@@ -2,6 +2,7 @@ package me.sungbin.domain.attendance.controller;
 
 import me.sungbin.domain.attendance.entity.Attendance;
 import me.sungbin.domain.attendance.model.request.AttendanceCreateClockInRequestDto;
+import me.sungbin.domain.attendance.model.request.AttendanceCreateClockOutRequestDto;
 import me.sungbin.domain.employee.entity.Employee;
 import me.sungbin.domain.employee.repository.EmployeeRepository;
 import me.sungbin.domain.team.entity.Team;
@@ -92,15 +93,14 @@ class AttendanceControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("출근 기능 테스트 - 실패 (이미 출근을 했을 경우)")
     void clock_in_test_fail_caused_by_already_clock_in() throws Exception {
-        Long employeeId = 1L; // setup 메서드에서 생성한 직원의 ID는 1L이라고 가정
-        AttendanceCreateClockInRequestDto firstRequestDto = new AttendanceCreateClockInRequestDto(employeeId);
+        AttendanceCreateClockInRequestDto firstRequestDto = new AttendanceCreateClockInRequestDto(1L);
 
         this.mockMvc.perform(post("/api/attendance/clock-in")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(firstRequestDto)))
                 .andExpect(status().isOk());
 
-        AttendanceCreateClockInRequestDto secondRequestDto = new AttendanceCreateClockInRequestDto(employeeId);
+        AttendanceCreateClockInRequestDto secondRequestDto = new AttendanceCreateClockInRequestDto(1L);
         this.mockMvc.perform(post("/api/attendance/clock-in")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -122,6 +122,103 @@ class AttendanceControllerTest extends BaseControllerTest {
         AttendanceCreateClockInRequestDto requestDto = new AttendanceCreateClockInRequestDto(1L);
 
         this.mockMvc.perform(post("/api/attendance/clock-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("퇴근 기능 테스트 - 실패 (퇴근하려는 직원이 출근하지 않았던 경우)")
+    void clock_out_test_fail_caused_by_not_clock_in_employee() throws Exception {
+        AttendanceCreateClockOutRequestDto requestDto = new AttendanceCreateClockOutRequestDto(1L);
+
+        this.mockMvc.perform(post("/api/attendance/clock-out")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("status").value(GlobalExceptionCode.INVALID_INPUT_VALUE.getHttpStatus().name()))
+                .andExpect(jsonPath("code").value(GlobalExceptionCode.INVALID_INPUT_VALUE.getCode()))
+                .andExpect(jsonPath("errors").exists())
+                .andExpect(jsonPath("errors").isEmpty())
+                .andExpect(jsonPath("timestamp").exists());
+    }
+
+    @Test
+    @DisplayName("퇴근 기능 테스트 - 실패 (존재하지 않는 직원)")
+    void clock_out_test_fail_caused_by_not_exists_employee() throws Exception {
+        AttendanceCreateClockInRequestDto attendanceCreateClockInRequestDto = new AttendanceCreateClockInRequestDto(1L);
+
+        this.mockMvc.perform(post("/api/attendance/clock-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(attendanceCreateClockInRequestDto)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        AttendanceCreateClockOutRequestDto requestDto = new AttendanceCreateClockOutRequestDto(100L);
+
+        this.mockMvc.perform(post("/api/attendance/clock-out")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("status").value(GlobalExceptionCode.INVALID_INPUT_VALUE.getHttpStatus().name()))
+                .andExpect(jsonPath("code").value(GlobalExceptionCode.INVALID_INPUT_VALUE.getCode()))
+                .andExpect(jsonPath("errors").exists())
+                .andExpect(jsonPath("errors").isEmpty())
+                .andExpect(jsonPath("timestamp").exists());
+    }
+
+    @Test
+    @DisplayName("퇴근 기능 테스트 - 실패 (퇴근하려는 직원의 id가 null)")
+    void clock_out_test_fail_caused_by_not_id_is_null() throws Exception {
+        AttendanceCreateClockInRequestDto attendanceCreateClockInRequestDto = new AttendanceCreateClockInRequestDto(1L);
+
+        this.mockMvc.perform(post("/api/attendance/clock-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(attendanceCreateClockInRequestDto)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        AttendanceCreateClockOutRequestDto requestDto = new AttendanceCreateClockOutRequestDto(null);
+
+        this.mockMvc.perform(post("/api/attendance/clock-out")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("status").value(GlobalExceptionCode.INVALID_INPUT_VALUE.getHttpStatus().name()))
+                .andExpect(jsonPath("code").value(GlobalExceptionCode.INVALID_INPUT_VALUE.getCode()))
+                .andExpect(jsonPath("errors").exists())
+                .andExpect(jsonPath("errors").isNotEmpty())
+                .andExpect(jsonPath("timestamp").exists());
+    }
+
+    @Test
+    @DisplayName("퇴근 기능 테스트 - 성공")
+    void clock_out_test_success() throws Exception {
+        AttendanceCreateClockInRequestDto attendanceCreateClockInRequestDto = new AttendanceCreateClockInRequestDto(1L);
+
+        this.mockMvc.perform(post("/api/attendance/clock-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(attendanceCreateClockInRequestDto)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        AttendanceCreateClockOutRequestDto requestDto = new AttendanceCreateClockOutRequestDto(1L);
+
+        this.mockMvc.perform(post("/api/attendance/clock-out")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
