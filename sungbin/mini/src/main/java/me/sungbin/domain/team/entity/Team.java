@@ -2,7 +2,7 @@ package me.sungbin.domain.team.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import me.sungbin.domain.member.entity.Employee;
+import me.sungbin.domain.employee.entity.Employee;
 import me.sungbin.global.common.entity.BaseDateTimeEntity;
 import org.hibernate.annotations.Comment;
 

@@ -2,7 +2,8 @@ package me.sungbin.domain.attendance.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import me.sungbin.domain.attendance.model.request.AttendanceCreateRequestDto;
+import me.sungbin.domain.attendance.model.request.AttendanceCreateClockInRequestDto;
+import me.sungbin.domain.attendance.model.request.AttendanceCreateClockOutRequestDto;
 import me.sungbin.domain.attendance.service.AttendanceService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +30,12 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
 
     @PostMapping("/clock-in")
-    public void clockIn(@RequestBody @Valid AttendanceCreateRequestDto requestDto) {
+    public void clockIn(@RequestBody @Valid AttendanceCreateClockInRequestDto requestDto) {
         this.attendanceService.clockIn(requestDto);
+    }
+
+    @PostMapping("/clock-out")
+    public void clockOut(@RequestBody @Valid AttendanceCreateClockOutRequestDto requestDto) {
+        this.attendanceService.clockOut(requestDto);
     }
 }

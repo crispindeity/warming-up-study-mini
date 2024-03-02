@@ -1,8 +1,8 @@
-package me.sungbin.domain.member.model.request;
+package me.sungbin.domain.employee.model.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import me.sungbin.domain.member.entity.Employee;
+import me.sungbin.domain.employee.entity.Employee;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;

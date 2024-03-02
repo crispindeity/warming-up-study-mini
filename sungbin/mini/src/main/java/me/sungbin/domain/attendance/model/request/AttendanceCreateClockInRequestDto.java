@@ -2,7 +2,7 @@ package me.sungbin.domain.attendance.model.request;
 
 import jakarta.validation.constraints.NotNull;
 import me.sungbin.domain.attendance.entity.Attendance;
-import me.sungbin.domain.member.entity.Employee;
+import me.sungbin.domain.employee.entity.Employee;
 
 /**
  * @author : rovert
@@ -15,9 +15,9 @@ import me.sungbin.domain.member.entity.Employee;
  * -----------------------------------------------------------
  * 3/2/24       rovert         최초 생성
  */
-public record AttendanceCreateRequestDto(
-        @NotNull(message = "id는 null일 수 없습니다.")
-        Long id
+public record AttendanceCreateClockInRequestDto(
+        @NotNull(message = "직원 id는 null일 수 없습니다.")
+        Long employeeId
 ) {
 
     public Attendance toEntity(Employee employee) {

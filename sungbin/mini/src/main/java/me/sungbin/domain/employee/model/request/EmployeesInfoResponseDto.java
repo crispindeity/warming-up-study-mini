@@ -1,6 +1,6 @@
-package me.sungbin.domain.member.model.request;
+package me.sungbin.domain.employee.model.request;
 
-import me.sungbin.domain.member.entity.Employee;
+import me.sungbin.domain.employee.entity.Employee;
 
 import java.time.LocalDate;
 

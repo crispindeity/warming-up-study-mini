@@ -2,7 +2,7 @@ package me.sungbin.domain.attendance.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import me.sungbin.domain.member.entity.Employee;
+import me.sungbin.domain.employee.entity.Employee;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
@@ -52,5 +52,9 @@ public class Attendance {
      */
     public void clockIn() {
         this.clockInTime = LocalDateTime.now();
+    }
+
+    public void clockOut() {
+        this.clockOutTime = LocalDateTime.now();
     }
 }

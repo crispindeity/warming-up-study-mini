@@ -1,8 +1,8 @@
-package me.sungbin.domain.member.service;
+package me.sungbin.domain.employee.service;
 
-import me.sungbin.domain.member.entity.Employee;
-import me.sungbin.domain.member.model.request.RegistrationEmployeeRequestDto;
-import me.sungbin.domain.member.repository.EmployeeRepository;
+import me.sungbin.domain.employee.entity.Employee;
+import me.sungbin.domain.employee.model.request.RegistrationEmployeeRequestDto;
+import me.sungbin.domain.employee.repository.EmployeeRepository;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.domain.team.repository.TeamRepository;
 import me.sungbin.global.exception.custom.AlreadyExistsManagerException;

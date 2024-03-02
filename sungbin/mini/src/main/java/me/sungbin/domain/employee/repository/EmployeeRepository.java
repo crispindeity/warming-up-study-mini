@@ -1,6 +1,6 @@
-package me.sungbin.domain.member.repository;
+package me.sungbin.domain.employee.repository;
 
-import me.sungbin.domain.member.entity.Employee;
+import me.sungbin.domain.employee.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

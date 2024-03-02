@@ -1,4 +1,4 @@
-package me.sungbin.domain.member.type;
+package me.sungbin.domain.employee.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

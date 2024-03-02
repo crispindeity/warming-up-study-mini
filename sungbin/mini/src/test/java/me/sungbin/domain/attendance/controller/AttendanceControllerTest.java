@@ -1,8 +1,8 @@
 package me.sungbin.domain.attendance.controller;
 
-import me.sungbin.domain.attendance.model.request.AttendanceCreateRequestDto;
-import me.sungbin.domain.member.entity.Employee;
-import me.sungbin.domain.member.repository.EmployeeRepository;
+import me.sungbin.domain.attendance.model.request.AttendanceCreateClockInRequestDto;
+import me.sungbin.domain.employee.entity.Employee;
+import me.sungbin.domain.employee.repository.EmployeeRepository;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.domain.team.repository.TeamRepository;
 import me.sungbin.global.common.controller.BaseControllerTest;
@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -54,7 +53,7 @@ class AttendanceControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("출근 기능 테스트 - 실패 (id가 null)")
     void clock_in_test_fail_caused_by_id_is_null() throws Exception {
-        AttendanceCreateRequestDto requestDto = new AttendanceCreateRequestDto(null);
+        AttendanceCreateClockInRequestDto requestDto = new AttendanceCreateClockInRequestDto(null);
 
         this.mockMvc.perform(post("/api/attendance/clock-in")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -71,9 +70,9 @@ class AttendanceControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("출근 기능 테스트 - 실패 (존재하지 않는 id)")
+    @DisplayName("출근 기능 테스트 - 실패 (존재하지 않는 employeeId)")
     void clock_in_test_fail_caused_by_not_exists_id() throws Exception {
-        AttendanceCreateRequestDto requestDto = new AttendanceCreateRequestDto(100L);
+        AttendanceCreateClockInRequestDto requestDto = new AttendanceCreateClockInRequestDto(100L);
 
         this.mockMvc.perform(post("/api/attendance/clock-in")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -92,7 +91,7 @@ class AttendanceControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("출근 기능 테스트 - 성공")
     void clock_in_test_success() throws Exception {
-        AttendanceCreateRequestDto requestDto = new AttendanceCreateRequestDto(1L);
+        AttendanceCreateClockInRequestDto requestDto = new AttendanceCreateClockInRequestDto(1L);
 
         this.mockMvc.perform(post("/api/attendance/clock-in")
                         .contentType(MediaType.APPLICATION_JSON)

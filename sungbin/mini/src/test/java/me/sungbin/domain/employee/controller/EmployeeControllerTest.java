@@ -1,7 +1,7 @@
-package me.sungbin.domain.member.controller;
+package me.sungbin.domain.employee.controller;
 
-import me.sungbin.domain.member.model.request.RegistrationEmployeeRequestDto;
-import me.sungbin.domain.member.repository.EmployeeRepository;
+import me.sungbin.domain.employee.model.request.RegistrationEmployeeRequestDto;
+import me.sungbin.domain.employee.repository.EmployeeRepository;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.domain.team.repository.TeamRepository;
 import me.sungbin.global.common.controller.BaseControllerTest;

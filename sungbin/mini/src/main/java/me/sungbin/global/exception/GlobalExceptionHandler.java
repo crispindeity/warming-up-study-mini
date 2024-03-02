@@ -2,10 +2,7 @@ package me.sungbin.global.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import me.sungbin.global.exception.custom.AlreadyExistsManagerException;
-import me.sungbin.global.exception.custom.EmployeeNotFoundException;
-import me.sungbin.global.exception.custom.TeamAlreadyExistsException;
-import me.sungbin.global.exception.custom.TeamNotFoundException;
+import me.sungbin.global.exception.custom.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -100,6 +97,36 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
                 ExceptionResponse.of(INVALID_INPUT_VALUE, "존재하는 직원이 없습니다."),
+                INVALID_INPUT_VALUE.getHttpStatus()
+        );
+    }
+
+    @ExceptionHandler(AttendanceNotFoundException.class)
+    protected ResponseEntity<ExceptionResponse> handleAttendanceNotFoundException(AttendanceNotFoundException e) {
+        log.error("handle AttendanceNotFoundException");
+
+        return new ResponseEntity<>(
+                ExceptionResponse.of(INVALID_INPUT_VALUE, e.getMessage()),
+                INVALID_INPUT_VALUE.getHttpStatus()
+        );
+    }
+
+    @ExceptionHandler(AlreadyAttendanceClockInException.class)
+    protected ResponseEntity<ExceptionResponse> handleAlreadyAttendanceClockInException(AlreadyAttendanceClockInException e) {
+        log.error("handle AlreadyAttendanceClockInException");
+
+        return new ResponseEntity<>(
+                ExceptionResponse.of(INVALID_INPUT_VALUE, e.getMessage()),
+                INVALID_INPUT_VALUE.getHttpStatus()
+        );
+    }
+
+    @ExceptionHandler(AlreadyAttendanceClockOutException.class)
+    protected ResponseEntity<ExceptionResponse> handleAlreadyAttendanceClockOutException(AlreadyAttendanceClockOutException e) {
+        log.error("handle AlreadyAttendanceClockOutException");
+
+        return new ResponseEntity<>(
+                ExceptionResponse.of(INVALID_INPUT_VALUE, e.getMessage()),
                 INVALID_INPUT_VALUE.getHttpStatus()
         );
     }

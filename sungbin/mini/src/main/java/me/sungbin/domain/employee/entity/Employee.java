@@ -1,8 +1,8 @@
-package me.sungbin.domain.member.entity;
+package me.sungbin.domain.employee.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import me.sungbin.domain.member.type.Role;
+import me.sungbin.domain.employee.type.Role;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.global.common.entity.BaseDateTimeEntity;
 import org.hibernate.annotations.Comment;

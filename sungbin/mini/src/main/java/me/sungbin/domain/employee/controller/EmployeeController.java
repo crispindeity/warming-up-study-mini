@@ -1,10 +1,10 @@
-package me.sungbin.domain.member.controller;
+package me.sungbin.domain.employee.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import me.sungbin.domain.member.model.request.EmployeesInfoResponseDto;
-import me.sungbin.domain.member.model.request.RegistrationEmployeeRequestDto;
-import me.sungbin.domain.member.service.EmployeeService;
+import me.sungbin.domain.employee.model.request.EmployeesInfoResponseDto;
+import me.sungbin.domain.employee.model.request.RegistrationEmployeeRequestDto;
+import me.sungbin.domain.employee.service.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
