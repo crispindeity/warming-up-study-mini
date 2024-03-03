@@ -1,6 +1,7 @@
 package study.crispin.member.application.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import study.crispin.member.application.request.MemberRegistrationRequest;
 import study.crispin.member.application.request.MemberUpdateRequest;
@@ -17,6 +18,7 @@ import java.util.List;
 
 
 @Service
+@Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService {
 
     private final TeamRepository teamRepository;
@@ -28,6 +30,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberRegistrationResponse registration(MemberRegistrationRequest request) {
         Assert.notNull(request, "요청값은 필수입니다.");
         Assert.notNull(request.name(), "이름은 필수입니다.");
@@ -49,6 +52,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberUpdateResponse updateRole(MemberUpdateRequest request) {
         Assert.notNull(request, "요청깂은 필수입니다.");
         Assert.notNull(request.name(), "이름은 필수입니다.");
@@ -60,6 +64,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow();
 
         verifyTeamAffiliation(findedMember);
+        verifyRegisteredManager(findedMember);
 
         Member updatedMember = findedMember.updateRole();
         Member savedMember = memberRepository.save(updatedMember);
@@ -96,9 +101,9 @@ public class MemberServiceImpl implements MemberService {
 
     private void verifyAlreadyRegisteredMember(String name, LocalDate birthday, LocalDate workStartDate) {
         memberRepository.findByNameAndBirthdayAndWorkStartDate(name, birthday, workStartDate).ifPresent(
-            member -> {
-                throw new IllegalArgumentException("이미 존재하는 멤버입니다.");
-            }
+                member -> {
+                    throw new IllegalArgumentException("이미 존재하는 멤버입니다.");
+                }
         );
     }
 
@@ -106,5 +111,15 @@ public class MemberServiceImpl implements MemberService {
         if (member.teamName() == null) {
             throw new IllegalArgumentException("팀에 소속된 멤버가 아닙니다.");
         }
+    }
+
+    private void verifyRegisteredManager(Member member) {
+        teamRepository.findByName(member.teamName()).ifPresent(
+                team -> {
+                    if (team.isRegisteredManager(member.name())) {
+                        throw new IllegalArgumentException("해당 팀에 이미 매니저가 등록되어 있습니다.");
+                    }
+                }
+        );
     }
 }

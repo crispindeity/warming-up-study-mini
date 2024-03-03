@@ -17,6 +17,10 @@ public record Member(Long id, String name, String teamName, Role role, LocalDate
         return new Member(id, name, teamName, Role.MEMBER, birthday, localDate);
     }
 
+    public static Member of(Long id, String name, String teamName, Role role, LocalDate birthday, LocalDate localDate) {
+        return new Member(id, name, teamName, role, birthday, localDate);
+    }
+
     public Member updateRole() {
         if (this.role.equals(Role.MANAGER)) {
             return new Member(id, name, teamName, Role.MEMBER, birthday, workStartDate);

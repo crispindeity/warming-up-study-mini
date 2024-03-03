@@ -90,7 +90,7 @@ class MemberControllerTest {
                         .andExpect(MockMvcResultMatchers.status().isOk())
                         .andExpect(MockMvcResultMatchers.content().json(stringify(response)));
 
-                // when
+                // then
                 BDDMockito.then(memberService).should().registration(request);
             }
         }

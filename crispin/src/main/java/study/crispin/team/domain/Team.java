@@ -26,4 +26,8 @@ public record Team(Long id, String name, String manager) {
         }
         return Team.of(this.id, this.name, null);
     }
+
+    public boolean isRegisteredManager(String memberName) {
+        return this.manager != null && !this.manager.equals(memberName);
+    }
 }

@@ -1,6 +1,7 @@
 package study.crispin.team.application.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import study.crispin.member.infrastructure.repository.MemberRepository;
 import study.crispin.team.application.request.TeamRegistrationRequest;
@@ -13,6 +14,7 @@ import study.crispin.team.presentation.response.TeamRetrieveResponses;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
@@ -24,6 +26,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @Transactional
     public TeamRegistrationResponse registration(TeamRegistrationRequest request) {
         Assert.notNull(request, "요청값은 필수입니다.");
         Assert.notNull(request.name(), "이름은 필수입니다.");
