@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'jacoco'
 }
 
 group = 'study'
@@ -9,6 +10,17 @@ version = '0.0.1-SNAPSHOT'
 
 java {
     sourceCompatibility = '17'
+}
+
+jacoco {
+    toolVersion = '0.8.11'
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        html.required = true
+    }
 }
 
 repositories {
@@ -23,6 +35,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // 검증을 위한 Validation 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // 테스트를 위한 API 요청을 위해 Rest Assured 의존성 추가
+    testImplementation 'io.rest-assured:rest-assured:5.4.0'
+    // 테스트 독립성을 위한 DB 초기화에 사용될 Guava 의존성 추가
+    implementation 'com.google.guava:guava:33.0.0-jre'
     /**
      * H2 데이터베이스 의존성 추가
      * 미션진행 중 테스트와 개발에 모두 사용할 예정
@@ -32,4 +48,5 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
