@@ -1,5 +1,6 @@
 package study.crispin.team.application.service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import study.crispin.member.infrastructure.repository.MemberRepository;
 import study.crispin.team.application.request.TeamRegistrationRequest;
@@ -11,6 +12,7 @@ import study.crispin.team.presentation.response.TeamRetrieveResponses;
 
 import java.util.List;
 
+@Service
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
