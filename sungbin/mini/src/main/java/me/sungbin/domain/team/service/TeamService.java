@@ -33,9 +33,9 @@ public class TeamService {
 
     @Transactional
     public void registerTeam(RegistrationTeamRequestDto requestDto) {
-        validateTeam(requestDto); // 유효성 검사
+        validateTeam(requestDto);
 
-        Team team = requestDto.toEntity(); // dto to entity
+        Team team = requestDto.toEntity();
 
         this.teamRepository.save(team);
     }
