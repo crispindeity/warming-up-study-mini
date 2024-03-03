@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.format.DateTimeParseException;
+
 import static me.sungbin.global.exception.GlobalExceptionCode.*;
 
 /**
@@ -107,6 +109,16 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
                 ExceptionResponse.of(INVALID_INPUT_VALUE, e.getMessage()),
+                INVALID_INPUT_VALUE.getHttpStatus()
+        );
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    protected ResponseEntity<ExceptionResponse> handleDateTimeParseException(DateTimeParseException e) {
+        log.error("handle DateTimeParseException");
+
+        return new ResponseEntity<>(
+                ExceptionResponse.of(INVALID_INPUT_VALUE, "잘못된 형식의 날짜입니다."),
                 INVALID_INPUT_VALUE.getHttpStatus()
         );
     }
