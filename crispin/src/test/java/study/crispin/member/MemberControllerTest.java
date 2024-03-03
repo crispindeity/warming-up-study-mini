@@ -163,69 +163,6 @@ class MemberControllerTest {
             }
 
             @Test
-            @DisplayName("팀이름 값이 비어 있는 요청이 들어오면, 예외가 발생해야한다.")
-            void 비어있는_팀이름_요청_멤버_등록_실패_테스트() throws Exception {
-                // given
-                MemberRegistrationRequest request = MemberRegistrationRequest.of(
-                        "테스트팀원1",
-                        "",
-                        LocalDate.of(1999, 9, 9),
-                        LocalDate.of(2024, 2, 29)
-                );
-
-                // when & then
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/member")
-                                .content(stringify(request))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andDo(MockMvcResultHandlers.print())
-                        .andExpect(MockMvcResultMatchers.status().is4xxClientError());
-            }
-
-            @Test
-            @DisplayName("팀이름 값이 null인 요청이 들어오면, 예외가 발생해야한다.")
-            void null_팀이름_요청_멤버_등록_실패_테스트() throws Exception {
-                // given
-                MemberRegistrationRequest request = MemberRegistrationRequest.of(
-                        "테스트팀원1",
-                        null,
-                        LocalDate.of(1999, 9, 9),
-                        LocalDate.of(2024, 2, 29)
-                );
-
-                // when & then
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/member")
-                                .content(stringify(request))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andDo(MockMvcResultHandlers.print())
-                        .andExpect(MockMvcResultMatchers.status().is4xxClientError());
-            }
-
-            @Test
-            @DisplayName("팀이름 값이 공벡인 요청이 들어오면, 예외가 발생해야한다.")
-            void 공백_팀이름_요청_멤버_등록_실패_테스트() throws Exception {
-                // given
-                MemberRegistrationRequest request = MemberRegistrationRequest.of(
-                        "테스트팀원1",
-                        " ",
-                        LocalDate.of(1999, 9, 9),
-                        LocalDate.of(2024, 2, 29)
-                );
-
-                // when & then
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/member")
-                                .content(stringify(request))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andDo(MockMvcResultHandlers.print())
-                        .andExpect(MockMvcResultMatchers.status().is4xxClientError());
-            }
-
-            @Test
             @DisplayName("생일 값이 null인 요청이 들어오면, 예외가 발생해야한다.")
             void null_생일_요청_멤버_등록_실패_테스트() throws Exception {
                 // given

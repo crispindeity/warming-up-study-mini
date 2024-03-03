@@ -9,7 +9,6 @@ import java.time.LocalDate;
 public record MemberRegistrationRequest(
         @NotBlank(message = "이름은 필수 입력값 입니다.")
         String name,
-        @NotBlank(message = "팀이름은 필수 입력값 입니다.")
         String teamName,
         @NotNull(message = "생일은 필수 입력값 입니다.")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
