@@ -1,0 +1,41 @@
+spring:
+  profiles:
+    group:
+      dev: "dev, common"
+      prod: "prod, common"
+    active: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: "jdbc:mysql://${DB_DEV_HOST}/${DB_DEV_SCHEMA}"
+    username: ${DB_DEV_USERNAME}
+    password: ${DB_DEV_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    open-in-view: false
+logging:
+  level:
+    sql: trace
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+---
+spring:
+  config:
+    activate:
+      on-profile: common
+  threads:
+    virtual:
+      enabled: true
