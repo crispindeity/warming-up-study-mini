@@ -26,6 +26,9 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+###properties fies###
+*.yml
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
