@@ -1,5 +1,6 @@
 package study.crispin.member.application.service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import study.crispin.member.application.request.MemberRegistrationRequest;
 import study.crispin.member.application.request.MemberUpdateRequest;
@@ -14,6 +15,8 @@ import study.crispin.team.infrastructure.repository.TeamRepository;
 import java.time.LocalDate;
 import java.util.List;
 
+
+@Service
 public class MemberServiceImpl implements MemberService {
 
     private final TeamRepository teamRepository;
