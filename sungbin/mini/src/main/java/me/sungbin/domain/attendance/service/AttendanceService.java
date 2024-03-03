@@ -106,7 +106,7 @@ public class AttendanceService {
 
     public WorkTimeSummaryResponseDto calculateMonthlyWorkTime(WorkTimeSummaryRequestDto requestDto) {
         // 직원 존재 여부 확인
-        Employee employee = this.employeeRepository.findById(requestDto.employId())
+        Employee employee = this.employeeRepository.findById(requestDto.employeeId())
                 .orElseThrow(EmployeeNotFoundException::new);
 
         // 해당 직원의 요청된 연도와 월에 대한 출퇴근 기록을 가져옵니다.
