@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import inflearn.mini.employee.exception.AbsentEmployeeException;
 import inflearn.mini.employee.exception.AlreadyAtWorkException;
 import inflearn.mini.employee.exception.AlreadyLeftException;
 import inflearn.mini.employee.exception.EmployeeNotFoundException;
@@ -25,7 +26,10 @@ public class GlobalExceptionHandler {
                 .body(new ExceptionResponse(NOT_FOUND.value(), e.getMessage()));
     }
 
-    @ExceptionHandler({TeamAlreadyExistException.class, AlreadyAtWorkException.class, AlreadyLeftException.class})
+    @ExceptionHandler({
+            TeamAlreadyExistException.class, AlreadyAtWorkException.class, AlreadyLeftException.class,
+            AbsentEmployeeException.class
+    })
     public ResponseEntity<ExceptionResponse> handleTeamAlreadyExistsException(final RuntimeException e) {
         log.error("TeamAlreadyExistsException: {}", e.getMessage());
         return ResponseEntity.status(BAD_REQUEST)
