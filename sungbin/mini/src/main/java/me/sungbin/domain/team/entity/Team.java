@@ -38,7 +38,7 @@ public class Team extends BaseDateTimeEntity {
     private Long id;
 
     @Comment("팀 이름")
-    @Column(name = "team_name", nullable = false)
+    @Column(name = "team_name", nullable = false, unique = true)
     private String name;
 
     private int dayBeforeLeaveRequired; // 연차 신청 정책
