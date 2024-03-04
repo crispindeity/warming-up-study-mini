@@ -3,6 +3,7 @@ package me.sungbin.domain.annual.service;
 import lombok.RequiredArgsConstructor;
 import me.sungbin.domain.annual.entity.AnnualLeave;
 import me.sungbin.domain.annual.model.request.AnnualLeaveRequestDto;
+import me.sungbin.domain.annual.model.response.AnnualLeaveResponseDto;
 import me.sungbin.domain.annual.repository.AnnualLeaveRepository;
 import me.sungbin.domain.employee.entity.Employee;
 import me.sungbin.domain.employee.repository.EmployeeRepository;
@@ -56,5 +57,11 @@ public class AnnualLeaveService {
         } else {
             throw new AnnualLeaveException("남아 있는 연차가 없습니다.");
         }
+    }
+
+    public AnnualLeaveResponseDto confirmRemainedAnnualLeave(Long id) {
+        Employee employee = this.employeeRepository.findById(id).orElseThrow(EmployeeNotFoundException::new);
+
+        return new AnnualLeaveResponseDto(employee.getRemainingAnnualLeaves());
     }
 }

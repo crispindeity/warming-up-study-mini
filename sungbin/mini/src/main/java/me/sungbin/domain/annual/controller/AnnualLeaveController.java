@@ -3,11 +3,9 @@ package me.sungbin.domain.annual.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.sungbin.domain.annual.model.request.AnnualLeaveRequestDto;
+import me.sungbin.domain.annual.model.response.AnnualLeaveResponseDto;
 import me.sungbin.domain.annual.service.AnnualLeaveService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author : rovert
@@ -31,5 +29,10 @@ public class AnnualLeaveController {
     @PostMapping
     public void applyAnnualLeave(@Valid @RequestBody AnnualLeaveRequestDto requestDto) {
         this.annualLeaveService.applyAnnualLeave(requestDto);
+    }
+
+    @GetMapping
+    public AnnualLeaveResponseDto confirmRemainedAnnualLeave(@RequestParam Long id) {
+        return this.annualLeaveService.confirmRemainedAnnualLeave(id);
     }
 }
