@@ -30,6 +30,10 @@ public class Team {
         this.name = name;
     }
 
+    public int getMemberCount(){
+        return memberList.size();
+    }
+
     public void updateManager(String manager) {
         this.manager = manager;
     }

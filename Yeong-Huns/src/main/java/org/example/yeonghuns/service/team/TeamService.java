@@ -1,6 +1,9 @@
 package org.example.yeonghuns.service.team;
 
 import lombok.RequiredArgsConstructor;
+import org.example.yeonghuns.config.Error.exception.MemberNotFoundException;
+import org.example.yeonghuns.config.Error.exception.TeamAlreadyExistsException;
+import org.example.yeonghuns.config.Error.exception.TeamNotFoundException;
 import org.example.yeonghuns.domain.Member;
 import org.example.yeonghuns.domain.Team;
 import org.example.yeonghuns.dto.member.request.SaveMemberRequest;
@@ -21,19 +24,19 @@ public class TeamService {
 
     @Transactional
     public void createTeam(CreateTeamRequest request) {
-        if (teamRepository.existsByName(request.name())) throw new IllegalArgumentException("존재하는 팀입니다.");
+        if (teamRepository.existsByName(request.name())) throw new TeamAlreadyExistsException();
         teamRepository.save(request.toEntity());
     }
 
     public Team findTeamByName(SaveMemberRequest request) {
-        return teamRepository.findByName(request.teamName()).orElseThrow(IllegalArgumentException::new);
+        return teamRepository.findByName(request.teamName()).orElseThrow(TeamNotFoundException::new);
     }
     @Transactional
     public void updateManager(Team team, Member member) {
         if (team.getManager() == null) team.updateManager(member.getName());
         else {
             Member previous_Manager = memberRepository.findByTeamIdAndRoleIsTrueAndIdNot(team.getId(), member.getId())
-                    .orElseThrow(IllegalArgumentException::new);
+                    .orElseThrow(MemberNotFoundException::new);
             previous_Manager.changeRole();
             team.updateManager(member.getName());
         }

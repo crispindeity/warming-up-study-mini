@@ -9,7 +9,7 @@ public record GetAllTeamsResponse(String name, String manager, int memberCount) 
         return GetAllTeamsResponse.builder()
                 .name(team.getName())
                 .manager(team.getManager())
-                .memberCount(team.getMemberList().size())
+                .memberCount(team.getMemberCount())
                 .build();
     }
 }
