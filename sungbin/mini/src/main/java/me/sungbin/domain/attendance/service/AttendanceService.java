@@ -110,12 +110,12 @@ public class AttendanceService {
                 .orElseThrow(EmployeeNotFoundException::new);
 
         // 해당 직원의 요청된 연도와 월에 대한 출퇴근 기록을 가져옵니다.
-        List<Attendance> attendanceList =
+        List<Attendance> attendances =
                 this.attendanceRepository.findByEmployeeIdAndMonthAndYear(employee.getId(),
                         convertStringToLocalDate(requestDto).getYear(), convertStringToLocalDate(requestDto).getMonthValue());
 
         // 날짜별로 출퇴근 기록을 그룹화합니다.
-        Map<LocalDate, List<Attendance>> groupedByDate = attendanceList.stream()
+        Map<LocalDate, List<Attendance>> groupedByDate = attendances.stream()
                 .collect(Collectors.groupingBy(a -> a.getClockInTime().toLocalDate()));
 
         // 날짜별 근무 시간을 계산합니다.
