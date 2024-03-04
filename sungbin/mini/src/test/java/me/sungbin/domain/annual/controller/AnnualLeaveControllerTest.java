@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -122,6 +123,28 @@ class AnnualLeaveControllerTest extends BaseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("잔여 연차 조회 테스트 - 실패 (존재하지 않는 직원)")
+    void confirm_remained_annual_leave_test_fail_caused_by_not_exists_employee() throws Exception {
+        this.mockMvc.perform(get("/api/annual-leave")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("id", String.valueOf(5L)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("잔여 연차 조회 테스트 - 성공")
+    void confirm_remained_annual_leave_test_success() throws Exception {
+        this.mockMvc.perform(get("/api/annual-leave")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("id", String.valueOf(employeeId)))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
