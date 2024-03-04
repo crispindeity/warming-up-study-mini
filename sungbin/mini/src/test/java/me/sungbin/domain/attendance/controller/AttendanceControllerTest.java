@@ -45,7 +45,7 @@ class AttendanceControllerTest extends BaseControllerTest {
 
     @BeforeEach
     void setup() {
-        Team team = new Team("개발팀");
+        Team team = new Team("개발팀", 7);
         this.teamRepository.save(team);
 
         Employee employee = new Employee("김철수", false, LocalDate.of(2000, 2, 2));

@@ -47,7 +47,7 @@ class EmployeeServiceTest {
     void register_employee_test_fail_caused_by_already_exits_manager() {
         // Given
         RegistrationEmployeeRequestDto requestDto = new RegistrationEmployeeRequestDto("장그래", "영업팀", true, LocalDate.of(1992, 2, 22));
-        Team mockTeam = new Team("영업팀");
+        Team mockTeam = new Team("영업팀", 7);
         mockTeam.addEmployee(new Employee("기존 매니저", true, LocalDate.of(1990, 1, 1))); // 이미 매니저가 존재하는 상태를 모의
         when(teamRepository.findByName("영업팀")).thenReturn(Optional.of(mockTeam));
 

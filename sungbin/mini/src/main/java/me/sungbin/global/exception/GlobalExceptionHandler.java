@@ -133,6 +133,16 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(AnnualLeaveException.class)
+    protected ResponseEntity<ExceptionResponse> handleRejectedAnnualLeaveException(AnnualLeaveException e) {
+        log.error("handle RejectedAnnualLeaveException");
+
+        return new ResponseEntity<>(
+                ExceptionResponse.of(INVALID_INPUT_VALUE, e.getMessage()),
+                INVALID_INPUT_VALUE.getHttpStatus()
+        );
+    }
+
     @ExceptionHandler(AlreadyAttendanceClockOutException.class)
     protected ResponseEntity<ExceptionResponse> handleAlreadyAttendanceClockOutException(AlreadyAttendanceClockOutException e) {
         log.error("handle AlreadyAttendanceClockOutException");
