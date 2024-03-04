@@ -9,7 +9,7 @@ spring:
     activate:
       on-profile: test
   datasource:
-    url: "jdbc:h2:mem:testdb"
+    url: "jdbc:h2:mem:commutedb"
     username: sa
     password:
     driver-class-name: org.h2.Driver

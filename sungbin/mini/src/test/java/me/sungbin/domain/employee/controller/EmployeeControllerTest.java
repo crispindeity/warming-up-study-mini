@@ -1,7 +1,8 @@
-package me.sungbin.domain.team.controller;
+package me.sungbin.domain.employee.controller;
 
+import me.sungbin.domain.employee.model.request.RegistrationEmployeeRequestDto;
+import me.sungbin.domain.employee.repository.EmployeeRepository;
 import me.sungbin.domain.team.entity.Team;
-import me.sungbin.domain.team.model.request.RegistrationTeamRequestDto;
 import me.sungbin.domain.team.repository.TeamRepository;
 import me.sungbin.global.common.controller.BaseControllerTest;
 import me.sungbin.global.exception.GlobalExceptionCode;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDate;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -19,8 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * @author : rovert
- * @packageName : me.sungbin.domain.team.controller
- * @fileName : TeamControllerTest
+ * @packageName : me.sungbin.domain.member.controller
+ * @fileName : EmployeeControllerTest
  * @date : 3/1/24
  * @description :
  * ===========================================================
@@ -29,10 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 3/1/24       rovert         최초 생성
  */
 
-class TeamControllerTest extends BaseControllerTest {
+class EmployeeControllerTest extends BaseControllerTest {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @BeforeEach
     void setup() {
@@ -41,11 +47,11 @@ class TeamControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("팀 등록 테스트 - 실패 (팀 이름이 공란)")
-    void register_team_test_fail_caused_by_team_name_is_empty() throws Exception {
-        RegistrationTeamRequestDto requestDto = new RegistrationTeamRequestDto("");
+    @DisplayName("직원 등록 테스트 - 실패 (잘못된 입력 값)")
+    void register_employee_test_fail_caused_by_wrong_input() throws Exception {
+        RegistrationEmployeeRequestDto requestDto = new RegistrationEmployeeRequestDto("", "", false, LocalDate.of(1996, 5, 22));
 
-        this.mockMvc.perform(post("/api/team/register")
+        this.mockMvc.perform(post("/api/employee/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -60,11 +66,11 @@ class TeamControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("팀 등록 테스트 - 실패 (이미 존재하는 팀)")
-    void register_team_test_fail_caused_by_already_exists_team() throws Exception {
-        RegistrationTeamRequestDto requestDto = new RegistrationTeamRequestDto("개발팀");
+    @DisplayName("직원 등록 테스트 - 실패 (존재하지 않는 팀에 등록)")
+    void register_employee_test_fail_caused_by_register_not_exists_team() throws Exception {
+        RegistrationEmployeeRequestDto requestDto = new RegistrationEmployeeRequestDto("장그래", "영업팀", false, LocalDate.of(1992, 2, 22));
 
-        this.mockMvc.perform(post("/api/team/register")
+        this.mockMvc.perform(post("/api/employee/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -79,11 +85,11 @@ class TeamControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("팀 등록 테스트 - 성공")
-    void register_team_test_success() throws Exception {
-        RegistrationTeamRequestDto requestDto = new RegistrationTeamRequestDto("디자인팀");
+    @DisplayName("직원 등록 테스트 - 성공")
+    void register_employee_test_success() throws Exception {
+        RegistrationEmployeeRequestDto requestDto = new RegistrationEmployeeRequestDto("양성빈", "개발팀", false, LocalDate.of(1996, 5, 22));
 
-        this.mockMvc.perform(post("/api/team/register")
+        this.mockMvc.perform(post("/api/employee/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -92,9 +98,9 @@ class TeamControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("팀 정보 조회 테스트 - 성공")
-    void find_team_info_test_success() throws Exception {
-        this.mockMvc.perform(get("/api/team")
+    @DisplayName("직원 정보 조회 테스트 - 성공")
+    void find_employees_info_test_success() throws Exception {
+        this.mockMvc.perform(get("/api/employee")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
