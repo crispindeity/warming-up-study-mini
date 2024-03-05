@@ -2,6 +2,7 @@ package inflearn.mini.worktimehistory.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,11 +42,23 @@ public class WorkTimeHistory {
         this.workStartTime = LocalDateTime.now();
     }
 
+    public void goToWork(final LocalDateTime workingStartTime) {
+        this.workStartTime = workingStartTime;
+    }
+
     public void leaveWork(final LocalDateTime workingEndTime) {
         this.workEndTime = workingEndTime;
     }
 
     public boolean isWorkEndDateEqualToWorkStartDate(final LocalDate workingStartDate) {
         return workEndTime.toLocalDate().isEqual(workingStartDate);
+    }
+
+    public long calculateWorkingHours() {
+        return ChronoUnit.MINUTES.between(workStartTime, workEndTime);
+    }
+
+    public LocalDate getWorkStartDate() {
+        return workStartTime.toLocalDate();
     }
 }

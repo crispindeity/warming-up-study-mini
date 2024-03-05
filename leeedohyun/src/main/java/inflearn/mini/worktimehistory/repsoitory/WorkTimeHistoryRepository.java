@@ -1,6 +1,7 @@
 package inflearn.mini.worktimehistory.repsoitory;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,11 @@ public interface WorkTimeHistoryRepository extends JpaRepository<WorkTimeHistory
 
     boolean existsByEmployeeAndWorkEndTimeIsNull(final Employee employee);
 
-    @Query("select w from WorkTimeHistory w where w.employee = :employee and w.workStartTime >= :workStartDate and w.workStartTime < :workEndDate and w.workEndTime is null")
-    Optional<WorkTimeHistory> findByEmployeeAndWorkStartTimeAndAndWorkEndTimeIsNull(final Employee employee, final LocalDateTime workStartDate, final LocalDateTime workEndDate);
+    @Query("select w from WorkTimeHistory w where w.employee = :employee "
+            + "and w.workStartTime >= :workStartDate and w.workStartTime < :workEndDate "
+            + "and w.workEndTime is null"
+    )
+    Optional<WorkTimeHistory> findWorkTimeHistoryForDate(final Employee employee, final LocalDateTime workStartDate, final LocalDateTime workEndDate);
+
+    List<WorkTimeHistory> findAllByEmployeeAndWorkStartTimeBetween(final Employee employee, final LocalDateTime start, final LocalDateTime end);
 }

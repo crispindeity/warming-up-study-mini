@@ -44,4 +44,10 @@ public class EmployeeController {
     public void leaveWork(@PathVariable final Long employeeId) {
         workTimeHistoryService.leaveWork(employeeId);
     }
+
+    @GetMapping("/{employeeId}")
+    public ResponseEntity<EmployeeWorkHistoryResponse> getEmployeeDailyWorkingHours(@PathVariable final Long employeeId,
+                                                                                   @RequestBody final EmployeeWorkHistoryRequest request) {
+        return ResponseEntity.ok(workTimeHistoryService.getEmployeeDailyWorkingHours(employeeId, request));
+    }
 }
