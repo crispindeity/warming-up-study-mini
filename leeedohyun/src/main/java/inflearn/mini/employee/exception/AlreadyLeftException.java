@@ -1,6 +1,8 @@
 package inflearn.mini.employee.exception;
 
-public class AlreadyLeftException extends RuntimeException {
+import inflearn.mini.global.BadRequestException;
+
+public class AlreadyLeftException extends BadRequestException {
 
     public AlreadyLeftException(String message) {
         super(message);

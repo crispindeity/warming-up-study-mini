@@ -1,6 +1,8 @@
 package inflearn.mini.employee.exception;
 
-public class AlreadyAtWorkException extends RuntimeException {
+import inflearn.mini.global.BadRequestException;
+
+public class AlreadyAtWorkException extends BadRequestException {
 
     public AlreadyAtWorkException(String message) {
         super(message);

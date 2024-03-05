@@ -1,6 +1,8 @@
 package inflearn.mini.employee.exception;
 
-public class EmployeeNotFoundException extends RuntimeException {
+import inflearn.mini.global.NotFoundException;
+
+public class EmployeeNotFoundException extends NotFoundException {
 
     public EmployeeNotFoundException(final String message) {
         super(message);

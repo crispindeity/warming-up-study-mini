@@ -1,6 +1,8 @@
 package inflearn.mini.employee.exception;
 
-public class AbsentEmployeeException extends RuntimeException {
+import inflearn.mini.global.BadRequestException;
+
+public class AbsentEmployeeException extends BadRequestException {
 
     public AbsentEmployeeException(String message) {
         super(message);

@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({TeamNotFoundException.class, EmployeeNotFoundException.class})
-    public ResponseEntity<ExceptionResponse> handleTeamNotFoundException(final RuntimeException e) {
+    public ResponseEntity<ExceptionResponse> handleNotFoundException(final NotFoundException e) {
         log.error("TeamNotFoundException: {}", e.getMessage());
         return ResponseEntity.status(NOT_FOUND)
                 .body(new ExceptionResponse(NOT_FOUND.value(), e.getMessage()));
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
             TeamAlreadyExistException.class, AlreadyAtWorkException.class, AlreadyLeftException.class,
             AbsentEmployeeException.class
     })
-    public ResponseEntity<ExceptionResponse> handleTeamAlreadyExistsException(final RuntimeException e) {
+    public ResponseEntity<ExceptionResponse> handleBadRequestException(final BadRequestException e) {
         log.error("TeamAlreadyExistsException: {}", e.getMessage());
         return ResponseEntity.status(BAD_REQUEST)
                 .body(new ExceptionResponse(BAD_REQUEST.value(), e.getMessage()));
