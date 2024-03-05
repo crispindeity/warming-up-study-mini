@@ -58,4 +58,12 @@ public class FakeMemberRepository implements MemberRepository {
                 .stream()
                 .anyMatch(member -> member.isEqualMember(name, birthday, workStartDate));
     }
+
+    @Override
+    public Optional<Member> findById(Long memberId) {
+        return storage.values()
+                .stream()
+                .filter(member -> member.isMatchId(memberId))
+                .findFirst();
+    }
 }
