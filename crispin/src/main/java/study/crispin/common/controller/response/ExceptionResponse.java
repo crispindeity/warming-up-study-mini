@@ -1,4 +1,4 @@
-package study.crispin.common.controller;
+package study.crispin.common.controller.response;
 
 public record ExceptionResponse(String message) {
     public static ExceptionResponse of(String message) {
