@@ -50,10 +50,10 @@ public class CommuteService {
 
         if(isExistRecord) {
             Commute latestCommute = findLatestCommuteByMember(member);
-            if(latestCommute.isAttendance()) throw new AbsentCheckOutException(); //전날 퇴근찍었니?
+            if(latestCommute.isAttendance()) throw new AbsentCheckOutException(); //이전 기록 퇴근확인
 
             boolean isAlreadyAttendance = LocalDate.now()!=LocalDate.from(latestCommute.getCreatedAt());
-            if(isAlreadyAttendance) throw new AlreadyAttendanceException(); //이미 당일 출근기록있는데?
+            if(isAlreadyAttendance) throw new AlreadyAttendanceException(); //당일 출근기록 확인
         }
         commuteRepository.save(request.toEntity(member));
     }
