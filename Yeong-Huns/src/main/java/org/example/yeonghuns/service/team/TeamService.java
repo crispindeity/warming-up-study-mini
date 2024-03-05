@@ -1,9 +1,9 @@
 package org.example.yeonghuns.service.team;
 
 import lombok.RequiredArgsConstructor;
-import org.example.yeonghuns.config.Error.exception.MemberNotFoundException;
-import org.example.yeonghuns.config.Error.exception.TeamAlreadyExistsException;
-import org.example.yeonghuns.config.Error.exception.TeamNotFoundException;
+import org.example.yeonghuns.config.Error.exception.member.MemberNotFoundException;
+import org.example.yeonghuns.config.Error.exception.team.TeamAlreadyExistsException;
+import org.example.yeonghuns.config.Error.exception.team.TeamNotFoundException;
 import org.example.yeonghuns.domain.Member;
 import org.example.yeonghuns.domain.Team;
 import org.example.yeonghuns.dto.member.request.SaveMemberRequest;

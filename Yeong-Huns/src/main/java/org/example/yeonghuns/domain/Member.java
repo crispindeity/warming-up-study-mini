@@ -13,6 +13,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,9 +32,11 @@ public class Member extends CreatedDateEntity {
 
     private LocalDate birthday;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
+    @OneToMany(mappedBy = "member")
+    private List<Commute> commuteList = new ArrayList<>();
     @Builder
     public Member(String name, boolean role, LocalDate birthday, Team team) {
         this.name = name;
