@@ -1,8 +1,5 @@
 package org.example.yeonghuns.dto.commute.request;
 
-import org.example.yeonghuns.domain.Commute;
-import org.example.yeonghuns.domain.Member;
-
 /**
  * packageName    : org.example.yeonghuns.dto.commute.request
  * fileName       : RegisterCommuteRequest
@@ -14,10 +11,5 @@ import org.example.yeonghuns.domain.Member;
  * -----------------------------------------------------------
  * 2024-03-04        Yeong-Huns       최초 생성
  */
-public record AttendanceRequest(long id) {
-    public Commute toEntity(Member member){
-        return Commute.builder()
-                .member(member)
-                .build();
-    }
+public record endOfWorkRequest(long id) {
 }

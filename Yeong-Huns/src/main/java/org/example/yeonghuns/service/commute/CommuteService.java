@@ -9,8 +9,8 @@ import org.example.yeonghuns.config.Error.exception.commute.CommuteNotFoundExcep
 import org.example.yeonghuns.config.Error.exception.member.MemberNotFoundException;
 import org.example.yeonghuns.domain.Commute;
 import org.example.yeonghuns.domain.Member;
-import org.example.yeonghuns.dto.commute.request.AttendanceRequest;
-import org.example.yeonghuns.dto.commute.request.DepartureRequest;
+import org.example.yeonghuns.dto.commute.request.startOfWorkRequest;
+import org.example.yeonghuns.dto.commute.request.endOfWorkRequest;
 import org.example.yeonghuns.dto.commute.request.GetCommuteRecordRequest;
 import org.example.yeonghuns.dto.commute.response.GetCommuteDetail;
 import org.example.yeonghuns.dto.commute.response.GetCommuteRecordResponse;
@@ -42,7 +42,7 @@ public class CommuteService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void attendance(AttendanceRequest request){
+    public void startOfWork(startOfWorkRequest request){
         Member member = findMemberById(request.id());
 
         boolean isExistRecord = commuteRepository.findLatestCommuteByMemberId(member.getId())
@@ -59,7 +59,7 @@ public class CommuteService {
     }
 
     @Transactional
-    public void endOfWork(@RequestBody DepartureRequest request){
+    public void endOfWork(@RequestBody endOfWorkRequest request){
         Member member = findMemberById(request.id());
 
         Commute latestCommute = findLatestCommuteByMember(member);
@@ -70,10 +70,10 @@ public class CommuteService {
     }
 
     @Transactional
-    public GetCommuteRecordResponse GetCommuteRecord(GetCommuteRecordRequest request){
-        findMemberById(request.id());
+    public GetCommuteRecordResponse GetCommuteRecord(long id,GetCommuteRecordRequest request){
+        findMemberById(id);
 
-        List<GetCommuteDetail> commuteDetailList = findCommuteListByMemberIdAndStartOfWork(request);
+        List<GetCommuteDetail> commuteDetailList = findCommuteListByMemberIdAndStartOfWork(id, request);
         Long sum = commuteDetailList.stream()
                 .map(GetCommuteDetail::workingMinutes)
                 .reduce(0L,Long::sum);
@@ -88,10 +88,10 @@ public class CommuteService {
         return commuteRepository.findLatestCommuteByMemberId(member.getId())
                 .orElseThrow(CommuteNotFoundException::new);
     }
-    private List<GetCommuteDetail> findCommuteListByMemberIdAndStartOfWork(GetCommuteRecordRequest request){
+    private List<GetCommuteDetail> findCommuteListByMemberIdAndStartOfWork(long id, GetCommuteRecordRequest request){
          List<Commute> commuteList =
                  commuteRepository.findCommuteListByMemberIdAndStartOfWork
-                        (request.id(), request.yearMonth().getYear(), request.yearMonth().getMonth().getValue());
+                        (id, request.yearMonth().getYear(), request.yearMonth().getMonth().getValue());
          if(commuteList.isEmpty()) throw new CommuteNotFoundException();
         return commuteList.stream().map(GetCommuteDetail::from).toList();
     }
