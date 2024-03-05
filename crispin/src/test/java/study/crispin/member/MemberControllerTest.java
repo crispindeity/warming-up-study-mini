@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import study.crispin.common.exception.ExceptionControllerAdvice;
+import study.crispin.common.controller.ExceptionControllerAdvice;
 import study.crispin.member.application.request.MemberRegistrationRequest;
 import study.crispin.member.application.request.MemberUpdateRequest;
 import study.crispin.member.application.service.MemberService;
@@ -37,7 +37,7 @@ class MemberControllerTest {
     @MockBean
     private MemberService memberService;
 
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
     private final ObjectMapper objectMapper;
 
     public MemberControllerTest() {
@@ -78,7 +78,7 @@ class MemberControllerTest {
                         LocalDate.of(2024, 2, 29)
                 );
 
-                BDDMockito.given(memberService.registration(request)).willReturn(response);
+                BDDMockito.given(memberService.register(request)).willReturn(response);
 
                 // when
                 mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/member")
@@ -91,7 +91,7 @@ class MemberControllerTest {
                         .andExpect(MockMvcResultMatchers.content().json(stringify(response)));
 
                 // then
-                BDDMockito.then(memberService).should().registration(request);
+                BDDMockito.then(memberService).should().register(request);
             }
         }
 

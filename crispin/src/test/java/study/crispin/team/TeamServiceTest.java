@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import study.crispin.common.exception.VerificationException;
 import study.crispin.fixture.TestTeamFixture;
 import study.crispin.mock.FakeMemberRepository;
 import study.crispin.mock.FakeTeamRepository;
@@ -15,6 +16,8 @@ import study.crispin.team.application.service.TeamServiceImpl;
 import study.crispin.team.infrastructure.repository.TeamRepository;
 import study.crispin.team.presentation.response.TeamRegistrationResponse;
 import study.crispin.team.presentation.response.TeamRetrieveResponses;
+
+import static study.crispin.common.exception.ExceptionMessage.TEAM_NAME_ALREADY_EXISTS;
 
 @DisplayName("팀 서비스 테스트")
 class TeamServiceTest {
@@ -71,8 +74,8 @@ class TeamServiceTest {
 
                 // when & then
                 Assertions.assertThatThrownBy(() -> teamService.registration(request))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage("이미 존재하는 팀 이름 입니다.");
+                        .isInstanceOf(VerificationException.class)
+                        .hasMessage(TEAM_NAME_ALREADY_EXISTS.getMessage());
             }
         }
     }

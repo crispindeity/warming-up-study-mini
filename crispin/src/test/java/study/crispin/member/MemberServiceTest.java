@@ -6,14 +6,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import study.crispin.common.exception.ExceptionMessage;
+import study.crispin.common.exception.VerificationException;
 import study.crispin.fixture.TestMemberFixture;
 import study.crispin.fixture.TestTeamFixture;
 import study.crispin.member.application.request.MemberRegistrationRequest;
 import study.crispin.member.application.request.MemberUpdateRequest;
+import study.crispin.member.application.service.MemberService;
 import study.crispin.member.application.service.MemberServiceImpl;
 import study.crispin.member.domain.Role;
 import study.crispin.member.infrastructure.repository.MemberRepository;
-import study.crispin.member.application.service.MemberService;
 import study.crispin.member.presentation.response.MemberRegistrationResponse;
 import study.crispin.member.presentation.response.MemberRetrieveResponses;
 import study.crispin.member.presentation.response.MemberUpdateResponse;
@@ -59,7 +61,7 @@ class MemberServiceTest {
                 );
 
                 // when
-                MemberRegistrationResponse response = memberService.registration(request);
+                MemberRegistrationResponse response = memberService.register(request);
 
                 // then
                 SoftAssertions.assertSoftly(softAssertions -> {
@@ -89,9 +91,9 @@ class MemberServiceTest {
                 );
 
                 // when & then
-                Assertions.assertThatThrownBy(() -> memberService.registration(request))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage("존재하지 않는 팀 이름입니다.");
+                Assertions.assertThatThrownBy(() -> memberService.register(request))
+                        .isInstanceOf(VerificationException.class)
+                        .hasMessage(ExceptionMessage.TEAM_NAME_DOES_NOT_EXISTS.getMessage());
             }
 
             @Test
@@ -113,9 +115,9 @@ class MemberServiceTest {
                 );
 
                 // when & then
-                Assertions.assertThatThrownBy(() -> memberService.registration(request))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage("이미 존재하는 멤버입니다.");
+                Assertions.assertThatThrownBy(() -> memberService.register(request))
+                        .isInstanceOf(VerificationException.class)
+                        .hasMessage(ExceptionMessage.MEMBER_ALREADY_EXISTS.getMessage());
             }
         }
     }
@@ -230,8 +232,8 @@ class MemberServiceTest {
 
                     // when & then
                     Assertions.assertThatThrownBy(() -> memberService.updateRole(request))
-                            .isInstanceOf(IllegalArgumentException.class)
-                            .hasMessage("팀에 소속된 멤버가 아닙니다.");
+                            .isInstanceOf(VerificationException.class)
+                            .hasMessage(ExceptionMessage.NOT_MEMBER_OF_TEAM.getMessage());
                 }
             }
         }

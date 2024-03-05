@@ -29,7 +29,7 @@ public class MemberController {
     public ResponseEntity<MemberRegistrationResponse> registration(
             @RequestBody @Valid MemberRegistrationRequest request
     ) {
-        return ResponseEntity.ok(memberService.registration(request));
+        return ResponseEntity.ok(memberService.register(request));
     }
 
     @PutMapping("/member")

@@ -44,4 +44,9 @@ public class MemberRepositoryImpl implements MemberRepository {
     public Long countByTeamName(String name) {
         return jpaMemberRepository.countByTeamName(name);
     }
+
+    @Override
+    public boolean existsByNameAndBirthdayAndWorkStartDate(String name, LocalDate birthday, LocalDate workStartDate) {
+        return jpaMemberRepository.existsByNameAndBirthdayAndWorkStartDate(name, birthday, workStartDate);
+    }
 }

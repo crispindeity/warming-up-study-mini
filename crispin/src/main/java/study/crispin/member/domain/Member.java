@@ -41,4 +41,10 @@ public record Member(Long id, String name, String teamName, Role role, LocalDate
     public boolean isTeamManager() {
         return this.role == Role.MANAGER;
     }
+
+    public boolean isEqualMember(String name, LocalDate birthday, LocalDate workStartDate) {
+        return this.name.equals(name) &&
+                this.birthday.equals(birthday) &&
+                this.workStartDate.equals(workStartDate);
+    }
 }

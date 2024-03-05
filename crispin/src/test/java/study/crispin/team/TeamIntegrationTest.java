@@ -3,7 +3,6 @@ package study.crispin.team;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import study.crispin.ApiTest;
+import study.crispin.common.exception.ExceptionMessage;
 import study.crispin.steps.TeamSteps;
 import study.crispin.team.application.request.TeamRegistrationRequest;
 
@@ -58,7 +58,7 @@ public class TeamIntegrationTest extends ApiTest {
         class TeamRegistrationFailTest {
 
             @Test
-            @DisplayName("이미 등록된 팀을 중복 등록하면, 500 응답을 반환해야 한다.")
+            @DisplayName("이미 등록된 팀을 중복 등록하면, 400 응답을 반환해야 한다.")
             void 이미_등록된_팀_중복_등록_실패_테스트() {
                 // given
                 TeamRegistrationRequest request = TeamRegistrationRequest.of("테스트1팀");
@@ -73,7 +73,12 @@ public class TeamIntegrationTest extends ApiTest {
                         .extract();
 
                 // then
-                Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(response.statusCode())
+                            .isEqualTo(HttpStatus.BAD_REQUEST.value());
+                    softAssertions.assertThat(response.jsonPath().getString("message"))
+                            .isEqualTo(ExceptionMessage.TEAM_NAME_ALREADY_EXISTS.getMessage());
+                });
             }
         }
     }

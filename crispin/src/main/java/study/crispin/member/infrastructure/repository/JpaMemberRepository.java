@@ -11,4 +11,6 @@ public interface JpaMemberRepository extends JpaRepository<MemberEntity, Long> {
     Optional<MemberEntity> findByNameAndBirthdayAndWorkStartDate(String name, LocalDate birthday, LocalDate workStartDate);
 
     Long countByTeamName(String name);
+
+    boolean existsByNameAndBirthdayAndWorkStartDate(String name, LocalDate birthday, LocalDate workStartDate);
 }

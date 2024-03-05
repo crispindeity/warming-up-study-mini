@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import study.crispin.common.exception.ExceptionControllerAdvice;
+import study.crispin.common.controller.ExceptionControllerAdvice;
 import study.crispin.team.application.request.TeamRegistrationRequest;
 import study.crispin.team.application.service.TeamService;
 import study.crispin.team.presentation.controller.TeamController;
@@ -33,7 +33,7 @@ public class TeamControllerTest {
     @MockBean
     private TeamService teamService;
 
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach

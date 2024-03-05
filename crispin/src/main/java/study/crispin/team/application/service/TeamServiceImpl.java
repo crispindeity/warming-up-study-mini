@@ -2,7 +2,7 @@ package study.crispin.team.application.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
+import study.crispin.common.exception.VerificationException;
 import study.crispin.member.infrastructure.repository.MemberRepository;
 import study.crispin.team.application.request.TeamRegistrationRequest;
 import study.crispin.team.domain.Team;
@@ -12,6 +12,8 @@ import study.crispin.team.presentation.response.TeamRetrieveResponse;
 import study.crispin.team.presentation.response.TeamRetrieveResponses;
 
 import java.util.List;
+
+import static study.crispin.common.exception.ExceptionMessage.TEAM_NAME_ALREADY_EXISTS;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,9 +30,6 @@ public class TeamServiceImpl implements TeamService {
     @Override
     @Transactional
     public TeamRegistrationResponse registration(TeamRegistrationRequest request) {
-        Assert.notNull(request, "요청값은 필수입니다.");
-        Assert.notNull(request.name(), "이름은 필수입니다.");
-
         verifyDuplicateTeamName(request.name());
 
         Team team = Team.of(request.name());
@@ -51,10 +50,8 @@ public class TeamServiceImpl implements TeamService {
     }
 
     private void verifyDuplicateTeamName(String name) {
-        Assert.notNull(name, "이름은 필수입니다.");
-
-        if (teamRepository.findByName(name).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 팀 이름 입니다.");
+        if (teamRepository.existsByName(name)) {
+            throw new VerificationException(TEAM_NAME_ALREADY_EXISTS);
         }
     }
 }

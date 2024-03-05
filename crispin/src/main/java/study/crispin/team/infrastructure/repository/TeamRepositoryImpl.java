@@ -1,6 +1,8 @@
 package study.crispin.team.infrastructure.repository;
 
 import org.springframework.stereotype.Repository;
+import study.crispin.common.exception.ExceptionMessage;
+import study.crispin.common.exception.NotFoundException;
 import study.crispin.member.domain.Member;
 import study.crispin.team.domain.Team;
 import study.crispin.team.infrastructure.entity.TeamEntity;
@@ -9,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class TeamRepositoryImpl implements TeamRepository{
+public class TeamRepositoryImpl implements TeamRepository {
 
     private final JpaTeamRepository jpaTeamRepository;
 
@@ -40,8 +42,14 @@ public class TeamRepositoryImpl implements TeamRepository{
     @Override
     public void updateTeamManager(Member member) {
         Team findedTeam = jpaTeamRepository.findByName(member.teamName())
-                .orElseThrow(() -> new IllegalArgumentException("소속된 팀이 없습니다.")).toModel();
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.TEAM_NAME_ALREADY_EXISTS))
+                .toModel();
         Team updatedTeam = findedTeam.updateManager(member);
         jpaTeamRepository.save(TeamEntity.fromModel(updatedTeam));
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return jpaTeamRepository.existsByName(name);
     }
 }
