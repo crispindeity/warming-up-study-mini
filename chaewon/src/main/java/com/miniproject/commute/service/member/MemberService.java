@@ -8,14 +8,14 @@ import com.miniproject.commute.dto.member.request.MemberSaveRequest;
 import com.miniproject.commute.dto.member.response.MemberResponse;
 import com.miniproject.commute.repository.member.MemberRepository;
 import com.miniproject.commute.repository.team.TeamRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
@@ -33,14 +33,12 @@ public class MemberService {
      */
     @Transactional
     public void saveMember(MemberSaveRequest request) {
-        Member.MemberBuilder build = Member.builder().name(request.name()).joinDate(request.joinDate()).birthday(request.birthday());
 
         Team team = teamRepository.findById(request.teamId()).orElseThrow(()->new IllegalArgumentException("존재하지 않는 팀입니다."));
         validateManagerExist(request.teamId(), request.isManager());
-        build.team(team).isManager(request.isManager());
+        Member member= Member.builder().name(request.name()).joinDate(request.joinDate()).birthday(request.birthday()).team(team).isManager(request.isManager()).build();
 
-
-        memberRepository.save(build.build());
+        memberRepository.save(member);
     }
 
     private void validateManagerExist(long memberTeamId, boolean isManager) {
@@ -57,23 +55,28 @@ public class MemberService {
      */
     @Transactional
     public void chooseManager(ChooseManagerRequest request) {
-        System.out.println(request.memberId());
         Member member = memberRepository.findById(request.memberId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사람입니다."));
 
         Member memberbyTeamIdAndIsManager = memberRepository.getByTeamIdAndIsManager(member.getTeam().getId(), true);
 
         if(memberbyTeamIdAndIsManager!=null){
-            memberbyTeamIdAndIsManager.doStaff();
+            memberbyTeamIdAndIsManager.changeRole();
         }
-        member.doManager();
+        member.changeRole();
+        }
 
-        }
     @Transactional(readOnly = true)
     public List<MemberResponse> getMembers() {
         List<Member> all = memberRepository.findAllWithTeam();
+
         return all.stream()
-                .map(m -> new MemberResponse(m.getName(),m.getTeam().getName(),m.isManager()? Role.MANAGER:Role.MEMBER, m.getJoinDate(),m.getBirthday()))
-                .collect(Collectors.toList());
+                .map(m->MemberResponse.builder()
+                        .name(m.getName())
+                        .teamName(m.getTeam().getName())
+                        .role(m.isManager()? Role.MANAGER:Role.MEMBER)
+                        .birthday(m.getBirthday())
+                        .build())
+                .toList();
     }
 }
 

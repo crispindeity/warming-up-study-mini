@@ -13,8 +13,6 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     public boolean existsByTeamIdAndIsManager(long teamId, boolean isManager);
     @Query("select m from Member m join fetch m.team t")
     public List<Member> findAllWithTeam();
-
     @Query("SELECT m.name FROM Member m WHERE m.team.id = :teamId AND m.isManager = true")
     Optional<String> findManagerByTeamId(@Param("teamId") Long teamId);
-
 }

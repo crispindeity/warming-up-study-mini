@@ -16,13 +16,9 @@ public class TeamController {
         this.teamService = teamService;
     }
 
-    @PostMapping("team")
+    @PostMapping("/team")
     public void saveTeam(@RequestBody TeamSaveRequest request){
         teamService.saveTeam(request);
-    }
-
-    @PutMapping("/team")
-    public void chooseManager(@RequestBody ChooseManagerRequest request){
     }
 
     @GetMapping("/team")
