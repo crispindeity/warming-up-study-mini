@@ -1,4 +1,4 @@
-package inflearn.mini.employee.controller;
+package inflearn.mini.employee.dto.request;
 
 import java.time.LocalDate;
 import java.time.Month;

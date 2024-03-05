@@ -1,8 +1,6 @@
-package inflearn.mini.employee.controller;
+package inflearn.mini.employee.dto.response;
 
 import java.util.List;
-
-import inflearn.mini.worktimehistory.service.DateWorkMinutes;
 
 public record EmployeeWorkHistoryResponse(List<DateWorkMinutes> detail, long sum) {
 }

@@ -8,8 +8,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import inflearn.mini.employee.controller.EmployeeWorkHistoryRequest;
-import inflearn.mini.employee.controller.EmployeeWorkHistoryResponse;
+import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
+import inflearn.mini.employee.dto.response.DateWorkMinutes;
+import inflearn.mini.employee.dto.response.EmployeeWorkHistoryResponse;
 import inflearn.mini.employee.domain.Employee;
 import inflearn.mini.employee.exception.AbsentEmployeeException;
 import inflearn.mini.employee.exception.AlreadyAtWorkException;

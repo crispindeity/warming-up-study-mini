@@ -27,14 +27,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import inflearn.mini.employee.domain.Employee;
 import inflearn.mini.employee.domain.Role;
 import inflearn.mini.employee.dto.request.EmployeeRegisterRequestDto;
+import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
 import inflearn.mini.employee.dto.response.EmployeeResponse;
+import inflearn.mini.employee.dto.response.EmployeeWorkHistoryResponse;
 import inflearn.mini.employee.exception.AbsentEmployeeException;
 import inflearn.mini.employee.exception.AlreadyAtWorkException;
 import inflearn.mini.employee.exception.EmployeeNotFoundException;
 import inflearn.mini.employee.service.EmployeeService;
 import inflearn.mini.team.domain.Team;
 import inflearn.mini.team.exception.TeamNotFoundException;
-import inflearn.mini.worktimehistory.service.DateWorkMinutes;
+import inflearn.mini.employee.dto.response.DateWorkMinutes;
 import inflearn.mini.worktimehistory.service.WorkTimeHistoryService;
 
 @WebMvcTest(EmployeeController.class)

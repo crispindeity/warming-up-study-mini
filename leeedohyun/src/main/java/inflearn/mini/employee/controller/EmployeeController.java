@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import inflearn.mini.employee.dto.request.EmployeeRegisterRequestDto;
+import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
 import inflearn.mini.employee.dto.response.EmployeeResponse;
+import inflearn.mini.employee.dto.response.EmployeeWorkHistoryResponse;
 import inflearn.mini.employee.service.EmployeeService;
 import inflearn.mini.worktimehistory.service.WorkTimeHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +49,7 @@ public class EmployeeController {
 
     @GetMapping("/{employeeId}")
     public ResponseEntity<EmployeeWorkHistoryResponse> getEmployeeDailyWorkingHours(@PathVariable final Long employeeId,
-                                                                                   @RequestBody final EmployeeWorkHistoryRequest request) {
+                                                                                    @RequestBody final EmployeeWorkHistoryRequest request) {
         return ResponseEntity.ok(workTimeHistoryService.getEmployeeDailyWorkingHours(employeeId, request));
     }
 }

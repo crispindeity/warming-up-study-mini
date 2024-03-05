@@ -1,4 +1,4 @@
-package inflearn.mini.worktimehistory.service;
+package inflearn.mini.employee.dto.response;
 
 import java.time.LocalDate;
 
