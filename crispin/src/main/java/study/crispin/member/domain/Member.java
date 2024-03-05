@@ -47,4 +47,8 @@ public record Member(Long id, String name, String teamName, Role role, LocalDate
                 this.birthday.equals(birthday) &&
                 this.workStartDate.equals(workStartDate);
     }
+
+    public boolean isMatchId(Long id) {
+        return this.id.equals(id);
+    }
 }
