@@ -22,7 +22,7 @@ public record Member(Long id, String name, String teamName, Role role, LocalDate
     }
 
     public Member updateRole() {
-        if (this.role.equals(Role.MANAGER)) {
+        if (this.role == Role.MANAGER) {
             return new Member(id, name, teamName, Role.MEMBER, birthday, workStartDate);
         }
         return new Member(id, name, teamName, Role.MANAGER, birthday, workStartDate);
@@ -39,6 +39,6 @@ public record Member(Long id, String name, String teamName, Role role, LocalDate
     }
 
     public boolean isTeamManager() {
-        return this.role.equals(Role.MANAGER);
+        return this.role == Role.MANAGER;
     }
 }
