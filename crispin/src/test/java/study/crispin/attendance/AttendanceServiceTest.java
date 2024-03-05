@@ -5,17 +5,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import study.crispin.attendance.application.AttendanceService;
+import study.crispin.attendance.infrastructure.repository.AttendanceRepository;
+import study.crispin.attendance.presentation.response.ClockInResponse;
+import study.crispin.attendance.presentation.response.ClockOutResponse;
+import study.crispin.common.DateTimeHolder;
 import study.crispin.fixture.TestMemberFixture;
-import study.crispin.member.domain.Member;
 import study.crispin.member.infrastructure.repository.MemberRepository;
+import study.crispin.mock.FakeAttendanceRepository;
+import study.crispin.mock.FakeDateTimeHolder;
 import study.crispin.mock.FakeMemberRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 @DisplayName("출퇴근 서비스 테스트")
 class AttendanceServiceTest {
@@ -23,7 +26,7 @@ class AttendanceServiceTest {
     private DateTimeHolder dateTimeHolder;
     private MemberRepository memberRepository;
     private AttendanceService attendanceService;
-    private AttendanceRepository attendanceRepository;
+    private AttendanceRepository fakeAttendanceRepository;
 
     @BeforeEach
     void setup() {
@@ -31,8 +34,8 @@ class AttendanceServiceTest {
         LocalTime time = LocalTime.of(9, 0, 0);
         dateTimeHolder = new FakeDateTimeHolder(date, time);
         memberRepository = new FakeMemberRepository();
-        attendanceRepository = new AttendanceRepository();
-        attendanceService = new AttendanceService(dateTimeHolder, memberRepository, attendanceRepository);
+        fakeAttendanceRepository = new FakeAttendanceRepository();
+        attendanceService = new AttendanceService(dateTimeHolder, memberRepository, fakeAttendanceRepository);
     }
 
     @Nested
@@ -102,139 +105,6 @@ class AttendanceServiceTest {
                             .isEqualTo(LocalDateTime.of(2024, 2, 29, 18, 0, 0));
                 });
             }
-        }
-    }
-
-    public class AttendanceService {
-
-        private DateTimeHolder dateTimeHolder;
-        private MemberRepository memberRepository;
-        private AttendanceRepository attendanceRepository;
-
-        public AttendanceService(DateTimeHolder dateTimeHolder, MemberRepository memberRepository, AttendanceRepository attendanceRepository) {
-            this.dateTimeHolder = dateTimeHolder;
-            this.memberRepository = memberRepository;
-            this.attendanceRepository = attendanceRepository;
-        }
-
-        public ClockInResponse clockIn(Long memberId) {
-            LocalDateTime clockInDateTime = dateTimeHolder.now();
-            Member findedMember = memberRepository.findById(memberId)
-                    .orElseThrow(() -> new IllegalArgumentException(""));
-            Attendance attendance = Attendance.clockIn(findedMember, clockInDateTime);
-            Attendance savedAttendance = attendanceRepository.save(attendance);
-            return ClockInResponse.of(
-                    savedAttendance.id(), savedAttendance.member.name(), savedAttendance.clockInDateTime()
-            );
-        }
-
-        public ClockOutResponse clockOut(Long memberId) {
-            LocalDateTime clockOutDateTime = dateTimeHolder.now().plusHours(9L);
-            Attendance findedAttendance = attendanceRepository.findByMemberId(memberId)
-                    .orElseThrow(() -> new IllegalArgumentException(""));
-            Attendance clockOutedAttendance = Attendance.clockOut(findedAttendance, clockOutDateTime);
-            Attendance savedAttendance = attendanceRepository.save(clockOutedAttendance);
-            return ClockOutResponse.of(
-                    savedAttendance.id,
-                    savedAttendance.member.name(),
-                    savedAttendance.clockInDateTime,
-                    savedAttendance.clockOutDateTime
-            );
-        }
-    }
-
-    public record Attendance(Long id, Member member, LocalDateTime clockInDateTime, LocalDateTime clockOutDateTime) {
-
-        public Attendance(Member member, LocalDateTime clockInDateTime, LocalDateTime clockOutDateTime) {
-            this(null, member, clockInDateTime, clockOutDateTime);
-        }
-
-        public static Attendance clockIn(Member member, LocalDateTime clockInDateTime) {
-            return new Attendance(member, clockInDateTime, null);
-        }
-
-        public static Attendance of(Long id, Member member, LocalDateTime clockInDateTime) {
-            return new Attendance(id, member, clockInDateTime, null);
-        }
-
-        public static Attendance clockOut(Attendance attendance, LocalDateTime clockOutDateTime) {
-            return new Attendance(
-                    attendance.id,
-                    attendance.member,
-                    attendance.clockInDateTime,
-                    clockOutDateTime
-            );
-        }
-
-        public boolean isMatchByMemberId(Long memberId) {
-            return this.member.isMatchId(memberId);
-        }
-    }
-
-    public interface DateTimeHolder {
-        LocalDateTime now();
-    }
-
-    public class SystemDateTimeHolder implements DateTimeHolder {
-        @Override
-        public LocalDateTime now() {
-            return LocalDateTime.now();
-        }
-    }
-
-    public class FakeDateTimeHolder implements DateTimeHolder {
-
-        private final LocalDate date;
-        private final LocalTime time;
-
-        public FakeDateTimeHolder(LocalDate date, LocalTime time) {
-            this.date = date;
-            this.time = time;
-        }
-
-        @Override
-        public LocalDateTime now() {
-            return LocalDateTime.of(this.date, this.time);
-        }
-    }
-
-    public record ClockInResponse(Long id, String memberName, LocalDateTime clockInDateTime) {
-        public static ClockInResponse of(Long id, String name, LocalDateTime clockInDateTime) {
-            return new ClockInResponse(id, name, clockInDateTime);
-        }
-    }
-
-    public record ClockOutResponse(Long id, String memberName, LocalDateTime clockInDateTime,
-                                   LocalDateTime clockOutDateTime) {
-        public static ClockOutResponse of(Long id, String memberName, LocalDateTime clockInDateTime, LocalDateTime clockOutDateTime) {
-            return new ClockOutResponse(id, memberName, clockInDateTime, clockOutDateTime);
-        }
-    }
-
-    public class AttendanceRepository {
-        private final Map<Long, Attendance> storage = new HashMap<>();
-        private Long sequence = 0L;
-
-        public Attendance save(Attendance attendance) {
-            if (attendance.id() == null || storage.get(attendance.id()) == null) {
-                Attendance newAttendance = Attendance.of(
-                        ++sequence,
-                        attendance.member(),
-                        attendance.clockInDateTime()
-                );
-                storage.put(sequence, newAttendance);
-                return storage.get(sequence);
-            } else {
-                storage.put(sequence, attendance);
-                return storage.get(attendance.id());
-            }
-        }
-
-        public Optional<Attendance> findByMemberId(Long memberId) {
-            return storage.values()
-                    .stream()
-                    .filter(attendance -> attendance.isMatchByMemberId(memberId))
-                    .findFirst();
         }
     }
 }
