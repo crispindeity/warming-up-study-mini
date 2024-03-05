@@ -11,9 +11,9 @@ public class FakeDateTimeHolder implements DateTimeHolder {
     private final LocalDate date;
     private final LocalTime time;
 
-    public FakeDateTimeHolder(LocalDate date, LocalTime time) {
-        this.date = date;
-        this.time = time;
+    public FakeDateTimeHolder() {
+        this.date = LocalDate.of(2024, 2, 29);
+        this.time = LocalTime.of(9, 0, 0);
     }
 
     @Override

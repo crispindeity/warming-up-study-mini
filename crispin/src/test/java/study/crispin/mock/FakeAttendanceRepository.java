@@ -3,6 +3,7 @@ package study.crispin.mock;
 import study.crispin.attendance.domain.Attendance;
 import study.crispin.attendance.infrastructure.repository.AttendanceRepository;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -32,5 +33,12 @@ public class FakeAttendanceRepository implements AttendanceRepository {
                 .stream()
                 .filter(attendance -> attendance.isMatchByMemberId(memberId))
                 .findFirst();
+    }
+
+    @Override
+    public boolean existsByMemberIdAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
+        return storage.values()
+                .stream()
+                .anyMatch(attendance -> attendance.isTodayClockIn(memberId, startDate, endDate));
     }
 }
