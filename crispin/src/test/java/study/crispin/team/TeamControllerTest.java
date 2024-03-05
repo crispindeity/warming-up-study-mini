@@ -65,7 +65,7 @@ public class TeamControllerTest {
                 BDDMockito.given(teamService.registration(request)).willReturn(response);
 
                 // when
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/team")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/teams")
                                 .content(stringify(request))
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -90,7 +90,7 @@ public class TeamControllerTest {
                 TeamRegistrationRequest request = TeamRegistrationRequest.of("");
 
                 // when & then
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/team")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/teams")
                                 .content(stringify(request))
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +106,7 @@ public class TeamControllerTest {
                 TeamRegistrationRequest request = TeamRegistrationRequest.of(null);
 
                 // when & then
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/team")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/teams")
                                 .content(stringify(request))
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -122,7 +122,7 @@ public class TeamControllerTest {
                 TeamRegistrationRequest request = TeamRegistrationRequest.of(" ");
 
                 // when & then
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/team")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/teams")
                                 .content(stringify(request))
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -155,7 +155,7 @@ public class TeamControllerTest {
                 BDDMockito.given(teamService.retrieve()).willReturn(responses);
 
                 // when
-                mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/team")
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/teams")
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .accept(MediaType.APPLICATION_JSON))
                         .andDo(MockMvcResultHandlers.print())

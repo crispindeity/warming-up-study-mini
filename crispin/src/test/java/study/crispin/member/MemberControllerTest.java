@@ -81,7 +81,7 @@ class MemberControllerTest {
                 BDDMockito.given(memberService.register(request)).willReturn(response);
 
                 // when
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/member")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/members")
                                 .content(stringify(request))
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -111,7 +111,7 @@ class MemberControllerTest {
                 );
 
                 // when & then
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/member")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/members")
                                 .content(stringify(request))
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -132,7 +132,7 @@ class MemberControllerTest {
                 );
 
                 // when & then
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/member")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/members")
                                 .content(stringify(request))
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -153,7 +153,7 @@ class MemberControllerTest {
                 );
 
                 // when & then
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/member")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/members")
                                 .content(stringify(request))
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -174,7 +174,7 @@ class MemberControllerTest {
                 );
 
                 // when & then
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/member")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/members")
                                 .content(stringify(request))
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -195,7 +195,7 @@ class MemberControllerTest {
                 );
 
                 // when & then
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/member")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/members")
                                 .content(stringify(request))
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -230,7 +230,7 @@ class MemberControllerTest {
                 BDDMockito.given(memberService.retrieve()).willReturn(responses);
 
                 // when
-                mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/member")
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/members")
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .accept(MediaType.APPLICATION_JSON))
                         .andDo(MockMvcResultHandlers.print())
@@ -270,7 +270,7 @@ class MemberControllerTest {
                 BDDMockito.given(memberService.updateRole(request)).willReturn(response);
 
                 // when
-                mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/member")
+                mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/members")
                                 .content(stringify(request))
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)

@@ -35,7 +35,7 @@ public class TeamIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(request)
-                        .when().post("/api/v1/team")
+                        .when().post("/api/v1/teams")
                         .then().log().all()
                         .extract();
 
@@ -68,7 +68,7 @@ public class TeamIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(request)
-                        .when().post("/api/v1/team")
+                        .when().post("/api/v1/teams")
                         .then().log().all()
                         .extract();
 
@@ -101,7 +101,7 @@ public class TeamIntegrationTest extends ApiTest {
                 // when
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all()
-                        .when().get("/api/v1/team")
+                        .when().get("/api/v1/teams")
                         .then().log().all()
                         .extract();
 

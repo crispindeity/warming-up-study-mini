@@ -46,7 +46,7 @@ public class MemberIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(request)
-                        .when().post("/api/v1/member")
+                        .when().post("/api/v1/members")
                         .then().log().all()
                         .extract();
 
@@ -89,7 +89,7 @@ public class MemberIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(request)
-                        .when().post("/api/v1/member")
+                        .when().post("/api/v1/members")
                         .then().log().all()
                         .extract();
 
@@ -128,7 +128,7 @@ public class MemberIntegrationTest extends ApiTest {
                 // when
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all()
-                        .when().get("/api/v1/member")
+                        .when().get("/api/v1/members")
                         .then().log().all()
                         .extract();
 
@@ -178,7 +178,7 @@ public class MemberIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(updateRequest)
-                        .when().put("/api/v1/member")
+                        .when().put("/api/v1/members")
                         .then().log().all()
                         .extract();
 
@@ -234,7 +234,7 @@ public class MemberIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(updateRequest2)
-                        .when().put("/api/v1/member")
+                        .when().put("/api/v1/members")
                         .then().log().all()
                         .extract();
 
@@ -268,7 +268,7 @@ public class MemberIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(updateRequest)
-                        .when().put("/api/v1/member")
+                        .when().put("/api/v1/members")
                         .then().log().all()
                         .extract();
 
