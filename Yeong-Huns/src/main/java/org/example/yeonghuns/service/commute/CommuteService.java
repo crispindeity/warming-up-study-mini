@@ -59,14 +59,14 @@ public class CommuteService {
     }
 
     @Transactional
-    public void departure(@RequestBody DepartureRequest request){
+    public void endOfWork(@RequestBody DepartureRequest request){
         Member member = findMemberById(request.id());
 
         Commute latestCommute = findLatestCommuteByMember(member);
 
         if(!latestCommute.isAttendance()) throw new AlreadyDepartureException();
 
-        latestCommute.departure();
+        latestCommute.endOfWork();
     }
 
     @Transactional

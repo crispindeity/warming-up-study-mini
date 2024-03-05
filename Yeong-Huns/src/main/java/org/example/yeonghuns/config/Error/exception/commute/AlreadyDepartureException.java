@@ -1,7 +1,7 @@
 package org.example.yeonghuns.config.Error.exception.commute;
 
 import org.example.yeonghuns.config.Error.ErrorCode;
-import org.example.yeonghuns.config.Error.exception.NotFoundException;
+import org.example.yeonghuns.config.Error.exception.BadRequestException;
 
 /**
  * packageName    : org.example.yeonghuns.config.Error.exception
@@ -14,7 +14,7 @@ import org.example.yeonghuns.config.Error.exception.NotFoundException;
  * -----------------------------------------------------------
  * 2024-03-05        Yeong-Huns       최초 생성
  */
-public class AlreadyDepartureException extends NotFoundException {
+public class AlreadyDepartureException extends BadRequestException {
     public AlreadyDepartureException() {
         super(ErrorCode.IS_ALREADY_DEPARTURE);
     }

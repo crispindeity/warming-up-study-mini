@@ -36,7 +36,7 @@ public class Commute extends BaseEntity {
     @ManyToOne(fetch= FetchType.LAZY)
     private Member member;
 
-    public void departure(){
+    public void endOfWork(){
         this.attendance = false;
     }
 
