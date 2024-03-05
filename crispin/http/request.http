@@ -1,0 +1,35 @@
+### 맴버 조회 API
+GET http://localhost:8080/api/v1/member
+
+### 맴버 등록 API
+POST http://localhost:8080/api/v1/member
+Content-Type: application/json
+
+{
+  "name": "테스트팀원2",
+  "teamName": "테스트1팀",
+  "birthday": "1999-09-09",
+  "workStartDate": "2024-02-29"
+}
+
+### 맴버 수정 API
+PUT http://localhost:8080/api/v1/member
+Content-Type: application/json
+
+{
+  "name": "테스트팀원2",
+  "teamName": "테스트1팀",
+  "birthday": "1999-09-09",
+  "workStartDate": "2024-02-29"
+}
+
+### 팀 조회 API
+GET http://localhost:8080/api/v1/team
+
+### 팀 등록 API
+POST http://localhost:8080/api/v1/team
+Content-Type: application/json
+
+{
+  "name": "테스트1팀"
+}
