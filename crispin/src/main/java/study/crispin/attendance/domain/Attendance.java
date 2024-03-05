@@ -2,6 +2,7 @@ package study.crispin.attendance.domain;
 
 import study.crispin.member.domain.Member;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record Attendance(Long id, Member member, LocalDateTime clockInDateTime, LocalDateTime clockOutDateTime) {
@@ -27,7 +28,19 @@ public record Attendance(Long id, Member member, LocalDateTime clockInDateTime, 
         );
     }
 
+    public boolean isTodayClockIn(Long memberId, LocalDate startDate, LocalDate endDate) {
+        return isMatchByMemberId(memberId) && isEqualToClockInDate(startDate) && isBeforeToClockInDate(endDate);
+    }
+
     public boolean isMatchByMemberId(Long memberId) {
         return this.member.isMatchId(memberId);
+    }
+
+    private boolean isEqualToClockInDate(LocalDate startDate) {
+        return clockInDateTime.toLocalDate().isEqual(startDate);
+    }
+
+    private boolean isBeforeToClockInDate(LocalDate endDate) {
+        return clockInDateTime.toLocalDate().isBefore(endDate);
     }
 }
