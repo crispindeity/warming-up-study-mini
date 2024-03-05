@@ -25,13 +25,13 @@ import org.example.yeonghuns.common.BaseEntity;
         @AttributeOverride(name= "createdAt", column = @Column(name= "start_of_work")),
         @AttributeOverride(name= "updatedAt", column = @Column(name= "end_of_work"))
 })
-public class Commute extends BaseEntity {
+public class Commute extends BaseEntity { //BaseEntity 상속받음
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private boolean attendance = true;
+    private boolean attendance = true; //출근 상태
 
     @ManyToOne(fetch= FetchType.LAZY)
     private Member member;

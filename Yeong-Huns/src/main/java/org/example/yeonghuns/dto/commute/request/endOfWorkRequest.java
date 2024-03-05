@@ -1,5 +1,7 @@
 package org.example.yeonghuns.dto.commute.request;
 
+import jakarta.validation.constraints.NotNull;
+
 /**
  * packageName    : org.example.yeonghuns.dto.commute.request
  * fileName       : RegisterCommuteRequest
@@ -11,5 +13,5 @@ package org.example.yeonghuns.dto.commute.request;
  * -----------------------------------------------------------
  * 2024-03-04        Yeong-Huns       최초 생성
  */
-public record endOfWorkRequest(long id) {
+public record endOfWorkRequest(@NotNull long id) {
 }

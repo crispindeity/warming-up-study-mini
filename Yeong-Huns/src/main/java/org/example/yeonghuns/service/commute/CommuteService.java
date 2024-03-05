@@ -42,57 +42,56 @@ public class CommuteService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void startOfWork(startOfWorkRequest request){
+    public void startOfWork(startOfWorkRequest request) {
         Member member = findMemberById(request.id());
 
-        boolean isExistRecord = commuteRepository.findLatestCommuteByMemberId(member.getId())
-                .isPresent();
+        Commute latestCommute = findLatestCommuteByMember(member);
+        if (latestCommute.isAttendance()) throw new AbsentCheckOutException(); //이전 기록 퇴근확인
 
-        if(isExistRecord) {
-            Commute latestCommute = findLatestCommuteByMember(member);
-            if(latestCommute.isAttendance()) throw new AbsentCheckOutException(); //이전 기록 퇴근확인
+        boolean isAlreadyAttendance = LocalDate.now().equals(LocalDate.from(latestCommute.getCreatedAt()));
+        if (isAlreadyAttendance) throw new AlreadyAttendanceException(); //당일 출근기록 확인
 
-            boolean isAlreadyAttendance = LocalDate.now()!=LocalDate.from(latestCommute.getCreatedAt());
-            if(isAlreadyAttendance) throw new AlreadyAttendanceException(); //당일 출근기록 확인
-        }
         commuteRepository.save(request.toEntity(member));
     }
 
     @Transactional
-    public void endOfWork(@RequestBody endOfWorkRequest request){
+    public void endOfWork(@RequestBody endOfWorkRequest request) {
         Member member = findMemberById(request.id());
 
         Commute latestCommute = findLatestCommuteByMember(member);
 
-        if(!latestCommute.isAttendance()) throw new AlreadyDepartureException();
+        if (!latestCommute.isAttendance()) throw new AlreadyDepartureException();
 
-        latestCommute.endOfWork();
+        latestCommute.endOfWork(); //변경감지 자동저장
     }
 
     @Transactional
-    public GetCommuteRecordResponse GetCommuteRecord(long id,GetCommuteRecordRequest request){
-        findMemberById(id);
+    public GetCommuteRecordResponse GetCommuteRecord(GetCommuteRecordRequest request) {
+        findMemberById(request.id());
 
-        List<GetCommuteDetail> commuteDetailList = findCommuteListByMemberIdAndStartOfWork(id, request);
+        List<GetCommuteDetail> commuteDetailList = findCommuteListByMemberIdAndStartOfWork(request);
         Long sum = commuteDetailList.stream()
                 .map(GetCommuteDetail::workingMinutes)
-                .reduce(0L,Long::sum);
-
+                .reduce(0L, Long::sum);
+        //commuteDetailList에서 workingMinutes를 조회, reduce로 합을 반환
         return new GetCommuteRecordResponse(commuteDetailList, sum);
     }
 
-    private Member findMemberById(long id){
+    private Member findMemberById(long id) {
         return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
     }
-    private Commute findLatestCommuteByMember(Member member){
+
+    private Commute findLatestCommuteByMember(Member member) {
         return commuteRepository.findLatestCommuteByMemberId(member.getId())
                 .orElseThrow(CommuteNotFoundException::new);
     }
-    private List<GetCommuteDetail> findCommuteListByMemberIdAndStartOfWork(long id, GetCommuteRecordRequest request){
-         List<Commute> commuteList =
-                 commuteRepository.findCommuteListByMemberIdAndStartOfWork
-                        (id, request.yearMonth().getYear(), request.yearMonth().getMonth().getValue());
-         if(commuteList.isEmpty()) throw new CommuteNotFoundException();
-        return commuteList.stream().map(GetCommuteDetail::from).toList();
+
+    private List<GetCommuteDetail> findCommuteListByMemberIdAndStartOfWork(GetCommuteRecordRequest request) {
+        List<Commute> commuteList =
+                commuteRepository.findCommuteListByMemberIdAndStartOfWork(request.id(), request.yearMonth().getYear(), request.yearMonth().getMonth().getValue());
+
+        if (commuteList.isEmpty()) throw new CommuteNotFoundException(); //해당범위에 통근기록 존재 X
+
+        return commuteList.stream().map(GetCommuteDetail::from).toList(); //CommuteDetail으로 변환
     }
 }

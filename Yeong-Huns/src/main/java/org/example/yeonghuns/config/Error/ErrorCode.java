@@ -11,11 +11,11 @@ public enum ErrorCode {
     NOT_FOUND(HttpStatus.NOT_FOUND, "E4", "존재하지 않는 대상입니다."),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "M1", "해당 멤버는 존재하지 않습니다."),
     TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "T1", "해당 팀은 존재하지 않습니다."),
-    TEAM_ALREADY_EXISTS(HttpStatus.NOT_FOUND, "T2", "이미 동일한 이름의 팀이 존재하고 있습니다."),
-    CHECKOUT_NOT_PERFORMED(HttpStatus.NOT_FOUND, "C1", "퇴근처리되지 않은 출근기록이 있습니다."),
-    IS_ALREADY_ATTENDANCE(HttpStatus.NOT_FOUND, "C2", "이미 당일 출근내역이 존재합니다."),
+    TEAM_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "T2", "이미 동일한 이름의 팀이 존재하고 있습니다."),
+    CHECKOUT_NOT_PERFORMED(HttpStatus.BAD_REQUEST, "C1", "퇴근처리되지 않은 출근기록이 있습니다."),
+    IS_ALREADY_ATTENDANCE(HttpStatus.BAD_REQUEST, "C2", "이미 당일 출근내역이 존재합니다."),
     COMMUTE_NOT_FOUND(HttpStatus.NOT_FOUND, "C3", "통근기록이 존재하지 않습니다."),
-    IS_ALREADY_DEPARTURE(HttpStatus.NOT_FOUND, "C4", "이미 퇴근처리 되었습니다.")
+    IS_ALREADY_DEPARTURE(HttpStatus.BAD_REQUEST, "C4", "출근처리를 먼저 하셔야합니다.")
     ;
 
 

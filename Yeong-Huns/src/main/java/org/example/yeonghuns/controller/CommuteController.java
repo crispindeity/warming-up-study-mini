@@ -2,15 +2,16 @@ package org.example.yeonghuns.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.yeonghuns.dto.commute.request.startOfWorkRequest;
-import org.example.yeonghuns.dto.commute.request.endOfWorkRequest;
 import org.example.yeonghuns.dto.commute.request.GetCommuteRecordRequest;
+import org.example.yeonghuns.dto.commute.request.endOfWorkRequest;
+import org.example.yeonghuns.dto.commute.request.startOfWorkRequest;
 import org.example.yeonghuns.dto.commute.response.GetCommuteRecordResponse;
 import org.example.yeonghuns.service.commute.CommuteService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.YearMonth;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * packageName    : org.example.yeonghuns.controller
@@ -29,19 +30,18 @@ public class CommuteController {
     private final CommuteService commuteService;
 
     @PostMapping("/start-of-work")
-    public void startOfWork(@RequestBody startOfWorkRequest request) {
+    public void startOfWork(@Valid @RequestBody startOfWorkRequest request) {
         commuteService.startOfWork(request);
     }
 
     @PostMapping("/end-of-work")
-    public void endOfWork(@RequestBody endOfWorkRequest request) {
+    public void endOfWork(@Valid @RequestBody endOfWorkRequest request) {
         commuteService.endOfWork(request);
     }
 
     @GetMapping("/commute")
-    public ResponseEntity<GetCommuteRecordResponse> GetCommuteRecord(@RequestParam long id,
-                                                                     @RequestBody GetCommuteRecordRequest request){
-        GetCommuteRecordResponse getCommuteRecordResponse = commuteService.GetCommuteRecord(id, request);
+    public ResponseEntity<GetCommuteRecordResponse> GetCommuteRecord(@Valid GetCommuteRecordRequest request){
+        GetCommuteRecordResponse getCommuteRecordResponse = commuteService.GetCommuteRecord(request);
         return ResponseEntity.ok().body(getCommuteRecordResponse);
     }
 }
