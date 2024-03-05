@@ -7,6 +7,10 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -15,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import inflearn.mini.employee.controller.EmployeeWorkHistoryRequest;
+import inflearn.mini.employee.controller.EmployeeWorkHistoryResponse;
 import inflearn.mini.employee.domain.Employee;
 import inflearn.mini.employee.exception.AbsentEmployeeException;
 import inflearn.mini.employee.exception.AlreadyAtWorkException;
@@ -102,7 +108,7 @@ class WorkTimeHistoryServiceTest {
 
         given(employeeRepository.findById(anyLong()))
                 .willReturn(Optional.of(employee));
-        given(workTimeHistoryRepository.findByEmployeeAndWorkStartTimeAndAndWorkEndTimeIsNull(any(), any(), any()))
+        given(workTimeHistoryRepository.findWorkTimeHistoryForDate(any(), any(), any()))
                 .willReturn(Optional.of(workTimeHistory));
 
         // when
@@ -138,7 +144,7 @@ class WorkTimeHistoryServiceTest {
 
         given(employeeRepository.findById(anyLong()))
                 .willReturn(Optional.of(employee));
-        given(workTimeHistoryRepository.findByEmployeeAndWorkStartTimeAndAndWorkEndTimeIsNull(any(), any(), any()))
+        given(workTimeHistoryRepository.findWorkTimeHistoryForDate(any(), any(), any()))
                 .willThrow(new AbsentEmployeeException("출근하지 않은 직원입니다."));
 
         // when
@@ -147,5 +153,62 @@ class WorkTimeHistoryServiceTest {
         assertThatThrownBy(() -> workTimeHistoryService.leaveWork(1L))
                 .isInstanceOf(AbsentEmployeeException.class)
                 .hasMessage("출근하지 않은 직원입니다.");
+    }
+
+    @Test
+    void 특정_직원의_날짜별_근무_시간을_조회한다() {
+        // given
+        final Employee employee = Employee.builder()
+                .id(1L)
+                .name("홍길동")
+                .isManager(false)
+                .build();
+        employee.joinTeam(new Team("개발팀"));
+
+        given(employeeRepository.findById(anyLong()))
+                .willReturn(Optional.of(employee));
+        final WorkTimeHistory workTimeHistory1 = new WorkTimeHistory(employee);
+        workTimeHistory1.goToWork(LocalDateTime.of(2024, 3, 4, 9, 0));
+        workTimeHistory1.leaveWork(LocalDateTime.of(2024, 3, 4, 18, 0));
+
+        final WorkTimeHistory workTimeHistory2 = new WorkTimeHistory(employee);
+        workTimeHistory2.goToWork(LocalDateTime.of(2024, 3, 5, 9, 0));
+        workTimeHistory2.leaveWork(LocalDateTime.of(2024, 3, 5, 18, 0));
+        given(workTimeHistoryRepository.findAllByEmployeeAndWorkStartTimeBetween(any(), any(), any()))
+                .willReturn(List.of(
+                        workTimeHistory1,
+                        workTimeHistory2
+                ));
+
+        final EmployeeWorkHistoryRequest request = new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3));
+
+        // when
+        final EmployeeWorkHistoryResponse employeeDailyWorkingHours = workTimeHistoryService.getEmployeeDailyWorkingHours(
+                1L, request);
+
+        // then
+        assertThat(employeeDailyWorkingHours).isIn(
+                new EmployeeWorkHistoryResponse(
+                        List.of(
+                                new DateWorkMinutes(LocalDate.of(2024, 3,4), 540),
+                                new DateWorkMinutes(LocalDate.of(2024, 3,5), 540)
+                        ),
+                        1080
+                )
+        );
+    }
+
+    @Test
+    void 특정_직원의_날짜별_근무_시간을_조회_시_등록되지_않은_직원인_경우_예외가_발생한다() {
+        // given
+        given(employeeRepository.findById(anyLong()))
+                .willThrow(new EmployeeNotFoundException("등록된 직원이 없습니다."));
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> workTimeHistoryService.getEmployeeDailyWorkingHours(1L, new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3))))
+                .isInstanceOf(EmployeeNotFoundException.class)
+                .hasMessage("등록된 직원이 없습니다.");
     }
 }

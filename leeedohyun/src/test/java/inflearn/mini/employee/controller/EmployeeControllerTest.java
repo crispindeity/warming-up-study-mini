@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ import inflearn.mini.employee.exception.EmployeeNotFoundException;
 import inflearn.mini.employee.service.EmployeeService;
 import inflearn.mini.team.domain.Team;
 import inflearn.mini.team.exception.TeamNotFoundException;
+import inflearn.mini.worktimehistory.service.DateWorkMinutes;
 import inflearn.mini.worktimehistory.service.WorkTimeHistoryService;
 
 @WebMvcTest(EmployeeController.class)
@@ -243,6 +245,50 @@ class EmployeeControllerTest {
         // then
         mockMvc.perform(patch("/api/v1/employees/{employeeId}/leave", 1L))
                 .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    void 특정_직원의_날짜별_근무_시간을_조회한다() throws Exception {
+        // given
+        final Employee employee = Employee.builder()
+                .id(1L)
+                .name("홍길동")
+                .isManager(false)
+                .birthday(LocalDate.of(1990, 1, 1))
+                .workStartDate(LocalDate.of(2021, 1, 1))
+                .build();
+        employee.joinTeam(new Team("개발팀"));
+
+        given(workTimeHistoryService.getEmployeeDailyWorkingHours(anyLong(), any()))
+                .willReturn(new EmployeeWorkHistoryResponse(List.of(
+                        new DateWorkMinutes(LocalDate.of(2024, 3, 4), 540),
+                        new DateWorkMinutes(LocalDate.of(2024, 3, 5), 540)
+                ), 1080));
+
+        // when
+
+        // then
+        mockMvc.perform(get("/api/v1/employees/{employeeId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3)))))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void 특정_직원의_날짜별_근무_시간을_조회_시_등록되지_않은_직원인_경우_실패한다() throws Exception {
+        // given
+        given(workTimeHistoryService.getEmployeeDailyWorkingHours(anyLong(), any()))
+                .willThrow(new EmployeeNotFoundException("등록된 직원이 아닙니다."));
+
+        // when
+
+        // then
+        mockMvc.perform(get("/api/v1/employees/{employeeId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3)))))
+                .andExpect(status().isNotFound())
                 .andDo(print());
     }
 }
