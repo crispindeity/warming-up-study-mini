@@ -49,6 +49,10 @@ public class AnnualLeaveService {
             throw new AnnualLeaveException("연차 요청이 연차 전 필수 일수를 충족하지 못했습니다.");
         }
 
+        if (this.annualLeaveRepository.existsByEmployeeAndAnnualLeaveDate(employee, requestDto.leaveDate())) {
+            throw new AnnualLeaveException("이미 해당 날짜에 연차를 사용하셨습니다.");
+        }
+
         if (employee.getRemainingAnnualLeaves() > 0) {
             employee.useAnnualLeave();
 

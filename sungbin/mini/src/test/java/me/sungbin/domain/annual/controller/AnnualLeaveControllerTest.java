@@ -115,6 +115,27 @@ class AnnualLeaveControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @DisplayName("연사 사용 기능 테스트 - 실패 (동일한 날짜에 연차 중복 사용)")
+    void apply_annual_leave_test_fail_caused_by_due_to_duplicated_use() throws Exception {
+        apply_annual_leave_test_success();
+
+        AnnualLeaveRequestDto annualLeaveRequestDto = new AnnualLeaveRequestDto(employeeId, LocalDate.now().plusDays(14));
+
+        this.mockMvc.perform(post("/api/annual-leave")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(annualLeaveRequestDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("status").value(GlobalExceptionCode.INVALID_INPUT_VALUE.getHttpStatus().name()))
+                .andExpect(jsonPath("code").value(GlobalExceptionCode.INVALID_INPUT_VALUE.getCode()))
+                .andExpect(jsonPath("errors").exists())
+                .andExpect(jsonPath("errors").isEmpty())
+                .andExpect(jsonPath("timestamp").exists());
+    }
+
+    @Test
     @DisplayName("연차 사용 기능 테스트 - 성공")
     void apply_annual_leave_test_success() throws Exception {
         AnnualLeaveRequestDto requestDto = new AnnualLeaveRequestDto(employeeId, LocalDate.now().plusDays(14));

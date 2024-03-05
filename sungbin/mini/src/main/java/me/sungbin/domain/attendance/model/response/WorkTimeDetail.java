@@ -14,5 +14,5 @@ import java.time.LocalDate;
  * 3/3/24       rovert         최초 생성
  */
 
-public record WorkTimeDetail(LocalDate date, long workingMinutes) {
+public record WorkTimeDetail(LocalDate date, long workingMinutes, boolean usingDayOff) {
 }
