@@ -1,5 +1,6 @@
 package study.crispin.attendance.application;
 
+import org.springframework.stereotype.Service;
 import study.crispin.attendance.application.request.WorkHoursInquiryRequest;
 import study.crispin.attendance.domain.Attendance;
 import study.crispin.attendance.infrastructure.repository.AttendanceRepository;
@@ -19,12 +20,13 @@ import java.util.List;
 
 import static study.crispin.common.exception.ExceptionMessage.*;
 
-public class AttendanceService {
+@Service
+public class AttendanceServiceImpl implements AttendanceService {
 
     private final MemberRepository memberRepository;
     private final AttendanceRepository attendanceRepository;
 
-    public AttendanceService(
+    public AttendanceServiceImpl(
             MemberRepository memberRepository,
             AttendanceRepository attendanceRepository
     ) {
@@ -32,6 +34,7 @@ public class AttendanceService {
         this.attendanceRepository = attendanceRepository;
     }
 
+    @Override
     public ClockInResponse clockIn(Long memberId, LocalDateTime clockInDateTime) {
         verifyTodayClockIn(memberId, clockInDateTime);
 
@@ -45,6 +48,7 @@ public class AttendanceService {
         );
     }
 
+    @Override
     public ClockOutResponse clockOut(Long memberId, LocalDateTime clockOutDateTime) {
         LocalDate startDate = LocalDateUtil.convertToDateTwoDaysAgo(clockOutDateTime);
         LocalDate endDate = LocalDateUtil.convertToDateOneDayLater(clockOutDateTime);
@@ -63,6 +67,7 @@ public class AttendanceService {
         );
     }
 
+    @Override
     public WorkHoursInquiryResponses workHoursInquiry(WorkHoursInquiryRequest request) {
         verifyRegisteredMember(request.memberId());
 

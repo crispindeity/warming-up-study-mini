@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import study.crispin.attendance.application.AttendanceService;
+import study.crispin.attendance.application.AttendanceServiceImpl;
 import study.crispin.attendance.application.request.WorkHoursInquiryRequest;
 import study.crispin.attendance.infrastructure.repository.AttendanceRepository;
 import study.crispin.attendance.presentation.response.ClockInResponse;
@@ -26,7 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @DisplayName("출퇴근 서비스 테스트")
-class AttendanceServiceTest {
+class AttendanceServiceImplTest {
 
     private DateTimeHolder dateTimeHolder;
     private MemberRepository memberRepository;
@@ -38,7 +39,7 @@ class AttendanceServiceTest {
         memberRepository = new FakeMemberRepository();
         fakeAttendanceRepository = new FakeAttendanceRepository();
         dateTimeHolder = new FakeDateTimeHolder();
-        attendanceService = new AttendanceService(memberRepository, fakeAttendanceRepository);
+        attendanceService = new AttendanceServiceImpl(memberRepository, fakeAttendanceRepository);
         memberRepository.save(TestMemberFixture.멤버_생성(
                 "테스트멤버1",
                 "테스트1팀",
