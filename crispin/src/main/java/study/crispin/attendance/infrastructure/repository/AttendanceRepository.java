@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface AttendanceRepository {
     Attendance save(Attendance attendance);
 
-    Optional<Attendance> findByMemberId(Long memberId);
+    Optional<Attendance> findByMemberIdAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate);
 
     boolean existsByMemberIdAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate);
 }
