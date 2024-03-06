@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface CommuteRepository extends JpaRepository<Commute, Long> {
-    public Commute findByMember_Id(long id);
-    public boolean existsByMember_IdAndWorkInBetween(long id, LocalDateTime dayStart, LocalDateTime dayEnd);
-    public boolean existsByMember_IdAndWorkOutBetween(long id, LocalDateTime dayStart, LocalDateTime dayEnd);
+    Commute findByMember_Id(long id);
+    boolean existsByMember_IdAndWorkInBetween(long id, LocalDateTime dayStart, LocalDateTime dayEnd);
+    boolean existsByMember_IdAndWorkOutBetween(long id, LocalDateTime dayStart, LocalDateTime dayEnd);
 }

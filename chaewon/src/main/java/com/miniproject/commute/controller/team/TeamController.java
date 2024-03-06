@@ -1,10 +1,13 @@
 package com.miniproject.commute.controller.team;
 
-import com.miniproject.commute.dto.member.request.ChooseManagerRequest;
 import com.miniproject.commute.dto.team.request.TeamSaveRequest;
 import com.miniproject.commute.dto.team.response.TeamGetResponse;
 import com.miniproject.commute.service.team.TeamService;
-import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -17,7 +20,7 @@ public class TeamController {
     }
 
     @PostMapping("/team")
-    public void saveTeam(@RequestBody TeamSaveRequest request){
+    public void saveTeam(@RequestBody @Valid TeamSaveRequest request){
         teamService.saveTeam(request);
     }
 

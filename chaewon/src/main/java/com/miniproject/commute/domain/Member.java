@@ -31,7 +31,7 @@ public class Member {
     private Team team;
     @OneToMany(mappedBy = "member")
     private List<Commute> commutes;
-
+    private Integer numberOfDayOff = 15;
 
     @Builder
     public Member(String name, boolean isManager, LocalDate joinDate, LocalDate birthday, Team team) {
@@ -46,4 +46,13 @@ public class Member {
         this.isManager = !this.isManager;
     }
 
+    //신입이면 연차 횟수 11개로 변경
+    public void isRookie(){
+        this.numberOfDayOff = 11;
+    }
+
+    //연차 사용
+    public void useDayOff(){
+        this.numberOfDayOff--;
+    }
 }

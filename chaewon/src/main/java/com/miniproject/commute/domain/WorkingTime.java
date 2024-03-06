@@ -16,10 +16,16 @@ public class WorkingTime {
     @EmbeddedId
     private WorkingTimePK workingTimePK;
     @Column(nullable = false)
-    private Integer WorkingMinutes;
+    private Integer workingMinutes;
+    private boolean usingDayOff = false;
+
     @Builder
     public WorkingTime(WorkingTimePK workingTimePK, Integer workingMinutes) {
         this.workingTimePK = workingTimePK;
-        WorkingMinutes = workingMinutes;
+        this.workingMinutes = workingMinutes;
+    }
+
+    public void useDayOff(){
+        this.usingDayOff = !this.usingDayOff;
     }
 }

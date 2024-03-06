@@ -9,6 +9,7 @@ import com.miniproject.commute.dto.commute.request.WorkOutRequest;
 import com.miniproject.commute.repository.commute.CommuteRepository;
 import com.miniproject.commute.repository.member.MemberRepository;
 import com.miniproject.commute.repository.workingTime.WorkingTimeRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,22 +19,19 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class CommuteService {
+
     private final CommuteRepository commuteRepository;
     private final MemberRepository memberRepository;
     private final WorkingTimeRepository workingTimeRepository;
-
-    public CommuteService(CommuteRepository commuteRepository, MemberRepository memberRepository, WorkingTimeRepository workingTimeRepository) {
-        this.commuteRepository = commuteRepository;
-        this.memberRepository = memberRepository;
-        this.workingTimeRepository = workingTimeRepository;
-    }
 
     /**
      * 출근 기록 저장
      * @param request
      * 1. 존재하는 멤버인지 확인
+     * 2-1. 연차를 접수한 날인데 출근을 시도하려는지 확인
      * 2. 이미 출근한 멤버인지 확인
      * 3. 퇴근했는데 당일에 다시 출근하려는지 확인
      * 4. 1-3을 통과 시 commute 테이블에 저장
@@ -41,11 +39,15 @@ public class CommuteService {
     @Transactional
     public void workInMember(WorkInRequest request) {
 
-        isMemberExist(request.memberId());
+        checkMemberExist(request.memberId());
 
-        isMemberAlreadyWorkIn(request.memberId());
+        if(workingTimeRepository.existsByWorkingTimePK_MemberIdAndWorkingTimePK_WorkingDateAndUsingDayOff(request.memberId(), LocalDate.now(), true)){
+            throw new IllegalArgumentException("당일은 연차 처리가 되어 있습니다.");
+        }
 
-        isMemberAlreadyWorkOut(request.memberId());
+        checkMemberAlreadyWorkIn(request.memberId());
+
+        checkMemberAlreadyWorkOut(request.memberId());
 
         Member member = memberRepository.findById(request.memberId()).get();
 
@@ -64,11 +66,11 @@ public class CommuteService {
     @Transactional
     public void workOutMember(WorkOutRequest request) {
 
-        isMemberExist(request.memberId());
+        checkMemberExist(request.memberId());
 
-        isMemberNotWorkIn(request.memberId());
+        checkMemberNotWorkIn(request.memberId());
 
-        isMemberAlreadyWorkOut(request.memberId());
+        checkMemberAlreadyWorkOut(request.memberId());
 
         Commute commute = commuteRepository.findByMember_Id(request.memberId());
         commute.WorkOut();
@@ -87,23 +89,23 @@ public class CommuteService {
         return LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
     }
 
-    private void isMemberExist(long id) {
+    private void checkMemberExist(long id) {
         if(!memberRepository.existsById(id)){
             throw new IllegalArgumentException("존재하지 않는 멤버입니다.");
         }
     }
-    private void isMemberAlreadyWorkIn(long id) {
+    private void checkMemberAlreadyWorkIn(long id) {
         if (commuteRepository.existsByMember_IdAndWorkInBetween(id, dayStart(), dayEnd())){
             throw new IllegalArgumentException("당일 이미 출근 기록이 있습니다.");
         }
     }
-    private void isMemberNotWorkIn(long id) {
+    private void checkMemberNotWorkIn(long id) {
         if (!commuteRepository.existsByMember_IdAndWorkInBetween(id, dayStart(), dayEnd())){
             throw new IllegalArgumentException("당일의 출근 기록이 없습니다.");
         }
     }
 
-    private void isMemberAlreadyWorkOut(long id) {
+    private void checkMemberAlreadyWorkOut(long id) {
         if(commuteRepository.existsByMember_IdAndWorkOutBetween(id, dayStart(), dayEnd())){
             throw new IllegalArgumentException("이미 당일에 퇴근 기록이 존재합니다.");
         }

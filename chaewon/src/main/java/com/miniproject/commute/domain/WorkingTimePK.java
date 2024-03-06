@@ -13,7 +13,6 @@ import java.time.LocalDate;
 public class WorkingTimePK implements Serializable {
     @Column(nullable = false)
     private Long memberId;
-    @Temporal(TemporalType.DATE)
     @Column(nullable = false, columnDefinition = "date default (current_date)")
     private LocalDate workingDate;
 

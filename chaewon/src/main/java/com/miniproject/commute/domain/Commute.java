@@ -17,10 +17,8 @@ public class Commute {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true, columnDefinition = "datetime default current_timestamp")
     private LocalDateTime workIn;
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
     private LocalDateTime workOut;
     @ManyToOne
