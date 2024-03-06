@@ -7,9 +7,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import study.crispin.attendance.application.AttendanceService;
+import study.crispin.attendance.application.request.WorkHoursInquiryRequest;
 import study.crispin.attendance.infrastructure.repository.AttendanceRepository;
 import study.crispin.attendance.presentation.response.ClockInResponse;
 import study.crispin.attendance.presentation.response.ClockOutResponse;
+import study.crispin.attendance.presentation.response.WorkHoursInquiryResponses;
 import study.crispin.common.DateTimeHolder;
 import study.crispin.common.exception.ExceptionMessage;
 import study.crispin.common.exception.NotFoundException;
@@ -228,6 +230,56 @@ class AttendanceServiceTest {
                 Assertions.assertThatThrownBy(() -> attendanceService.clockOut(memberId, clockOutDateTime))
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage(ExceptionMessage.NOT_CLOCKED_IN.getMessage());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("근무 시간 조회 테스트")
+    class WorkHoursInquiryTest {
+
+        @Nested
+        @DisplayName("근무 시간 조회 성공 테스트")
+        class WorkHoursInquirySuccessTest {
+
+            @Test
+            @DisplayName("정상적인 근무 시간 조회 요청 시, 해당 멤버의 근무 시간 내역을 반환해야 한다.")
+            void 근무_시간_조회_성공_테스트() {
+                // given
+                Long memberId = 1L;
+
+                WorkHoursInquiryRequest request = WorkHoursInquiryRequest.of(
+                        memberId, LocalDate.of(2024, 3, 1)
+                );
+
+                attendanceService.clockIn(memberId, dateTimeHolder.now().plusDays(1L));
+                attendanceService.clockOut(memberId, dateTimeHolder.now().plusDays(1L).plusHours(9L));
+
+                // when
+                WorkHoursInquiryResponses responses = attendanceService.workHoursInquiry(request);
+
+                // then
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(responses.workHoursInquiryResponses()).hasSize(1);
+                    softAssertions.assertThat(responses.sum()).isEqualTo(540);
+                });
+            }
+
+            @Test
+            @DisplayName("근무 시간 조회 시, 등록된 근무 시간이 없으면, 비어있는 근무 시간 내역을 반환해야 한다.")
+            void 등록된_근무_시간_없이_조회_성공_테스트() {
+                // given
+                Long memberId = 1L;
+
+                WorkHoursInquiryRequest request = WorkHoursInquiryRequest.of(
+                        memberId, LocalDate.of(2024, 3, 1)
+                );
+
+                // when
+                WorkHoursInquiryResponses responses = attendanceService.workHoursInquiry(request);
+
+                // then
+                Assertions.assertThat(responses.workHoursInquiryResponses()).isEmpty();
             }
         }
     }

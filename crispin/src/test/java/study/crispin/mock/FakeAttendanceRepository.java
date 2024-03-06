@@ -5,6 +5,7 @@ import study.crispin.attendance.infrastructure.repository.AttendanceRepository;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,6 +27,15 @@ public class FakeAttendanceRepository implements AttendanceRepository {
             storage.put(sequence, attendance);
             return storage.get(attendance.id());
         }
+    }
+
+    @Override
+    public List<Attendance> findByMemberIdAndEndDateNotNullAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
+        return storage.values()
+                .stream()
+                .filter(attendance ->
+                        attendance.isClockInAndOut(memberId, startDate, endDate))
+                .toList();
     }
 
     @Override

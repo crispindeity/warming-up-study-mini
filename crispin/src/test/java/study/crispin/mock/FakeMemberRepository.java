@@ -66,4 +66,11 @@ public class FakeMemberRepository implements MemberRepository {
                 .filter(member -> member.isMatchId(memberId))
                 .findFirst();
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return storage.values()
+                .stream()
+                .anyMatch(member -> member.isMatchId(id));
+    }
 }
