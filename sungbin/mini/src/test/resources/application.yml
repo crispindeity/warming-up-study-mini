@@ -24,4 +24,4 @@ spring:
       enabled: true
 api:
   secret:
-    key: ${SECRET_KEY}
+    key: "%2BHLHd3JdIwgJ1cWpRTNncZmVxOwTWC8NseENsHic%2FNhRbIzLhh%2FicN0edfGn25RZEzmigmFsCHmOa6tdeJJ2sQ%3D%3D"

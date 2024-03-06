@@ -154,7 +154,7 @@ class AnnualLeaveControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/api/annual-leave")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .param("id", String.valueOf(5L)))
+                        .param("id", String.valueOf(100L)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
