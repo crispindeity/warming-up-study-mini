@@ -58,7 +58,7 @@ public class AttendanceControllerTest {
         class ClockInSuccessTest {
 
             @Test
-            @DisplayName("정상적인 데이터로, 출근 등록 요청 시 200 OK 를 반환해야 한다.")
+            @DisplayName("정상적인 출근 등록 요청 시, 요청 처리 후 정상 응답을 반환해야 한다.")
             void 출근_등록_성공_테스트() throws Exception {
                 // given
                 Long memberId = 1L;
@@ -95,7 +95,7 @@ public class AttendanceControllerTest {
         class ClockOutSuccessTest {
 
             @Test
-            @DisplayName("정상적인 데이터로, 퇴근 등록 요청 시 200 OK 를 반환해야 한다.")
+            @DisplayName("정상적인 퇴근 등록 요청 시, 요청 처리 후 정상 응답을 반환해야 한다.")
             void 퇴근_등록_성공_테스트() throws Exception {
                 // given
                 Long memberId = 1L;
