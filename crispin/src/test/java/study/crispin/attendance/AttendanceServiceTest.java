@@ -12,6 +12,7 @@ import study.crispin.attendance.presentation.response.ClockInResponse;
 import study.crispin.attendance.presentation.response.ClockOutResponse;
 import study.crispin.common.DateTimeHolder;
 import study.crispin.common.exception.ExceptionMessage;
+import study.crispin.common.exception.NotFoundException;
 import study.crispin.common.exception.VerificationException;
 import study.crispin.fixture.TestMemberFixture;
 import study.crispin.member.infrastructure.repository.MemberRepository;
@@ -69,6 +70,44 @@ class AttendanceServiceTest {
                             .isEqualTo(LocalDateTime.of(2024, 2, 29, 9, 0, 0));
                 });
             }
+
+            @Test
+            @DisplayName("츨근 등록 후 다음날이 되면 다시 출근 등록이 가능해야 한다.")
+            void 출근_등록_후_다음날_출근_등록_성공_테스트() {
+                // given
+                Long MemberId = 1L;
+                LocalDateTime yesterday = dateTimeHolder.now();
+                attendanceService.clockIn(MemberId, yesterday);
+
+                // when
+                ClockInResponse response = attendanceService.clockIn(MemberId, yesterday.plusDays(1L));
+
+                // then
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(response.id()).isEqualTo(2L);
+                    softAssertions.assertThat(response.clockInDateTime())
+                            .isEqualTo(LocalDateTime.of(2024, 3, 1, 9, 0, 0));
+                });
+            }
+
+            @Test
+            @DisplayName("퇴근 후 다시 출근 등록을 하는 경우, 출근 등록에 성공해야 한다.")
+            void 퇴근_후_다시_출근_등록_성공_테스트() {
+                // given
+                Long memberId = 1L;
+                LocalDateTime clockInDateTime = dateTimeHolder.now();
+                LocalDateTime clockOutDateTime = clockInDateTime.plusHours(1L);
+
+                attendanceService.clockIn(memberId, clockInDateTime);
+                attendanceService.clockOut(memberId, clockOutDateTime);
+
+                LocalDateTime reClockInDateTime = clockOutDateTime.plusHours(2L);
+
+                // when & then
+                Assertions.assertThatCode(() -> attendanceService.clockIn(memberId, reClockInDateTime))
+                        .doesNotThrowAnyException();
+
+            }
         }
 
         @Nested
@@ -90,6 +129,19 @@ class AttendanceServiceTest {
                         .isInstanceOf(VerificationException.class)
                         .hasMessage(ExceptionMessage.ALREADY_CLOCKED_IN.getMessage());
             }
+
+            @Test
+            @DisplayName("등록되지 않은 직원이 출근 등록을 하는 경우, 예외가 발생해야 한다.")
+            void 등록_되지_않은_직원_출근_등록_실패_테스트() {
+                // given
+                Long unregisteredMemberId = 2L;
+                LocalDateTime clockInDateTime = dateTimeHolder.now();
+
+                // when & then
+                Assertions.assertThatThrownBy(() -> attendanceService.clockIn(unregisteredMemberId, clockInDateTime))
+                        .isInstanceOf(NotFoundException.class)
+                        .hasMessage(ExceptionMessage.UNREGISTERED_MEMBER.getMessage());
+            }
         }
     }
 
@@ -106,12 +158,6 @@ class AttendanceServiceTest {
             void 퇴근_등록_성공_테스트() {
                 // given
                 Long memberId = 1L;
-                memberRepository.save(TestMemberFixture.멤버_생성(
-                        "테스트멤버1",
-                        "테스트1팀",
-                        LocalDate.of(1999, 9, 9),
-                        LocalDate.of(2024, 2, 29)
-                ));
                 LocalDateTime clockInDateTime = dateTimeHolder.now();
                 attendanceService.clockIn(memberId, clockInDateTime);
                 LocalDateTime clockOutDateTime = clockInDateTime.plusHours(9L);
@@ -128,6 +174,60 @@ class AttendanceServiceTest {
                     softAssertions.assertThat(response.clockOutDateTime())
                             .isEqualTo(LocalDateTime.of(2024, 2, 29, 18, 0, 0));
                 });
+            }
+
+            @Test
+            @DisplayName("출근 후 퇴근 날짜가 출근 다음날 이어도 퇴근 등록에 성공해야 한다.")
+            void 출근_후_퇴근_다음날_등록_성공_테스트() {
+                // given
+                Long memberId = 1L;
+                LocalDateTime clockInDateTime = dateTimeHolder.now();
+                attendanceService.clockIn(memberId, clockInDateTime);
+                LocalDateTime clockOutDateTime = clockInDateTime.plusHours(20L);
+
+                // when
+                ClockOutResponse response = attendanceService.clockOut(memberId, clockOutDateTime);
+
+                // then
+                Assertions.assertThat(response.clockOutDateTime())
+                        .isEqualTo(LocalDateTime.of(2024, 3, 1, 5, 0, 0));
+            }
+
+            @Test
+            @DisplayName("퇴근 등록 후 재 퇴근 등록 시, 등록에 성공해야 한다.")
+            void 퇴근_등록_후_재_퇴근_등록_성공_테스트() {
+                // given
+                Long memberId = 1L;
+                LocalDateTime clockInDateTime = dateTimeHolder.now();
+                LocalDateTime clockOutDateTime = dateTimeHolder.now().plusHours(1L);
+
+                attendanceService.clockIn(memberId, clockInDateTime);
+                attendanceService.clockOut(memberId, clockOutDateTime);
+
+                LocalDateTime reClockOutDateTime = clockOutDateTime.plusHours(1L);
+
+                // when & then
+                Assertions.assertThatThrownBy(() -> attendanceService.clockOut(memberId, reClockOutDateTime))
+                        .isInstanceOf(NotFoundException.class)
+                        .hasMessage(ExceptionMessage.NOT_CLOCKED_IN.getMessage());
+            }
+        }
+
+        @Nested
+        @DisplayName("퇴근 등록 실패 테스트")
+        class ClockOutFailTest {
+
+            @Test
+            @DisplayName("출근 등록을 하지 않은 직원이 퇴근 등록을 하는 경우, 예외가 발생해야 한다.")
+            void 출근_등록을_하지_않은_직원_퇴근_등록_실패_테스트() {
+                // given
+                Long memberId = 1L;
+                LocalDateTime clockOutDateTime = dateTimeHolder.now();
+
+                // when & then
+                Assertions.assertThatThrownBy(() -> attendanceService.clockOut(memberId, clockOutDateTime))
+                        .isInstanceOf(NotFoundException.class)
+                        .hasMessage(ExceptionMessage.NOT_CLOCKED_IN.getMessage());
             }
         }
     }

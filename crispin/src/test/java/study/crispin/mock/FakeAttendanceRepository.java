@@ -28,17 +28,19 @@ public class FakeAttendanceRepository implements AttendanceRepository {
         }
     }
 
-    public Optional<Attendance> findByMemberId(Long memberId) {
+    @Override
+    public Optional<Attendance> findByMemberIdAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
         return storage.values()
                 .stream()
-                .filter(attendance -> attendance.isMatchByMemberId(memberId))
-                .findFirst();
+                .filter(attendance ->
+                    attendance.isClockIn(memberId, startDate, endDate))
+                .reduce((first, second) -> second);
     }
 
     @Override
     public boolean existsByMemberIdAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
         return storage.values()
                 .stream()
-                .anyMatch(attendance -> attendance.isTodayClockIn(memberId, startDate, endDate));
+                .anyMatch(attendance -> attendance.isClockIn(memberId, startDate, endDate));
     }
 }
