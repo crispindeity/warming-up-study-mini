@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -214,13 +215,13 @@ class AttendanceControllerTest extends BaseControllerTest {
     void find_specific_employee_attendance_record_test_fail_caused_by_wrong_input() throws Exception {
         clock_out_test_success();
 
-        WorkTimeSummaryRequestDto requestDto = new WorkTimeSummaryRequestDto(employeeId, "");
+        WorkTimeSummaryRequestDto requestDto = new WorkTimeSummaryRequestDto(employeeId, null);
 
         this.mockMvc.perform(get("/api/attendance")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .param("employeeId", String.valueOf(requestDto.employeeId()))
-                        .param("date", requestDto.date()))
+                        .param("date", String.format("%02d", requestDto.date())))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("message").exists())
@@ -232,39 +233,17 @@ class AttendanceControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("특정 직원 근무기록 조회 테스트 - 실패 (존재하지 않는 달)")
-    void find_specific_employee_attendance_record_test_fail_caused_by_not_exists_month() throws Exception {
-        clock_out_test_success();
-
-        WorkTimeSummaryRequestDto requestDto = new WorkTimeSummaryRequestDto(employeeId, "2024-13");
-
-        this.mockMvc.perform(get("/api/attendance")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .param("employeeId", String.valueOf(requestDto.employeeId()))
-                        .param("date", requestDto.date()))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("message").exists())
-                .andExpect(jsonPath("status").value(GlobalExceptionCode.INVALID_INPUT_VALUE.getHttpStatus().name()))
-                .andExpect(jsonPath("code").value(GlobalExceptionCode.INVALID_INPUT_VALUE.getCode()))
-                .andExpect(jsonPath("errors").exists())
-                .andExpect(jsonPath("errors").isEmpty())
-                .andExpect(jsonPath("timestamp").exists());
-    }
-
-    @Test
     @DisplayName("특정 직원 근무기록 조회 테스트 - 실패 (존재하지 않는 직원)")
     void find_specific_employee_attendance_record_test_fail_caused_by_not_exists_employee() throws Exception {
         clock_out_test_success();
 
-        WorkTimeSummaryRequestDto requestDto = new WorkTimeSummaryRequestDto(100L, "2024-02");
+        WorkTimeSummaryRequestDto requestDto = new WorkTimeSummaryRequestDto(100L, YearMonth.of(2024, 2));
 
         this.mockMvc.perform(get("/api/attendance")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .param("employeeId", String.valueOf(requestDto.employeeId()))
-                        .param("date", requestDto.date()))
+                        .param("date", "2024-02"))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("message").exists())
@@ -280,13 +259,13 @@ class AttendanceControllerTest extends BaseControllerTest {
     void find_specific_employee_attendance_record_test_success() throws Exception {
         clock_out_test_success();
 
-        WorkTimeSummaryRequestDto requestDto = new WorkTimeSummaryRequestDto(employeeId, "2024-02");
+        WorkTimeSummaryRequestDto requestDto = new WorkTimeSummaryRequestDto(employeeId, YearMonth.of(2024, 2));
 
         this.mockMvc.perform(get("/api/attendance")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .param("employeeId", String.valueOf(requestDto.employeeId()))
-                        .param("date", requestDto.date()))
+                        .param("date", "2024-02"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("details").exists())

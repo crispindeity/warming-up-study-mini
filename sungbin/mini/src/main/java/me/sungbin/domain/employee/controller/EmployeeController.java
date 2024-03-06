@@ -4,9 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.sungbin.domain.employee.model.request.EmployeesInfoResponseDto;
 import me.sungbin.domain.employee.model.request.RegistrationEmployeeRequestDto;
+import me.sungbin.domain.employee.model.response.OvertimeResponseDto;
 import me.sungbin.domain.employee.service.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.YearMonth;
 import java.util.List;
 
 /**
@@ -36,5 +38,10 @@ public class EmployeeController {
     @GetMapping
     public List<EmployeesInfoResponseDto> findEmployeesInfo() {
         return this.employeeService.findEmployeesInfo();
+    }
+
+    @GetMapping("/overtime")
+    public List<OvertimeResponseDto> findOverTimeList(YearMonth date) {
+        return this.employeeService.calculateOvertimeHours(date);
     }
 }

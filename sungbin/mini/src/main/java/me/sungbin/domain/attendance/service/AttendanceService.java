@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,14 +114,14 @@ public class AttendanceService {
         // 해당 직원의 요청된 연도와 월에 대한 출퇴근 기록을 가져옵니다.
         List<Attendance> attendances =
                 this.attendanceRepository.findByEmployeeIdAndMonthAndYear(employee.getId(),
-                        convertStringToLocalDate(requestDto).getYear(), convertStringToLocalDate(requestDto).getMonthValue());
+                        requestDto.date().getYear(), requestDto.date().getMonthValue());
 
         // 날짜별로 출퇴근 기록을 그룹화합니다.
         Map<LocalDate, List<Attendance>> groupedByDate = attendances.stream()
                 .collect(Collectors.groupingBy(a -> a.getClockInTime().toLocalDate()));
 
         // 날짜별 근무 시간을 계산합니다.
-        return calculateWorkTimeDetail(groupedByDate, convertStringToLocalDate(requestDto), employee.getId());
+        return calculateWorkTimeDetail(groupedByDate, requestDto.date(), employee.getId());
     }
 
     /**
@@ -134,29 +135,20 @@ public class AttendanceService {
     }
 
     /**
-     * 요청된 문자열 날짜를 LocalDate 객체로 변환합니다.
-     * @param requestDto
-     * @return
-     */
-    private LocalDate convertStringToLocalDate(WorkTimeSummaryRequestDto requestDto) {
-        String dateStr = requestDto.date() + "-01";
-        return LocalDate.parse(dateStr);
-    }
-
-    /**
      * 날짜별 상세 근무 시간과 총합을 계산합니다.
      * @param groupedByDate
-     * @param localDate
+     * @param yearMonth
+     * @param employeeId
      * @return
      */
-    private WorkTimeSummaryResponseDto calculateWorkTimeDetail(Map<LocalDate, List<Attendance>> groupedByDate, LocalDate localDate, Long employeeId) {
+    private WorkTimeSummaryResponseDto calculateWorkTimeDetail(Map<LocalDate, List<Attendance>> groupedByDate, YearMonth yearMonth, Long employeeId) {
         List<WorkTimeDetail> details = new ArrayList<>();
         long sum = 0;
 
         List<AnnualLeave> annualLeaves = this.employeeRepository.findById(employeeId)
                 .orElseThrow(EmployeeNotFoundException::new).getAnnualLeaves();
 
-        for (LocalDate date = LocalDate.of(localDate.getYear(), localDate.getMonthValue(), 1); date.getMonthValue() == localDate.getMonthValue(); date = date.plusDays(1)) {
+        for (LocalDate date = LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), 1); date.getMonthValue() == yearMonth.getMonthValue(); date = date.plusDays(1)) {
             // 특정 날짜에 연차를 사용했는지 확인
             LocalDate finalDate = date;
             boolean usingDayOff = annualLeaves.stream().anyMatch(annualLeave -> annualLeave.getAnnualLeaveDate().equals(finalDate));

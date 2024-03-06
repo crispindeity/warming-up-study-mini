@@ -23,6 +23,6 @@ import java.util.Optional;
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     Optional<Attendance> findByEmployeeAndClockInTimeBetween(Employee employee, LocalDateTime startOfDay, LocalDateTime endOfDay);
 
-    @Query("SELECT a FROM Attendance a WHERE a.employee.id = :employeeId AND FUNCTION('YEAR', a.clockInTime) = :month AND FUNCTION('MONTH', a.clockInTime) = :year")
-    List<Attendance> findByEmployeeIdAndMonthAndYear(Long employeeId, int month, int year);
+    @Query("SELECT a FROM Attendance a WHERE a.employee.id = :employeeId AND FUNCTION('YEAR', a.clockInTime) = :year AND FUNCTION('MONTH', a.clockInTime) = :month")
+    List<Attendance> findByEmployeeIdAndMonthAndYear(Long employeeId, int year, int month);
 }
