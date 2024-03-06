@@ -9,8 +9,8 @@ import org.example.yeonghuns.config.Error.exception.commute.CommuteNotFoundExcep
 import org.example.yeonghuns.config.Error.exception.member.MemberNotFoundException;
 import org.example.yeonghuns.domain.Commute;
 import org.example.yeonghuns.domain.Member;
-import org.example.yeonghuns.dto.commute.request.startOfWorkRequest;
-import org.example.yeonghuns.dto.commute.request.endOfWorkRequest;
+import org.example.yeonghuns.dto.commute.request.StartOfWorkRequest;
+import org.example.yeonghuns.dto.commute.request.EndOfWorkRequest;
 import org.example.yeonghuns.dto.commute.request.GetCommuteRecordRequest;
 import org.example.yeonghuns.dto.commute.response.GetCommuteDetail;
 import org.example.yeonghuns.dto.commute.response.GetCommuteRecordResponse;
@@ -18,10 +18,10 @@ import org.example.yeonghuns.repository.CommuteRepository;
 import org.example.yeonghuns.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * packageName    : org.example.yeonghuns.service.commute
@@ -42,37 +42,37 @@ public class CommuteService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void startOfWork(startOfWorkRequest request) {
+    public void startOfWork(StartOfWorkRequest request) {
         Member member = findMemberById(request.id());
-
-        Commute latestCommute = findLatestCommuteByMember(member);
-        if (latestCommute.isAttendance()) throw new AbsentCheckOutException(); //이전 기록 퇴근확인
-
-        boolean isAlreadyAttendance = LocalDate.now().equals(LocalDate.from(latestCommute.getCreatedAt()));
-        if (isAlreadyAttendance) throw new AlreadyAttendanceException(); //당일 출근기록 확인
-
+        Optional<Commute> commute = findLatestCommuteByMember(member);
+        if(commute.isPresent()) {
+            Commute latestCommute = commute.orElseThrow(CommuteNotFoundException::new);
+            if (latestCommute.isAttendance()) throw new AbsentCheckOutException(); //이전 기록 퇴근확인
+            boolean isAlreadyAttendance = LocalDate.now().equals(LocalDate.from(latestCommute.getCreatedAt()));
+            if (isAlreadyAttendance) throw new AlreadyAttendanceException(); //당일 출근기록 확인
+        }
         commuteRepository.save(request.toEntity(member));
     }
 
     @Transactional
-    public void endOfWork(@RequestBody endOfWorkRequest request) {
+    public void endOfWork(EndOfWorkRequest request) {
         Member member = findMemberById(request.id());
 
-        Commute latestCommute = findLatestCommuteByMember(member);
+        Commute latestCommute = findLatestCommuteByMember(member).orElseThrow(CommuteNotFoundException::new);
 
         if (!latestCommute.isAttendance()) throw new AlreadyDepartureException();
 
         latestCommute.endOfWork(); //변경감지 자동저장
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetCommuteRecordResponse GetCommuteRecord(GetCommuteRecordRequest request) {
         findMemberById(request.id());
 
         List<GetCommuteDetail> commuteDetailList = findCommuteListByMemberIdAndStartOfWork(request);
-        Long sum = commuteDetailList.stream()
-                .map(GetCommuteDetail::workingMinutes)
-                .reduce(0L, Long::sum);
+        long sum = commuteDetailList.stream()
+                .mapToLong(GetCommuteDetail::workingMinutes)
+                .sum();
         //commuteDetailList에서 workingMinutes를 조회, reduce로 합을 반환
         return new GetCommuteRecordResponse(commuteDetailList, sum);
     }
@@ -81,9 +81,8 @@ public class CommuteService {
         return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
     }
 
-    private Commute findLatestCommuteByMember(Member member) {
-        return commuteRepository.findLatestCommuteByMemberId(member.getId())
-                .orElseThrow(CommuteNotFoundException::new);
+    private Optional<Commute> findLatestCommuteByMember(Member member) {
+        return commuteRepository.findFirstByMemberIdOrderByCreatedAtDesc(member.getId());
     }
 
     private List<GetCommuteDetail> findCommuteListByMemberIdAndStartOfWork(GetCommuteRecordRequest request) {

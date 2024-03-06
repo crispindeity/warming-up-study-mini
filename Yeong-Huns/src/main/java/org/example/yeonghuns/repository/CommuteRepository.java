@@ -1,6 +1,7 @@
 package org.example.yeonghuns.repository;
 
 import org.example.yeonghuns.domain.Commute;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,8 +20,7 @@ import java.util.Optional;
  * 2024-03-04        Yeong-Huns       최초 생성
  */
 public interface CommuteRepository extends JpaRepository<Commute, Long> {
-    @Query("SELECT latestcommute FROM Commute latestcommute WHERE latestcommute.member.id = :memberId AND latestcommute.createdAt = (SELECT MAX(commute.createdAt) FROM Commute commute WHERE commute.member.id = :memberId)")
-    Optional<Commute> findLatestCommuteByMemberId(Long memberId);
+    Optional<Commute> findFirstByMemberIdOrderByCreatedAtDesc(Long memberId);
 
     @Query("SELECT commute FROM Commute commute WHERE commute.member.id= :memberId AND FUNCTION('YEAR', commute.createdAt)= :year AND FUNCTION('MONTH', commute.createdAt)= :month")
     List<Commute> findCommuteListByMemberIdAndStartOfWork(Long memberId, int year, int month);

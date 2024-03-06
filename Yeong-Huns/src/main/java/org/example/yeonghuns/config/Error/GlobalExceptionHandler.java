@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.yeonghuns.config.Error.exception.CustomBaseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
@@ -20,6 +21,13 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handle(CustomBaseException e){
         log.error("CustomBaseException", e);
         return createErrorResponse(e.getErrorCode());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException e){
+        e.getStackTrace();
+        log.error("MethodArgumentNotValidException", e);
+        return createErrorResponse(ErrorCode.INVALID_INPUT_VALUE);
     }
 
     @ExceptionHandler(Exception.class)

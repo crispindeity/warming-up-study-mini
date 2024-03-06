@@ -1,6 +1,8 @@
 package org.example.yeonghuns.dto.commute.request;
 
 import jakarta.validation.constraints.NotNull;
+import org.example.yeonghuns.domain.Commute;
+import org.example.yeonghuns.domain.Member;
 
 /**
  * packageName    : org.example.yeonghuns.dto.commute.request
@@ -13,5 +15,10 @@ import jakarta.validation.constraints.NotNull;
  * -----------------------------------------------------------
  * 2024-03-04        Yeong-Huns       최초 생성
  */
-public record endOfWorkRequest(@NotNull long id) {
+public record StartOfWorkRequest(@NotNull long id) {
+    public Commute toEntity(Member member){
+        return Commute.builder()
+                .member(member)
+                .build();
+    }
 }
