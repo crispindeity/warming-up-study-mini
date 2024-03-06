@@ -2,6 +2,7 @@ package study.crispin.attendance.domain;
 
 import study.crispin.member.domain.Member;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -28,6 +29,12 @@ public record Attendance(Long id, Member member, LocalDateTime clockInDateTime, 
         );
     }
 
+    public boolean isClockInAndOut(Long memberId, LocalDate startDate, LocalDate endDate) {
+        return isMemberMatch(memberId) &&
+                !isClockOutNull() &&
+                isBetweenClockInDates(startDate, endDate);
+    }
+
     public boolean isClockIn(Long memberId, LocalDate startDate, LocalDate endDate) {
         return isMemberMatch(memberId) &&
                 isClockOutNull() &&
@@ -45,5 +52,9 @@ public record Attendance(Long id, Member member, LocalDateTime clockInDateTime, 
     private boolean isBetweenClockInDates(LocalDate startDate, LocalDate endDate) {
         LocalDate clockInDate = clockInDateTime.toLocalDate();
         return clockInDate.isAfter(startDate) && clockInDate.isBefore(endDate);
+    }
+
+    public Long calculateWorkHour() {
+        return Duration.between(clockInDateTime, clockOutDateTime).toMinutes();
     }
 }
