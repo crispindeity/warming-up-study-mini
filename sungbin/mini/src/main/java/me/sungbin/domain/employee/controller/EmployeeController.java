@@ -44,4 +44,11 @@ public class EmployeeController {
     public List<OvertimeResponseDto> findOverTimeList(YearMonth date) {
         return this.employeeService.calculateOvertimeHours(date);
     }
+
+    @GetMapping("/test")
+    public void test() {
+        YearMonth previousMonth = YearMonth.now();
+        List<OvertimeResponseDto> overtimeRecords = this.employeeService.calculateOvertimeHours(previousMonth);
+        this.employeeService.exportOverTimeRecordsToCSV(overtimeRecords, "overtime_" + previousMonth + ".csv");
+    }
 }
