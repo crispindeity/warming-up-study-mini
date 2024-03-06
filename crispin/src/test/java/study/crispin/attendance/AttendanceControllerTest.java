@@ -17,14 +17,20 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import study.crispin.attendance.application.AttendanceService;
 import study.crispin.attendance.application.request.ClockInOrOutRequest;
+import study.crispin.attendance.application.request.WorkHoursInquiryRequest;
 import study.crispin.attendance.presentation.controller.AttendanceController;
 import study.crispin.attendance.presentation.response.ClockInResponse;
 import study.crispin.attendance.presentation.response.ClockOutResponse;
+import study.crispin.attendance.presentation.response.WorkHoursInquiryResponse;
+import study.crispin.attendance.presentation.response.WorkHoursInquiryResponses;
 import study.crispin.common.DateTimeHolder;
 import study.crispin.common.controller.ExceptionControllerAdvice;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 @WebMvcTest(AttendanceController.class)
 @DisplayName("출,퇴근 컨트롤러 테스트")
@@ -124,6 +130,121 @@ public class AttendanceControllerTest {
 
                 // then
                 BDDMockito.then(attendanceService).should().clockOut(memberId, now);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("근무 시간 조회 컨트롤러 테스트")
+    class WorkHoursInquiryControllerTest {
+
+        @Nested
+        @DisplayName("근무 시간 조회 성공 테스트")
+        class WorkHoursInquirySuccessTest {
+
+            @Test
+            @DisplayName("정상적인 근무 시간 조회 요청 시, 요청 처리 후 정상 응답을 반환해야 한다.")
+            void 근무_시간_조회_성공_테스트() throws Exception {
+                // given
+                String memberId = "1";
+                LocalDateTime workDateTime = LocalDateTime.of(
+                        LocalDate.of(2024, 2, 1), LocalTime.MIN
+                );
+
+                WorkHoursInquiryRequest request = WorkHoursInquiryRequest.of(
+                        memberId,
+                        "2024-02"
+                );
+                WorkHoursInquiryResponses responses = WorkHoursInquiryResponses.of(
+                        List.of(WorkHoursInquiryResponse.of(workDateTime, 540)), 540);
+
+                BDDMockito.given(attendanceService.workHoursInquiry(request)).willReturn(responses);
+
+                // when
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/work-hours")
+                                .queryParam("memberId", request.memberId())
+                                .queryParam("date", request.date())
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .accept(MediaType.APPLICATION_JSON))
+                        .andDo(MockMvcResultHandlers.print())
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andExpect(MockMvcResultMatchers.content().json(stringify(responses)));
+
+                // then
+                BDDMockito.then(attendanceService).should().workHoursInquiry(request);
+            }
+        }
+
+        @Nested
+        @DisplayName("근무 시간 조회 실패 테스트")
+        class WorkHoursInquiryFailTest {
+
+            @Test
+            @DisplayName("날짜 값이 잘못된 형식인 요청이 들어오면, 예외가 발생해야 한다.")
+            void 잘못된_날짜_요청_근무_시간_조회_실패_테스트() throws Exception {
+                // given
+                String memberId = "1";
+                String wrongDate = "1989-02";
+
+                // when & then
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/work-hours")
+                                .queryParam("memberId", memberId)
+                                .queryParam("date", wrongDate)
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .accept(MediaType.APPLICATION_JSON))
+                        .andDo(MockMvcResultHandlers.print())
+                        .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+            }
+
+            @Test
+            @DisplayName("아이디 값이 비어있는 요청이 들어오면, 예외가 발생해야 한다.")
+            void 비어있는_아이디_요청_근무_시간_조회_실패_테스트() throws Exception {
+                // given
+                String wrongId = "";
+                String date = "2024-01";
+
+                // when & then
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/work-hours")
+                                .queryParam("memberId", wrongId)
+                                .queryParam("date", date)
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .accept(MediaType.APPLICATION_JSON))
+                        .andDo(MockMvcResultHandlers.print())
+                        .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+            }
+
+            @Test
+            @DisplayName("아이디 값이 null 인 요청이 들어오면, 예외가 발생해야 한다.")
+            void null_아이디_요청_근무_시간_조회_실패_테스트() throws Exception {
+                // given
+                String wrongId = null;
+                String date = "2024-01";
+
+                // when & then
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/work-hours")
+                                .queryParam("memberId", wrongId)
+                                .queryParam("date", date)
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .accept(MediaType.APPLICATION_JSON))
+                        .andDo(MockMvcResultHandlers.print())
+                        .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+            }
+
+            @Test
+            @DisplayName("아이디 값이 공백 인 요청이 들어오면, 예외가 발생해야 한다.")
+            void 공백_아이디_요청_근무_시간_조회_실패_테스트() throws Exception {
+                // given
+                String wrongId = " ";
+                String date = "2024-01";
+
+                // when & then
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/work-hours")
+                                .queryParam("memberId", wrongId)
+                                .queryParam("date", date)
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .accept(MediaType.APPLICATION_JSON))
+                        .andDo(MockMvcResultHandlers.print())
+                        .andExpect(MockMvcResultMatchers.status().is4xxClientError());
             }
         }
     }

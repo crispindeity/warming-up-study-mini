@@ -247,14 +247,12 @@ class AttendanceServiceImplTest {
             @DisplayName("정상적인 근무 시간 조회 요청 시, 해당 멤버의 근무 시간 내역을 반환해야 한다.")
             void 근무_시간_조회_성공_테스트() {
                 // given
-                Long memberId = 1L;
+                String memberId = "1";
 
-                WorkHoursInquiryRequest request = WorkHoursInquiryRequest.of(
-                        memberId, LocalDate.of(2024, 3, 1)
-                );
+                WorkHoursInquiryRequest request = WorkHoursInquiryRequest.of(memberId, "2024-03-01");
 
-                attendanceService.clockIn(memberId, dateTimeHolder.now().plusDays(1L));
-                attendanceService.clockOut(memberId, dateTimeHolder.now().plusDays(1L).plusHours(9L));
+                attendanceService.clockIn(request.getMemberId(), dateTimeHolder.now().plusDays(1L));
+                attendanceService.clockOut(request.getMemberId(), dateTimeHolder.now().plusDays(1L).plusHours(9L));
 
                 // when
                 WorkHoursInquiryResponses responses = attendanceService.workHoursInquiry(request);
@@ -270,11 +268,9 @@ class AttendanceServiceImplTest {
             @DisplayName("근무 시간 조회 시, 등록된 근무 시간이 없으면, 비어있는 근무 시간 내역을 반환해야 한다.")
             void 등록된_근무_시간_없이_조회_성공_테스트() {
                 // given
-                Long memberId = 1L;
+                String memberId = "1";
 
-                WorkHoursInquiryRequest request = WorkHoursInquiryRequest.of(
-                        memberId, LocalDate.of(2024, 3, 1)
-                );
+                WorkHoursInquiryRequest request = WorkHoursInquiryRequest.of(memberId, "2024-03-01");
 
                 // when
                 WorkHoursInquiryResponses responses = attendanceService.workHoursInquiry(request);
