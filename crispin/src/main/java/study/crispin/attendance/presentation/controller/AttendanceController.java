@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import study.crispin.attendance.application.AttendanceService;
-import study.crispin.attendance.application.request.ClockInRequest;
+import study.crispin.attendance.application.request.ClockInOrOutRequest;
 import study.crispin.attendance.presentation.response.ClockInResponse;
+import study.crispin.attendance.presentation.response.ClockOutResponse;
 import study.crispin.common.DateTimeHolder;
 
 @RestController
@@ -24,9 +25,17 @@ public class AttendanceController {
 
     @PostMapping("/clock-in")
     public ResponseEntity<ClockInResponse> clockIn(
-            @RequestBody ClockInRequest request
+            @RequestBody ClockInOrOutRequest request
     ) {
         ClockInResponse response = attendanceService.clockIn(request.memberId(), dateTimeHolder.now());
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/clock-out")
+    public ResponseEntity<ClockOutResponse> clockOut(
+            @RequestBody ClockInOrOutRequest request
+    ) {
+        ClockOutResponse response = attendanceService.clockOut(request.memberId(), dateTimeHolder.now());
         return ResponseEntity.ok().body(response);
     }
 }
