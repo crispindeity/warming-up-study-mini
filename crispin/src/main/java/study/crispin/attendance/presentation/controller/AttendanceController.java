@@ -1,14 +1,14 @@
 package study.crispin.attendance.presentation.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import study.crispin.attendance.application.AttendanceService;
 import study.crispin.attendance.application.request.ClockInOrOutRequest;
+import study.crispin.attendance.application.request.WorkHoursInquiryRequest;
 import study.crispin.attendance.presentation.response.ClockInResponse;
 import study.crispin.attendance.presentation.response.ClockOutResponse;
+import study.crispin.attendance.presentation.response.WorkHoursInquiryResponses;
 import study.crispin.common.DateTimeHolder;
 
 @RestController
@@ -27,15 +27,20 @@ public class AttendanceController {
     public ResponseEntity<ClockInResponse> clockIn(
             @RequestBody ClockInOrOutRequest request
     ) {
-        ClockInResponse response = attendanceService.clockIn(request.memberId(), dateTimeHolder.now());
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(attendanceService.clockIn(request.memberId(), dateTimeHolder.now()));
     }
 
     @PostMapping("/clock-out")
     public ResponseEntity<ClockOutResponse> clockOut(
             @RequestBody ClockInOrOutRequest request
     ) {
-        ClockOutResponse response = attendanceService.clockOut(request.memberId(), dateTimeHolder.now());
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(attendanceService.clockOut(request.memberId(), dateTimeHolder.now()));
+    }
+
+    @GetMapping("/work-hours")
+    public ResponseEntity<WorkHoursInquiryResponses> inquiry(
+            @Valid WorkHoursInquiryRequest request
+    ) {
+        return ResponseEntity.ok(attendanceService.workHoursInquiry(request));
     }
 }

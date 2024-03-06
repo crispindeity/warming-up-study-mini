@@ -69,7 +69,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public WorkHoursInquiryResponses workHoursInquiry(WorkHoursInquiryRequest request) {
-        verifyRegisteredMember(request.memberId());
+        verifyRegisteredMember(request.getMemberId());
 
         LocalDate startDate = request.getStartDate();
         LocalDate endDate = request.getEndDate();
@@ -102,7 +102,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     private List<WorkHoursInquiryResponse> findWorkHoursInquiry(WorkHoursInquiryRequest request, LocalDate startDate, LocalDate endDate) {
         return attendanceRepository
-                .findByMemberIdAndEndDateNotNullAndDateRange(request.memberId(), startDate, endDate)
+                .findByMemberIdAndEndDateNotNullAndDateRange(request.getMemberId(), startDate, endDate)
                 .stream()
                 .map(attendance -> {
                     LocalDateTime clockInDate = attendance.clockInDateTime();
