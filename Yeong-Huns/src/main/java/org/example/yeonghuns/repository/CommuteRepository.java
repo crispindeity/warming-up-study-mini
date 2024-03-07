@@ -16,7 +16,7 @@ import java.util.Optional;
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2024-03-04        Yeong-Huns       최초 생성
+ * 2024-03-04        Yeong-Huns       최초 생성/
  */
 public interface CommuteRepository extends JpaRepository<Commute, Long> {
     Optional<Commute> findFirstByMemberIdOrderByCreatedAtDesc(Long memberId);
