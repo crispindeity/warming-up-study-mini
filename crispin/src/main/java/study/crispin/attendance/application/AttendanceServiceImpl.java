@@ -84,7 +84,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     private void verifyTodayClockIn(Long memberId, LocalDateTime clockInDateTime) {
-        LocalDateTime startDate = LocalDateUtil.convertToDateOneDaysAgo(clockInDateTime);
+        LocalDateTime startDate = LocalDateUtil.truncatedToTime(clockInDateTime);
         LocalDateTime endDate = LocalDateUtil.convertToDateOneDayLater(clockInDateTime);
 
         if (attendanceRepository.existsByMemberIdAndDateRange(memberId, startDate, endDate)) {

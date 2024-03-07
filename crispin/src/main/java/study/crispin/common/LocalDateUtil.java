@@ -8,8 +8,8 @@ public class LocalDateUtil {
     protected LocalDateUtil() {
     }
 
-    public static LocalDateTime convertToDateOneDaysAgo(LocalDateTime localDateTime) {
-        return localDateTime.minusDays(1L).truncatedTo(ChronoUnit.DAYS);
+    public static LocalDateTime truncatedToTime(LocalDateTime localDateTime) {
+        return localDateTime.truncatedTo(ChronoUnit.DAYS);
     }
 
     public static LocalDateTime convertToDateTwoDaysAgo(LocalDateTime localDateTime) {

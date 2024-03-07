@@ -30,14 +30,13 @@ public record WorkHoursInquiryRequest(
 
     public LocalDateTime getStartDate() {
         LocalDate parsedDate = dateParse();
-        return LocalDateUtil.convertToDateOneDaysAgo(LocalDateTime.of(parsedDate, LocalTime.MIN));
+        return LocalDateTime.of(parsedDate, LocalTime.MIN);
     }
 
     public LocalDateTime getEndDate() {
         LocalDate parsedDate = dateParse();
-        LocalDate startDate = LocalDate.of(parsedDate.getYear(), parsedDate.getMonth(), 1);
         return LocalDateUtil.convertToDateOneDayLater(
-                LocalDateTime.of(startDate.with(TemporalAdjusters.lastDayOfMonth()), LocalTime.MIN)
+                LocalDateTime.of(parsedDate.with(TemporalAdjusters.lastDayOfMonth()), LocalTime.MIN)
         );
     }
 
