@@ -1,18 +1,18 @@
 package org.example.yeonghuns.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import org.example.yeonghuns.dto.team.response.GetAllTeamsResponse;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Team {
-
-    protected Team() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +28,10 @@ public class Team {
     @Builder
     public Team(String name) {
         this.name = name;
+    }
+
+    public int getMemberCount(){
+        return memberList.size();
     }
 
     public void updateManager(String manager) {

@@ -1,21 +1,26 @@
 package org.example.yeonghuns.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.example.yeonghuns.common.BaseEntity;
+import org.example.yeonghuns.common.CreatedDateEntity;
 import org.example.yeonghuns.dto.member.response.GetAllMembersResponse;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@EntityListeners(AuditingEntityListener.class)
-public class Member {
-
-    protected Member() {}
+@AttributeOverride(name = "createdAt", column = @Column(name = "work_start_date"))
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Member extends CreatedDateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,12 +32,9 @@ public class Member {
 
     private LocalDate birthday;
 
-    @CreatedDate
-    private LocalDateTime workStartDate;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
-
+    
     @Builder
     public Member(String name, boolean role, LocalDate birthday, Team team) {
         this.name = name;

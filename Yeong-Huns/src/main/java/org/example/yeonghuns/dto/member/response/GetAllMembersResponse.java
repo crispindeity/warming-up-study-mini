@@ -18,7 +18,7 @@ public record GetAllMembersResponse(String name, String teamName, String role, L
                 .teamName(member.getTeam().getName())
                 .role(isManager)
                 .birthday(member.getBirthday())
-                .workStartDate(member.getWorkStartDate().toLocalDate())
+                .workStartDate(member.getCreatedAt().toLocalDate())
                 .build();
     }
 }
