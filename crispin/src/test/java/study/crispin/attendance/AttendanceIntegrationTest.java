@@ -68,8 +68,8 @@ public class AttendanceIntegrationTest extends ApiTest {
         class ClockInFailTest {
 
             @Test
-            @DisplayName("출근 등록 후 다시 출근 등록을 요청 시, 예외가 반환되어야 한다.")
-            void given_when_then() {
+            @DisplayName("출근 등록 후 다시 출근 등록을 요청 시, 400 BadRequest 를 반환해야 한다.")
+            void 중복_출근_등록_실패_테스트() {
                 // given
                 MemberSteps.멤버_등록_요청(
                         MemberRegistrationRequest.of(
@@ -81,7 +81,7 @@ public class AttendanceIntegrationTest extends ApiTest {
                 ClockInOrOutRequest request = ClockInOrOutRequest.of(1L);
                 AttendanceSteps.출근_등록_요청(request);
 
-                // when & then
+                // when
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(request)
@@ -95,6 +95,30 @@ public class AttendanceIntegrationTest extends ApiTest {
                             .isEqualTo(HttpStatus.BAD_REQUEST.value());
                     softAssertions.assertThat(response.body().jsonPath().getString("message"))
                             .isEqualTo(ExceptionMessage.ALREADY_CLOCKED_IN.getMessage());
+                });
+            }
+
+            @Test
+            @DisplayName("등록 되지 않은 멤버 출근 요청 시, 400 BadRequest 를 반환해야 한다.")
+            void 미_등록_멤버_출근_요청_실패_테스트() {
+                // given
+                ClockInOrOutRequest request = ClockInOrOutRequest.of(1L);
+                AttendanceSteps.출근_등록_요청(request);
+
+                // when
+                ExtractableResponse<Response> response = RestAssured.given()
+                        .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(request)
+                        .when().post("/api/v1/clock-in")
+                        .then().log().all()
+                        .extract();
+
+                // then
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(response.statusCode())
+                            .isEqualTo(HttpStatus.BAD_REQUEST.value());
+                    softAssertions.assertThat(response.body().jsonPath().getString("message"))
+                            .isEqualTo(ExceptionMessage.UNREGISTERED_MEMBER.getMessage());
                 });
             }
         }
@@ -139,6 +163,41 @@ public class AttendanceIntegrationTest extends ApiTest {
                             .isEqualTo("테스트팀원1");
                     softAssertions.assertThat(response.statusCode())
                             .isEqualTo(HttpStatus.OK.value());
+                });
+            }
+        }
+
+        @Nested
+        @DisplayName("퇴근 등록 실패 테스트")
+        class ClockOutFailTest {
+
+            @Test
+            @DisplayName("출근 등록 하지 않고 퇴근 등록 요청 시, 400 BadRequest 를 반환해야 한다.")
+            void 출근_등록_없이_퇴근_등록_실패_테스트() {
+                // given
+                MemberSteps.멤버_등록_요청(
+                        MemberRegistrationRequest.of(
+                                "테스트팀원1",
+                                null,
+                                LocalDate.of(1999, 9, 9),
+                                LocalDate.of(2024, 2, 29))
+                );
+                ClockInOrOutRequest request = ClockInOrOutRequest.of(1L);
+
+                // when
+                ExtractableResponse<Response> response = RestAssured.given()
+                        .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(request)
+                        .when().post("/api/v1/clock-out")
+                        .then().log().all()
+                        .extract();
+
+                // then
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(response.statusCode())
+                            .isEqualTo(HttpStatus.BAD_REQUEST.value());
+                    softAssertions.assertThat(response.body().jsonPath().getString("message"))
+                            .isEqualTo(ExceptionMessage.NOT_CLOCKED_IN.getMessage());
                 });
             }
         }
