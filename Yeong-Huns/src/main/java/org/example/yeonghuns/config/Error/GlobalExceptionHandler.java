@@ -3,6 +3,7 @@ package org.example.yeonghuns.config.Error;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yeonghuns.config.Error.exception.CustomBaseException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -30,6 +31,12 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ErrorCode.INVALID_INPUT_VALUE);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ResponseEntity<ErrorResponse> handle(HttpMessageNotReadableException e){
+        e.getStackTrace();
+        log.error("HttpMessageNotReadableException", e);
+        return createErrorResponse(ErrorCode.MESSAGE_NOT_READABLE);
+    }
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handle(Exception e){
         e.getStackTrace();

@@ -17,4 +17,6 @@ import java.time.YearMonth;
  * 2024-03-05        Yeong-Huns       최초 생성
  */
 public record GetCommuteRecordRequest(@NotNull long id, @DateTimeFormat(pattern = "yyyy-MM") YearMonth yearMonth) {
+    public int getYear(){ return this.yearMonth.getYear();}
+    public int getMonth(){ return this.yearMonth.getMonth().getValue(); }
 }

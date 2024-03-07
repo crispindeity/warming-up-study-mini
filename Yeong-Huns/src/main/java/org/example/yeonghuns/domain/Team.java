@@ -1,6 +1,7 @@
 package org.example.yeonghuns.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +23,9 @@ public class Team {
 
     private String manager;
 
+
+    private int dayBeforeAnnual = 0;
+
     @OneToMany(mappedBy = "team")
     private List<Member> memberList = new ArrayList<>();
 
@@ -38,4 +42,5 @@ public class Team {
         this.manager = manager;
     }
 
+    public void updateDayBeforeAnnual(int dayBeforeAnnual){ this.dayBeforeAnnual = dayBeforeAnnual; }
 }

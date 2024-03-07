@@ -34,7 +34,7 @@ public class Member extends CreatedDateEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
-    
+
     @Builder
     public Member(String name, boolean role, LocalDate birthday, Team team) {
         this.name = name;
