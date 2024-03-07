@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: "jdbc:mysql://localhost:3306/myapi"
+    username: "root"
+    password: "root"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none #
+    #hibernate설정끝
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
