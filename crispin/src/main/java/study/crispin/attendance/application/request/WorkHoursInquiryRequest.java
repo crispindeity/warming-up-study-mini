@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import study.crispin.common.LocalDateUtil;
 
+import java.beans.ConstructorProperties;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,16 +18,22 @@ public record WorkHoursInquiryRequest(
         String date
 ) {
 
+    @ConstructorProperties({"member-id", "date"})
+    public WorkHoursInquiryRequest(String memberId, String date) {
+        this.memberId = memberId;
+        this.date = date;
+    }
+
     public static WorkHoursInquiryRequest of(String memberId, String date) {
         return new WorkHoursInquiryRequest(memberId, date);
     }
 
-    public LocalDate getStartDate() {
+    public LocalDateTime getStartDate() {
         LocalDate parsedDate = dateParse();
         return LocalDateUtil.convertToDateOneDaysAgo(LocalDateTime.of(parsedDate, LocalTime.MIN));
     }
 
-    public LocalDate getEndDate() {
+    public LocalDateTime getEndDate() {
         LocalDate parsedDate = dateParse();
         LocalDate startDate = LocalDate.of(parsedDate.getYear(), parsedDate.getMonth(), 1);
         return LocalDateUtil.convertToDateOneDayLater(
@@ -35,7 +42,7 @@ public record WorkHoursInquiryRequest(
     }
 
     private LocalDate dateParse() {
-        return LocalDate.parse(this.date);
+        return LocalDate.parse(this.date.concat("-01"));
     }
 
     public Long getMemberId() {

@@ -249,7 +249,7 @@ class AttendanceServiceImplTest {
                 // given
                 String memberId = "1";
 
-                WorkHoursInquiryRequest request = WorkHoursInquiryRequest.of(memberId, "2024-03-01");
+                WorkHoursInquiryRequest request = WorkHoursInquiryRequest.of(memberId, "2024-03");
 
                 attendanceService.clockIn(request.getMemberId(), dateTimeHolder.now().plusDays(1L));
                 attendanceService.clockOut(request.getMemberId(), dateTimeHolder.now().plusDays(1L).plusHours(9L));
@@ -270,7 +270,7 @@ class AttendanceServiceImplTest {
                 // given
                 String memberId = "1";
 
-                WorkHoursInquiryRequest request = WorkHoursInquiryRequest.of(memberId, "2024-03-01");
+                WorkHoursInquiryRequest request = WorkHoursInquiryRequest.of(memberId, "2024-03");
 
                 // when
                 WorkHoursInquiryResponses responses = attendanceService.workHoursInquiry(request);

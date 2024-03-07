@@ -3,7 +3,7 @@ package study.crispin.mock;
 import study.crispin.attendance.domain.Attendance;
 import study.crispin.attendance.infrastructure.repository.AttendanceRepository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +30,7 @@ public class FakeAttendanceRepository implements AttendanceRepository {
     }
 
     @Override
-    public List<Attendance> findByMemberIdAndEndDateNotNullAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
+    public List<Attendance> findByMemberIdAndEndDateNotNullAndDateRange(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
         return storage.values()
                 .stream()
                 .filter(attendance ->
@@ -39,16 +39,16 @@ public class FakeAttendanceRepository implements AttendanceRepository {
     }
 
     @Override
-    public Optional<Attendance> findByMemberIdAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
+    public Optional<Attendance> findByMemberIdAndDateRange(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
         return storage.values()
                 .stream()
                 .filter(attendance ->
-                    attendance.isClockIn(memberId, startDate, endDate))
+                        attendance.isClockIn(memberId, startDate, endDate))
                 .reduce((first, second) -> second);
     }
 
     @Override
-    public boolean existsByMemberIdAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
+    public boolean existsByMemberIdAndDateRange(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
         return storage.values()
                 .stream()
                 .anyMatch(attendance -> attendance.isClockIn(memberId, startDate, endDate));

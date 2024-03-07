@@ -43,7 +43,8 @@ public class AttendanceEntity {
         return Attendance.of(
                 this.id,
                 this.member.toModel(),
-                this.clockInDateTime
+                this.clockInDateTime,
+                this.clockOutDateTime
         );
     }
 }

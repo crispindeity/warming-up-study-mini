@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 import study.crispin.attendance.domain.Attendance;
 import study.crispin.attendance.infrastructure.entity.AttendanceEntity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,18 +24,20 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
     }
 
     @Override
-    public Optional<Attendance> findByMemberIdAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
+    public Optional<Attendance> findByMemberIdAndDateRange(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
         return jpaAttendanceRepository.findByMemberIdAndDateRange(memberId, startDate, endDate)
                 .map(AttendanceEntity::toModel);
     }
 
     @Override
-    public List<Attendance> findByMemberIdAndEndDateNotNullAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
-        return null;
+    public List<Attendance> findByMemberIdAndEndDateNotNullAndDateRange(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
+        return jpaAttendanceRepository.findByMemberIdAndEndDateNotNullAndDateRange(memberId, startDate, endDate)
+                .stream().map(AttendanceEntity::toModel)
+                .toList();
     }
 
     @Override
-    public boolean existsByMemberIdAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
+    public boolean existsByMemberIdAndDateRange(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
         return false;
     }
 }

@@ -15,7 +15,6 @@ import study.crispin.common.exception.VerificationException;
 import study.crispin.member.domain.Member;
 import study.crispin.member.infrastructure.repository.MemberRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -54,8 +53,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public ClockOutResponse clockOut(Long memberId, LocalDateTime clockOutDateTime) {
-        LocalDate startDate = LocalDateUtil.convertToDateTwoDaysAgo(clockOutDateTime);
-        LocalDate endDate = LocalDateUtil.convertToDateOneDayLater(clockOutDateTime);
+        LocalDateTime startDate = LocalDateUtil.convertToDateTwoDaysAgo(clockOutDateTime);
+        LocalDateTime endDate = LocalDateUtil.convertToDateOneDayLater(clockOutDateTime);
 
         Attendance findedAttendance = attendanceRepository.findByMemberIdAndDateRange(memberId, startDate, endDate)
                 .orElseThrow(() -> new NotFoundException(NOT_CLOCKED_IN));
@@ -75,8 +74,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     public WorkHoursInquiryResponses workHoursInquiry(WorkHoursInquiryRequest request) {
         verifyRegisteredMember(request.getMemberId());
 
-        LocalDate startDate = request.getStartDate();
-        LocalDate endDate = request.getEndDate();
+        LocalDateTime startDate = request.getStartDate();
+        LocalDateTime endDate = request.getEndDate();
 
         List<WorkHoursInquiryResponse> workHoursInquiryResponses = findWorkHoursInquiry(request, startDate, endDate);
         long totalWorkMinute = calculateWorkMinutes(workHoursInquiryResponses);
@@ -85,8 +84,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     private void verifyTodayClockIn(Long memberId, LocalDateTime clockInDateTime) {
-        LocalDate startDate = LocalDateUtil.convertToDateOneDaysAgo(clockInDateTime);
-        LocalDate endDate = LocalDateUtil.convertToDateOneDayLater(clockInDateTime);
+        LocalDateTime startDate = LocalDateUtil.convertToDateOneDaysAgo(clockInDateTime);
+        LocalDateTime endDate = LocalDateUtil.convertToDateOneDayLater(clockInDateTime);
 
         if (attendanceRepository.existsByMemberIdAndDateRange(memberId, startDate, endDate)) {
             throw new VerificationException(ALREADY_CLOCKED_IN);
@@ -104,7 +103,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
     }
 
-    private List<WorkHoursInquiryResponse> findWorkHoursInquiry(WorkHoursInquiryRequest request, LocalDate startDate, LocalDate endDate) {
+    private List<WorkHoursInquiryResponse> findWorkHoursInquiry(WorkHoursInquiryRequest request, LocalDateTime startDate, LocalDateTime endDate) {
         return attendanceRepository
                 .findByMemberIdAndEndDateNotNullAndDateRange(request.getMemberId(), startDate, endDate)
                 .stream()

@@ -162,7 +162,7 @@ public class AttendanceControllerTest {
 
                 // when
                 mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/work-hours")
-                                .queryParam("memberId", request.memberId())
+                                .queryParam("member-id", request.memberId())
                                 .queryParam("date", request.date())
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .accept(MediaType.APPLICATION_JSON))
