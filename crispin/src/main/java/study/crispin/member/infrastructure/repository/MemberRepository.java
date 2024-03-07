@@ -18,4 +18,6 @@ public interface MemberRepository {
     boolean existsByNameAndBirthdayAndWorkStartDate(String name, LocalDate birthday, LocalDate workStartDate);
 
     Optional<Member> findById(Long memberId);
+
+    boolean existsById(Long id);
 }
