@@ -1,6 +1,7 @@
 package me.sungbin.domain.attendance.service;
 
 import lombok.RequiredArgsConstructor;
+import me.sungbin.domain.annual.entity.AnnualLeave;
 import me.sungbin.domain.attendance.entity.Attendance;
 import me.sungbin.domain.attendance.model.request.AttendanceCreateClockInRequestDto;
 import me.sungbin.domain.attendance.model.request.AttendanceCreateClockOutRequestDto;
@@ -110,16 +111,16 @@ public class AttendanceService {
                 .orElseThrow(EmployeeNotFoundException::new);
 
         // 해당 직원의 요청된 연도와 월에 대한 출퇴근 기록을 가져옵니다.
-        List<Attendance> attendanceList =
+        List<Attendance> attendances =
                 this.attendanceRepository.findByEmployeeIdAndMonthAndYear(employee.getId(),
                         convertStringToLocalDate(requestDto).getYear(), convertStringToLocalDate(requestDto).getMonthValue());
 
         // 날짜별로 출퇴근 기록을 그룹화합니다.
-        Map<LocalDate, List<Attendance>> groupedByDate = attendanceList.stream()
+        Map<LocalDate, List<Attendance>> groupedByDate = attendances.stream()
                 .collect(Collectors.groupingBy(a -> a.getClockInTime().toLocalDate()));
 
         // 날짜별 근무 시간을 계산합니다.
-        return calculateWorkTimeDetail(groupedByDate, convertStringToLocalDate(requestDto));
+        return calculateWorkTimeDetail(groupedByDate, convertStringToLocalDate(requestDto), employee.getId());
     }
 
     /**
@@ -148,18 +149,29 @@ public class AttendanceService {
      * @param localDate
      * @return
      */
-    private WorkTimeSummaryResponseDto calculateWorkTimeDetail(Map<LocalDate, List<Attendance>> groupedByDate, LocalDate localDate) {
+    private WorkTimeSummaryResponseDto calculateWorkTimeDetail(Map<LocalDate, List<Attendance>> groupedByDate, LocalDate localDate, Long employeeId) {
         List<WorkTimeDetail> details = new ArrayList<>();
         long sum = 0;
 
-        for (LocalDate date = LocalDate.of(localDate.getYear(), localDate.getMonthValue(), 1); date.getMonthValue() == localDate.getMonthValue(); date = date.plusDays(1)) {
-            long dailyWorkingMinutes = Optional.ofNullable(groupedByDate.get(date))
-                    .flatMap(list -> list.stream().filter(a -> a.getClockOutTime() != null)
-                            .findFirst()
-                            .map(a -> ChronoUnit.MINUTES.between(a.getClockInTime(), a.getClockOutTime())))
-                    .orElse(0L);
+        List<AnnualLeave> annualLeaves = this.employeeRepository.findById(employeeId)
+                .orElseThrow(EmployeeNotFoundException::new).getAnnualLeaves();
 
-            details.add(new WorkTimeDetail(date, dailyWorkingMinutes));
+        for (LocalDate date = LocalDate.of(localDate.getYear(), localDate.getMonthValue(), 1); date.getMonthValue() == localDate.getMonthValue(); date = date.plusDays(1)) {
+            // 특정 날짜에 연차를 사용했는지 확인
+            LocalDate finalDate = date;
+            boolean usingDayOff = annualLeaves.stream().anyMatch(annualLeave -> annualLeave.getAnnualLeaveDate().equals(finalDate));
+
+            long dailyWorkingMinutes = 0L;
+
+            if (!usingDayOff && groupedByDate.containsKey(finalDate)) {
+                dailyWorkingMinutes = Optional.ofNullable(groupedByDate.get(date))
+                        .flatMap(list -> list.stream().filter(a -> a.getClockOutTime() != null)
+                                .findFirst()
+                                .map(a -> ChronoUnit.MINUTES.between(a.getClockInTime(), a.getClockOutTime())))
+                        .orElse(0L);
+            }
+
+            details.add(new WorkTimeDetail(date, dailyWorkingMinutes, usingDayOff));
             sum += dailyWorkingMinutes;
         }
 

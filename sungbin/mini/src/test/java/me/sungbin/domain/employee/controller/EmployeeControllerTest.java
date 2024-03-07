@@ -42,7 +42,7 @@ class EmployeeControllerTest extends BaseControllerTest {
 
     @BeforeEach
     void setup() {
-        Team team = new Team("개발팀");
+        Team team = new Team("개발팀", 7);
         this.teamRepository.save(team);
     }
 

@@ -2,12 +2,16 @@ package me.sungbin.domain.employee.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import me.sungbin.domain.annual.entity.AnnualLeave;
 import me.sungbin.domain.employee.type.Role;
 import me.sungbin.domain.team.entity.Team;
 import me.sungbin.global.common.entity.BaseDateTimeEntity;
+import me.sungbin.global.exception.custom.AnnualLeaveException;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author : rovert
@@ -48,15 +52,22 @@ public class Employee extends BaseDateTimeEntity {
     @Column(nullable = false)
     private LocalDate birthday;
 
+    @Comment("남은 연차 수")
+    @Column(nullable = false)
+    private int remainingAnnualLeaves;
+
+    @OneToMany(mappedBy = "employee")
+    private List<AnnualLeave> annualLeaves = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Team team;
+
     @Builder
     public Employee(String name, boolean isManager, LocalDate birthday) {
         this.name = name;
         this.isManager = isManager;
         this.birthday = birthday;
     }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Team team;
 
     public void updateTeam(Team team) {
         this.team = team;
@@ -68,5 +79,25 @@ public class Employee extends BaseDateTimeEntity {
 
     public String getRole() {
         return isManager ? Role.MANAGER.name() : Role.MEMBER.name();
+    }
+
+    public int calculateAnnualLeaveQuota() {
+        if (LocalDate.now().getYear() - getCreatedAt().getYear() == 0) {
+            return 11;
+        } else {
+            return 15;
+        }
+    }
+
+    public void updateRemainingAnnualLeaves() {
+        this.remainingAnnualLeaves = calculateAnnualLeaveQuota();
+    }
+
+    public void useAnnualLeave() {
+        if (this.remainingAnnualLeaves > 0) {
+            this.remainingAnnualLeaves -= 1;
+        } else {
+            throw new AnnualLeaveException("남은 연차가 존재하지 않습니다.");
+        }
     }
 }

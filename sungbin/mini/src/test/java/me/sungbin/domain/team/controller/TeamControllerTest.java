@@ -36,14 +36,14 @@ class TeamControllerTest extends BaseControllerTest {
 
     @BeforeEach
     void setup() {
-        Team team = new Team("개발팀");
+        Team team = new Team("개발팀", 7);
         this.teamRepository.save(team);
     }
 
     @Test
     @DisplayName("팀 등록 테스트 - 실패 (팀 이름이 공란)")
     void register_team_test_fail_caused_by_team_name_is_empty() throws Exception {
-        RegistrationTeamRequestDto requestDto = new RegistrationTeamRequestDto("");
+        RegistrationTeamRequestDto requestDto = new RegistrationTeamRequestDto("", 7);
 
         this.mockMvc.perform(post("/api/team/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -62,7 +62,7 @@ class TeamControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("팀 등록 테스트 - 실패 (이미 존재하는 팀)")
     void register_team_test_fail_caused_by_already_exists_team() throws Exception {
-        RegistrationTeamRequestDto requestDto = new RegistrationTeamRequestDto("개발팀");
+        RegistrationTeamRequestDto requestDto = new RegistrationTeamRequestDto("개발팀", 7);
 
         this.mockMvc.perform(post("/api/team/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -81,7 +81,7 @@ class TeamControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("팀 등록 테스트 - 성공")
     void register_team_test_success() throws Exception {
-        RegistrationTeamRequestDto requestDto = new RegistrationTeamRequestDto("디자인팀");
+        RegistrationTeamRequestDto requestDto = new RegistrationTeamRequestDto("디자인팀", 7);
 
         this.mockMvc.perform(post("/api/team/register")
                         .contentType(MediaType.APPLICATION_JSON)

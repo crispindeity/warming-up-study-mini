@@ -38,15 +38,18 @@ public class Team extends BaseDateTimeEntity {
     private Long id;
 
     @Comment("팀 이름")
-    @Column(name = "team_name", nullable = false)
+    @Column(name = "team_name", nullable = false, unique = true)
     private String name;
+
+    private int dayBeforeLeaveRequired; // 연차 신청 정책
 
     @OneToMany(mappedBy = "team")
     private List<Employee> employees = new ArrayList<>();
 
     @Builder
-    public Team(String name) {
+    public Team(String name, int dayBeforeLeaveRequired) {
         this.name = name;
+        this.dayBeforeLeaveRequired = dayBeforeLeaveRequired;
     }
 
     public void addEmployee(Employee employee) {

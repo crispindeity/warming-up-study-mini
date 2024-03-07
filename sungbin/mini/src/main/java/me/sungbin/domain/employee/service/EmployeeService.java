@@ -47,6 +47,8 @@ public class EmployeeService {
         }
 
         this.employeeRepository.save(employee);
+        employee.updateRemainingAnnualLeaves();
+
         team.addEmployee(employee);
         this.teamRepository.save(team);
     }
