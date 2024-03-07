@@ -4,6 +4,7 @@ import com.miniproject.commute.dto.member.request.ChooseManagerRequest;
 import com.miniproject.commute.dto.member.request.MemberSaveRequest;
 import com.miniproject.commute.dto.member.response.MemberResponse;
 import com.miniproject.commute.service.member.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +18,12 @@ public class MemberController {
     }
 
     @PostMapping("/member")
-    public void saveMember(@RequestBody MemberSaveRequest request){
+    public void saveMember(@RequestBody @Valid MemberSaveRequest request){
         memberService.saveMember(request);
     }
 
     @PutMapping("/member")
-    public void chooseManager(@RequestBody ChooseManagerRequest request){
+    public void chooseManager(@RequestBody @Valid ChooseManagerRequest request){
         memberService.chooseManager(request);
     }
 

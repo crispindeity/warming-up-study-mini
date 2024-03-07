@@ -8,39 +8,44 @@ import com.miniproject.commute.dto.member.request.MemberSaveRequest;
 import com.miniproject.commute.dto.member.response.MemberResponse;
 import com.miniproject.commute.repository.member.MemberRepository;
 import com.miniproject.commute.repository.team.TeamRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
 
-    public MemberService(MemberRepository memberRepository, TeamRepository teamRepository) {
-        this.memberRepository = memberRepository;
-        this.teamRepository = teamRepository;
-    }
 
     /**
      *
      * @param request
      * 멤버: team_id를 필수 지정해 저장
      * team_id 지정 시, 해당 팀이 존재하는지 해당 팀에 이미 매니저가 존재하는지 체크
+     * 직원의 입사 년도를 체크 후 연차 개수 수정
      */
     @Transactional
     public void saveMember(MemberSaveRequest request) {
-        Member.MemberBuilder build = Member.builder().name(request.name()).joinDate(request.joinDate()).birthday(request.birthday());
 
         Team team = teamRepository.findById(request.teamId()).orElseThrow(()->new IllegalArgumentException("존재하지 않는 팀입니다."));
         validateManagerExist(request.teamId(), request.isManager());
-        build.team(team).isManager(request.isManager());
 
+        LocalDate joinDate = request.joinDate();
 
-        memberRepository.save(build.build());
+        Member member= request.toEntity(team);
+
+        if(joinDate.getYear() == LocalDate.now().getYear()){
+            member.isRookie();
+        }
+
+        memberRepository.save(member);
     }
 
     private void validateManagerExist(long memberTeamId, boolean isManager) {
@@ -57,23 +62,28 @@ public class MemberService {
      */
     @Transactional
     public void chooseManager(ChooseManagerRequest request) {
-        System.out.println(request.memberId());
         Member member = memberRepository.findById(request.memberId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사람입니다."));
 
         Member memberbyTeamIdAndIsManager = memberRepository.getByTeamIdAndIsManager(member.getTeam().getId(), true);
 
         if(memberbyTeamIdAndIsManager!=null){
-            memberbyTeamIdAndIsManager.doStaff();
+            memberbyTeamIdAndIsManager.changeRole();
         }
-        member.doManager();
+        member.changeRole();
+        }
 
-        }
     @Transactional(readOnly = true)
     public List<MemberResponse> getMembers() {
         List<Member> all = memberRepository.findAllWithTeam();
+
         return all.stream()
-                .map(m -> new MemberResponse(m.getName(),m.getTeam().getName(),m.isManager()? Role.MANAGER:Role.MEMBER, m.getJoinDate(),m.getBirthday()))
-                .collect(Collectors.toList());
+                .map(m->MemberResponse.builder()
+                        .name(m.getName())
+                        .teamName(m.getTeam().getName())
+                        .role(m.isManager()? Role.MANAGER:Role.MEMBER)
+                        .birthday(m.getBirthday())
+                        .build())
+                .toList();
     }
 }
 

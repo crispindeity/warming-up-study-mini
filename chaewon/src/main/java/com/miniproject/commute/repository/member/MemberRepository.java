@@ -9,12 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member,Long> {
-    public Member getByTeamIdAndIsManager(long teamId, boolean isManager);
-    public boolean existsByTeamIdAndIsManager(long teamId, boolean isManager);
+    Member getByTeamIdAndIsManager(long teamId, boolean isManager);
+    boolean existsByTeamIdAndIsManager(long teamId, boolean isManager);
     @Query("select m from Member m join fetch m.team t")
-    public List<Member> findAllWithTeam();
-
+    List<Member> findAllWithTeam();
     @Query("SELECT m.name FROM Member m WHERE m.team.id = :teamId AND m.isManager = true")
     Optional<String> findManagerByTeamId(@Param("teamId") Long teamId);
-
 }
