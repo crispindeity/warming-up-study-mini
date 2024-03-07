@@ -1,5 +1,6 @@
 package inflearn.mini.workHub.team.service;
 
+import inflearn.mini.workHub.global.CustomException;
 import inflearn.mini.workHub.team.domain.Team;
 import inflearn.mini.workHub.team.dto.TeamCreateRequest;
 import inflearn.mini.workHub.team.dto.TeamInfoResponse;
@@ -10,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static inflearn.mini.workHub.global.ErrorCode.DUPLICATE_NAME;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -19,7 +22,7 @@ public class TeamService {
     @Transactional
     public void registerTeam(TeamCreateRequest request) {
         if(teamRepository.existsByName(request.name())){
-            throw new IllegalArgumentException("이미 존재하는 이름입니다.");
+            throw new CustomException(DUPLICATE_NAME);
         }
         teamRepository.save(request.toEntity());
     }

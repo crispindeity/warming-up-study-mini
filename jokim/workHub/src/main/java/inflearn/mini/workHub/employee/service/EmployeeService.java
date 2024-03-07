@@ -4,6 +4,7 @@ import inflearn.mini.workHub.employee.domain.Employee;
 import inflearn.mini.workHub.employee.dto.EmployeeInfoResponse;
 import inflearn.mini.workHub.employee.dto.EmployeeRegisterRequest;
 import inflearn.mini.workHub.employee.repository.EmployeeRepository;
+import inflearn.mini.workHub.global.CustomException;
 import inflearn.mini.workHub.team.domain.Team;
 import inflearn.mini.workHub.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static inflearn.mini.workHub.global.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +24,12 @@ public class EmployeeService {
     @Transactional
     public void registerEmployee(EmployeeRegisterRequest request) {
         Employee employee = request.toEntity();
-        Team team = teamRepository.findByName(request.teamName()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀입니다."));
+        Team team = teamRepository.findByName(request.teamName())
+                .orElseThrow(() -> new CustomException(NOT_EXIST_TEAM));
 
         if (employee.isManagerYn() && team.existManager()) {
-            throw new IllegalArgumentException("이미 매니저가 존재합니다.");
+            throw new CustomException(EXIST_MANAGER);
         }
-
         employee.joinTeam(team);
         employeeRepository.save(employee);
 

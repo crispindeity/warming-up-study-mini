@@ -28,7 +28,6 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private final List<Employee> employees = new ArrayList<>();
 
-
     @Builder
     public Team(final String name) {
         this.name = name;
