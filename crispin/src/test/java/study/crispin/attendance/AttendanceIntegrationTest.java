@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
-import org.checkerframework.checker.units.qual.N;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -73,7 +72,7 @@ public class AttendanceIntegrationTest extends ApiTest {
         class ClockOutSuccessTest {
 
             @Test
-            @DisplayName("정상적인 데이터로 퇴근 등록 요청 시, 출근 등록 후 200 OK 응답을 반환해야 한다.")
+            @DisplayName("정상적인 데이터로 퇴근 등록 요청 시, 퇴근 등록 후 200 OK 응답을 반환해야 한다.")
             void 퇴근_등록_성공_테스트() {
                 // given
                 MemberSteps.멤버_등록_요청(
@@ -104,6 +103,47 @@ public class AttendanceIntegrationTest extends ApiTest {
                     softAssertions.assertThat(response.statusCode())
                             .isEqualTo(HttpStatus.OK.value());
                 });
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("근무 조회 테스트")
+    class WorkHoursInquiryTest {
+
+        @Nested
+        @DisplayName("근무 조회 성공 테스트")
+        class WorkHoursInquirySuccessTest {
+
+            @Test
+            @DisplayName("정상적인 데이터로 근무 조회 요청 시, 근무 조회 후 200 OK 응답을 반환해야 한다.")
+            void 근무_조회_성공_테스트() {
+                // given
+                MemberSteps.멤버_등록_요청(
+                        MemberRegistrationRequest.of(
+                                "테스트팀원1",
+                                null,
+                                LocalDate.of(1999, 9, 9),
+                                LocalDate.of(2024, 2, 29))
+                );
+                ClockInOrOutRequest clockInOrOutRequest = ClockInOrOutRequest.of(1L);
+
+                AttendanceSteps.출근_등록_요청(clockInOrOutRequest);
+                AttendanceSteps.퇴근_등록_요청(clockInOrOutRequest);
+
+                String now = LocalDate.now().toString().substring(0, 7);
+
+                // when
+                ExtractableResponse<Response> response = RestAssured.given()
+                        .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .param("member-id", "1")
+                        .param("date", now)
+                        .when().get("/api/v1/work-hours")
+                        .then().log().all()
+                        .extract();
+
+                // then
+                Assertions.assertThat(response.body().jsonPath().getList("detail")).hasSize(1);
             }
         }
     }
