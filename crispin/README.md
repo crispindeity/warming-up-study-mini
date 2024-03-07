@@ -50,7 +50,16 @@
 
 </details>
 
-### 풀이
+<details>
+<summary>프로젝트 2단계</summary>
+
+#### 요구사항
+
+[미션 요구사항](https://www.inflearn.com/course/lecture?courseSlug=자바-스프링부트-서버개발-올인원&unitId=208214)
+
+</details>
+
+### 단계별 구현
 
 <details>
 <summary>프로젝트 1단계</summary>
@@ -224,4 +233,64 @@ Content-Type: application/json
 
 </details>
 
+<details>
+<summary>프로젝트 2단계</summary>
 
+#### 1단계 PR 리뷰 반영
+
+- [X] 메서드의 이름은 명사형이 아닌 동사형으로 작성
+  - `registration` -> `register` 로 변경
+- [X] `Enum` 비교에는 `equal` 대신 `==` 을 사용하면 이점이 많다.
+  - `==` 을 사용하게 되면 `NPE` 방지와 타입 체크등 이점이 많아 변경
+- [X] 빠진 접근 제어자 추가
+- [X] `select` 이후 `isPresent` 사용 대신 `exsits` 사용하여, 리소스 낭비 방지
+- [X] `@JsonFormat` 어노테이션 제거
+
+#### 중점 구현 사항
+
+- 출근 등록 기능
+- 퇴근 등록 기능
+- 근무 시간 조회 기능
+- 최대한 요구사항을 충족시키면서 `TDD` 로 구현
+- `Controller Layer` 에 대해 `MockMvc` 를 활용, `Layer Level` 테스트 작성
+- 각 기능에 대한 `Integration Test` 작성
+- 각 기능에 대한 `Unit Test` 작성
+
+#### 예외 상황 별 처리
+
+- 미 등록된 회원 출근 등록 요청 -> 예외 발생
+- 출근 등록 없이 퇴근 등록 요청 시 -> 예외 발생
+- 출근 등록 후 퇴근 등록 없이 재 출근 등록 요청 -> 예외 발생
+- 출근 등록 후 퇴근 등록 없이 다음날 출근 등록 요청 시 -> 정상 등록
+- 같은날 출근 등록 후 퇴근 한 직원이 다시 출근 등록 요청 시 -> 정상 등록
+- 출근 등록 후 야근 등의 이유로 다음날 새벽에 퇴근 등록 요청 시 -> 정상 등록
+
+#### 테스트
+
+- 58개의 테스트 작성, `Jacoco` 기준 `Test Coverage` 97%
+- 모든 기능에 대한 `Unit Test` 와 `Integration Test` 작성
+
+#### API
+
+```http request
+### 출근 등록 API
+POST http://localhost:8080/api/v1/clock-in
+Content-Type: application/json
+
+{
+  "memberId": 1
+}
+
+### 퇴근 등록 API
+POST http://localhost:8080/api/v1/clock-out
+Content-Type: application/json
+
+{
+  "memberId": 1
+}
+
+### 근무 기록 조회 API
+GET http://localhost:8080/api/v1/work-hours?member-id=1&date=2024-03
+```
+
+</details>
