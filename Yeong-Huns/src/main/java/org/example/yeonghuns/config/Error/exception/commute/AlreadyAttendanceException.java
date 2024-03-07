@@ -14,8 +14,8 @@ import org.example.yeonghuns.config.Error.exception.BadRequestException;
  * -----------------------------------------------------------
  * 2024-03-05        Yeong-Huns       최초 생성
  */
-public class BeforeTodayException extends BadRequestException {
-    public BeforeTodayException() {
+public class AlreadyAttendanceException extends BadRequestException {
+    public AlreadyAttendanceException() {
         super(ErrorCode.IS_ALREADY_ATTENDANCE);
     }
 }

@@ -1,4 +1,4 @@
-package org.example.yeonghuns.config.Error.exception.annual;
+package org.example.yeonghuns.config.Error.exception.annualLeave;
 
 import org.example.yeonghuns.config.Error.ErrorCode;
 import org.example.yeonghuns.config.Error.exception.BadRequestException;

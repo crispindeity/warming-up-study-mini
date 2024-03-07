@@ -2,9 +2,9 @@ package org.example.yeonghuns.service.annual;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.yeonghuns.config.Error.exception.annual.AcceptTeamPolicyException;
-import org.example.yeonghuns.config.Error.exception.annual.AlreadyRegisteredException;
-import org.example.yeonghuns.config.Error.exception.annual.RemainAnnualLeavesException;
+import org.example.yeonghuns.config.Error.exception.annualLeave.AcceptTeamPolicyException;
+import org.example.yeonghuns.config.Error.exception.annualLeave.AlreadyRegisteredException;
+import org.example.yeonghuns.config.Error.exception.annualLeave.RemainAnnualLeavesException;
 import org.example.yeonghuns.domain.AnnualLeave;
 import org.example.yeonghuns.domain.Member;
 import org.example.yeonghuns.dto.annualLeave.request.GetRemainAnnualLeavesRequest;

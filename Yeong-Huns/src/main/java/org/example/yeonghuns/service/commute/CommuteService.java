@@ -50,7 +50,7 @@ public class CommuteService {
             Commute latestCommute = commute.orElseThrow(CommuteNotFoundException::new);
             if (latestCommute.isAttendance()) throw new AbsentCheckOutException(); //이전 기록 퇴근확인
             boolean isAlreadyAttendance = LocalDate.now().equals(LocalDate.from(latestCommute.getCreatedAt()));
-            if (isAlreadyAttendance) throw new BeforeTodayException(); //당일 출근기록 확인
+            if (isAlreadyAttendance) throw new AlreadyAttendanceException(); //당일 출근기록 확인
         }
         boolean isAlreadyAnnualLeaves = annualLeaveService.isAlreadyUsingAnnualLeaves(member, LocalDate.now());
         if (isAlreadyAnnualLeaves) throw new UsingAnnualLeavesException(); //인권보장
