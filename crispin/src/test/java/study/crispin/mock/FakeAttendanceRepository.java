@@ -48,7 +48,7 @@ public class FakeAttendanceRepository implements AttendanceRepository {
     }
 
     @Override
-    public boolean existsByMemberIdAndDateRange(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
+    public boolean existsByMemberIdAndClockInDateTimeBetween(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
         return storage.values()
                 .stream()
                 .anyMatch(attendance -> attendance.isClockIn(memberId, startDate, endDate));

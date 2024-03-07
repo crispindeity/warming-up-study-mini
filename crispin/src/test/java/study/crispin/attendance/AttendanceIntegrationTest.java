@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import study.crispin.ApiTest;
 import study.crispin.attendance.application.request.ClockInOrOutRequest;
+import study.crispin.common.exception.ExceptionMessage;
 import study.crispin.member.application.request.MemberRegistrationRequest;
 import study.crispin.steps.AttendanceSteps;
 import study.crispin.steps.MemberSteps;
@@ -58,6 +59,42 @@ public class AttendanceIntegrationTest extends ApiTest {
                             .isEqualTo("테스트팀원1");
                     softAssertions.assertThat(response.statusCode())
                             .isEqualTo(HttpStatus.OK.value());
+                });
+            }
+        }
+
+        @Nested
+        @DisplayName("출근 등록 실패 테스트")
+        class ClockInFailTest {
+
+            @Test
+            @DisplayName("출근 등록 후 다시 출근 등록을 요청 시, 예외가 반환되어야 한다.")
+            void given_when_then() {
+                // given
+                MemberSteps.멤버_등록_요청(
+                        MemberRegistrationRequest.of(
+                                "테스트팀원1",
+                                null,
+                                LocalDate.of(1999, 9, 9),
+                                LocalDate.of(2024, 2, 29))
+                );
+                ClockInOrOutRequest request = ClockInOrOutRequest.of(1L);
+                AttendanceSteps.출근_등록_요청(request);
+
+                // when & then
+                ExtractableResponse<Response> response = RestAssured.given()
+                        .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(request)
+                        .when().post("/api/v1/clock-in")
+                        .then().log().all()
+                        .extract();
+
+                // then
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(response.statusCode())
+                            .isEqualTo(HttpStatus.BAD_REQUEST.value());
+                    softAssertions.assertThat(response.body().jsonPath().getString("message"))
+                            .isEqualTo(ExceptionMessage.ALREADY_CLOCKED_IN.getMessage());
                 });
             }
         }

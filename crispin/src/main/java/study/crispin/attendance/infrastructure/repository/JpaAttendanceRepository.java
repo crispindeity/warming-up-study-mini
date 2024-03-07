@@ -13,7 +13,7 @@ public interface JpaAttendanceRepository extends JpaRepository<AttendanceEntity,
     @Query(value = "select id, member_id, clock_in_date_time, clock_out_date_time " +
             "from attendances " +
             "where member_id = :memberId " +
-            "and clock_in_date_time > :startDate " +
+            "and clock_in_date_time >= :startDate " +
             "and clock_in_date_time < :endDate " +
             "and clock_out_date_time is null " +
             "order by clock_in_date_time desc " +
@@ -24,7 +24,9 @@ public interface JpaAttendanceRepository extends JpaRepository<AttendanceEntity,
             "from AttendanceEntity ae " +
             "where ae.member.id = :memberId " +
             "and ae.clockOutDateTime is not null " +
-            "and ae.clockInDateTime > :startDate " +
+            "and ae.clockInDateTime >= :startDate " +
             "and ae.clockInDateTime < :endDate")
     List<AttendanceEntity> findByMemberIdAndEndDateNotNullAndDateRange(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
+
+    boolean existsByMemberIdAndClockInDateTimeBetween(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 }

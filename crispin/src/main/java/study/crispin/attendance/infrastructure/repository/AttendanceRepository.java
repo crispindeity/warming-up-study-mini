@@ -13,5 +13,5 @@ public interface AttendanceRepository {
 
     List<Attendance> findByMemberIdAndEndDateNotNullAndDateRange(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 
-    boolean existsByMemberIdAndDateRange(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
+    boolean existsByMemberIdAndClockInDateTimeBetween(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 }

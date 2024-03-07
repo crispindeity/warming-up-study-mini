@@ -37,7 +37,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
     }
 
     @Override
-    public boolean existsByMemberIdAndDateRange(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
-        return false;
+    public boolean existsByMemberIdAndClockInDateTimeBetween(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
+        return jpaAttendanceRepository.existsByMemberIdAndClockInDateTimeBetween(memberId, startDate, endDate);
     }
 }

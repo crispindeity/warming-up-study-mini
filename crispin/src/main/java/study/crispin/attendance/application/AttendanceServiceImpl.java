@@ -87,7 +87,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         LocalDateTime startDate = LocalDateUtil.truncatedToTime(clockInDateTime);
         LocalDateTime endDate = LocalDateUtil.convertToDateOneDayLater(clockInDateTime);
 
-        if (attendanceRepository.existsByMemberIdAndDateRange(memberId, startDate, endDate)) {
+        if (attendanceRepository.existsByMemberIdAndClockInDateTimeBetween(memberId, startDate, endDate)) {
             throw new VerificationException(ALREADY_CLOCKED_IN);
         }
     }
