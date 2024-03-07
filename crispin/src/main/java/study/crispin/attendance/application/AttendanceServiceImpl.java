@@ -1,6 +1,7 @@
 package study.crispin.attendance.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import study.crispin.attendance.application.request.WorkHoursInquiryRequest;
 import study.crispin.attendance.domain.Attendance;
 import study.crispin.attendance.infrastructure.repository.AttendanceRepository;
@@ -21,6 +22,7 @@ import java.util.List;
 import static study.crispin.common.exception.ExceptionMessage.*;
 
 @Service
+@Transactional(readOnly = true)
 public class AttendanceServiceImpl implements AttendanceService {
 
     private final MemberRepository memberRepository;
@@ -35,6 +37,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
+    @Transactional
     public ClockInResponse clockIn(Long memberId, LocalDateTime clockInDateTime) {
         verifyTodayClockIn(memberId, clockInDateTime);
 
@@ -49,6 +52,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
+    @Transactional
     public ClockOutResponse clockOut(Long memberId, LocalDateTime clockOutDateTime) {
         LocalDate startDate = LocalDateUtil.convertToDateTwoDaysAgo(clockOutDateTime);
         LocalDate endDate = LocalDateUtil.convertToDateOneDayLater(clockOutDateTime);
@@ -57,13 +61,13 @@ public class AttendanceServiceImpl implements AttendanceService {
                 .orElseThrow(() -> new NotFoundException(NOT_CLOCKED_IN));
 
         Attendance clockOutedAttendance = Attendance.clockOut(findedAttendance, clockOutDateTime);
-        Attendance savedAttendance = attendanceRepository.save(clockOutedAttendance);
+        attendanceRepository.save(clockOutedAttendance);
 
         return ClockOutResponse.of(
-                savedAttendance.id(),
-                savedAttendance.member().name(),
-                savedAttendance.clockInDateTime(),
-                savedAttendance.clockOutDateTime()
+                clockOutedAttendance.id(),
+                clockOutedAttendance.member().name(),
+                clockOutedAttendance.clockInDateTime(),
+                clockOutedAttendance.clockOutDateTime()
         );
     }
 

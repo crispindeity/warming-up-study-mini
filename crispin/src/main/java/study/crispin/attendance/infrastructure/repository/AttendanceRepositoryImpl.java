@@ -19,12 +19,14 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
     @Override
     public Attendance save(Attendance attendance) {
-        return jpaAttendanceRepository.save(AttendanceEntity.fromModel(attendance)).toModel();
+        return jpaAttendanceRepository.save(AttendanceEntity.fromModel(attendance))
+                .toModel();
     }
 
     @Override
     public Optional<Attendance> findByMemberIdAndDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
-        return Optional.empty();
+        return jpaAttendanceRepository.findByMemberIdAndDateRange(memberId, startDate, endDate)
+                .map(AttendanceEntity::toModel);
     }
 
     @Override
