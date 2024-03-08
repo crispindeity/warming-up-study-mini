@@ -6,6 +6,7 @@ import org.example.yeonghuns.config.Error.exception.annualLeave.AcceptTeamPolicy
 import org.example.yeonghuns.config.Error.exception.annualLeave.AlreadyRegisteredException;
 import org.example.yeonghuns.config.Error.exception.annualLeave.RemainAnnualLeavesException;
 import org.example.yeonghuns.domain.AnnualLeave;
+import org.example.yeonghuns.domain.JoinDate;
 import org.example.yeonghuns.domain.Member;
 import org.example.yeonghuns.dto.annualLeave.request.GetRemainAnnualLeavesRequest;
 import org.example.yeonghuns.dto.annualLeave.request.RegisterAnnualLeaveRequest;
@@ -58,7 +59,10 @@ public class AnnualLeaveService {
         ChronoUnit.DAYS.between(LocalDate.now(), request.date()) < member.getTeam().getDayBeforeAnnual();
     }
     private long remainAnnualLeaves(Member member){ // 남은 연차 계산 & 연차 조회시 반환
-        long maxAnnualLeave = ChronoUnit.YEARS.between(member.getCreatedAt(), LocalDateTime.now()) >= 1 ? 15L : 11L;
+        long maxAnnualLeave = ChronoUnit.YEARS
+                .between(member.getCreatedAt(), LocalDateTime.now()) >= 1 ?
+                JoinDate.OVER_ONE_YEAR.getAnnualLeaves() : JoinDate.UNDER_ONE_YEAR.getAnnualLeaves();
+
         long usedThisYear = annualLeaveRepository.countByMemberId(member.getId(), YearMonth.now().getYear());
         return maxAnnualLeave - usedThisYear;
     }

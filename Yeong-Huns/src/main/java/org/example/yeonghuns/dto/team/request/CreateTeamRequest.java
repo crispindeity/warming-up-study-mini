@@ -8,6 +8,7 @@ public record CreateTeamRequest (String name){
     public Team toEntity(){
         return Team.builder()
                 .name(this.name)
+                .dayBeforeAnnual(0)
                 .build();
     }
 }

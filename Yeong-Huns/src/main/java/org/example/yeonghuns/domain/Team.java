@@ -23,15 +23,15 @@ public class Team {
 
     private String manager;
 
-
-    private int dayBeforeAnnual = 0;
+    private int dayBeforeAnnual;
 
     @OneToMany(mappedBy = "team")
     private List<Member> memberList = new ArrayList<>();
 
     @Builder
-    public Team(String name) {
+    public Team(String name, int dayBeforeAnnual) {
         this.name = name;
+        this.dayBeforeAnnual = dayBeforeAnnual;
     }
 
     public int getMemberCount(){
