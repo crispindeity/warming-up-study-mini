@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -97,8 +98,8 @@ public class CommuteService {
         List<AnnualLeave> annualLeaveLeavesList = annualLeaveService // 연차기록찾기 (오늘보다 미래의 연차기록은 가져오지않음)
                 .findAnnualLeavesByMemberIdAndYearMonth(request.id(), request.yearMonth());
 
-        mergeAndSort(commuteDetailList, annualLeaveLeavesList); //
-        return commuteDetailList;
+        mergeAndSort(commuteDetailList, annualLeaveLeavesList); // .addAll()을 통한 merge
+        return Collections.unmodifiableList(commuteDetailList); // 불변리스트로 변환 후 반환
     }
 
     private void mergeAndSort(List<GetCommuteDetail> commuteDetailList, List<AnnualLeave> annualLeaveLeavesList) {
