@@ -1,4 +1,4 @@
-package inflearn.mini.worktimehistory.domain;
+package inflearn.mini.commute.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class WorkTimeHistory {
+public class Commute {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +34,7 @@ public class WorkTimeHistory {
     @ManyToOne(fetch = FetchType.LAZY)
     private Employee employee;
 
-    public WorkTimeHistory(final Employee employee) {
+    public Commute(final Employee employee) {
         this.employee = employee;
     }
 

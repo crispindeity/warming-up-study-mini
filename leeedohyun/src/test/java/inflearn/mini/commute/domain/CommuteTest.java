@@ -1,4 +1,4 @@
-package inflearn.mini.worktimehistory.domain;
+package inflearn.mini.commute.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import inflearn.mini.employee.domain.Employee;
 
-class WorkTimeHistoryTest {
+class CommuteTest {
 
     @Test
     void 퇴근_시간과_출근_시간이_같으면_true() {
@@ -18,12 +18,12 @@ class WorkTimeHistoryTest {
                 .name("테스트")
                 .isManager(true)
                 .build();
-        final WorkTimeHistory workTimeHistory = new WorkTimeHistory(employee);
+        final Commute commute = new Commute(employee);
         final LocalDate workStartDate = LocalDate.of(2021, 1, 1);
-        workTimeHistory.leaveWork(LocalDateTime.of(2021, 1, 1, 9, 0));
+        commute.leaveWork(LocalDateTime.of(2021, 1, 1, 9, 0));
 
         // when
-        final boolean workEndDateEqualToWorkStartDate = workTimeHistory.isWorkEndDateEqualToWorkStartDate(workStartDate);
+        final boolean workEndDateEqualToWorkStartDate = commute.isWorkEndDateEqualToWorkStartDate(workStartDate);
 
         // then
         assertThat(workEndDateEqualToWorkStartDate).isTrue();
@@ -36,12 +36,12 @@ class WorkTimeHistoryTest {
                 .name("테스트")
                 .isManager(true)
                 .build();
-        final WorkTimeHistory workTimeHistory = new WorkTimeHistory(employee);
+        final Commute commute = new Commute(employee);
         final LocalDate workStartDate = LocalDate.of(2021, 1, 2);
-        workTimeHistory.leaveWork(LocalDateTime.of(2021, 1, 1, 9, 0));
+        commute.leaveWork(LocalDateTime.of(2021, 1, 1, 9, 0));
 
         // when
-        final boolean workEndDateEqualToWorkStartDate = workTimeHistory.isWorkEndDateEqualToWorkStartDate(workStartDate);
+        final boolean workEndDateEqualToWorkStartDate = commute.isWorkEndDateEqualToWorkStartDate(workStartDate);
 
         // then
         assertThat(workEndDateEqualToWorkStartDate).isFalse();
