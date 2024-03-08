@@ -24,7 +24,7 @@ public class Commute {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "work_time_history_id")
+    @Column(name = "commute_id")
     private Long id;
 
     private LocalDateTime workStartTime;
