@@ -27,14 +27,14 @@ public class AnnualLeave {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private LocalDate annualDateLeave;
+    private LocalDate annualLeaveDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     @Builder
-    public AnnualLeave(LocalDate annualDateLeave, Member member) {
-        this.annualDateLeave = annualDateLeave;
+    public AnnualLeave(LocalDate annualLeaveDate, Member member) {
+        this.annualLeaveDate = annualLeaveDate;
         this.member = member;
     }
 }

@@ -21,7 +21,7 @@ import java.time.LocalDate;
 public record RegisterAnnualLeaveRequest(@NotNull long id, @Future LocalDate date) {
     public AnnualLeave toEntity(Member member){
         return AnnualLeave.builder()
-                .annualDateLeave(date)
+                .annualLeaveDate(date)
                 .member(member)
                 .build();
     }

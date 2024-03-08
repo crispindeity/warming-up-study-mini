@@ -71,7 +71,7 @@ public class AnnualLeaveService {
     }
 
     public boolean isAlreadyUsingAnnualLeaves(Member member, LocalDate date){
-        return annualLeaveRepository.existsByMemberIdAndAnnualDateLeaveEquals(member.getId(), date);
+        return annualLeaveRepository.existsByMemberIdAndAnnualLeaveDateEquals(member.getId(), date);
     }
     public List<AnnualLeave> findAnnualLeavesByMemberIdAndYearMonth(long memberId, YearMonth request){
         int year = request.getYear();

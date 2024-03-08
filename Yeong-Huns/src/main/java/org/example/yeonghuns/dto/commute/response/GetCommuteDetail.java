@@ -31,7 +31,7 @@ public record GetCommuteDetail(LocalDate date, long workingMinutes, boolean usin
     }
     public static GetCommuteDetail from(AnnualLeave annualLeave){
         return GetCommuteDetail.builder()
-                .date(annualLeave.getAnnualDateLeave())
+                .date(annualLeave.getAnnualLeaveDate())
                 .workingMinutes(0)
                 .usingDayOff(true)
                 .build();
