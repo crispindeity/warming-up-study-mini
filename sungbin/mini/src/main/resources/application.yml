@@ -39,3 +39,6 @@ spring:
   threads:
     virtual:
       enabled: true
+api:
+  secret:
+    key: ${SECRET_KEY}

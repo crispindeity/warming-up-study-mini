@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -103,6 +104,17 @@ class EmployeeControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/api/employee")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("초과근무 조회 테스트 - 성공")
+    void find_overtime_work_test_fail_caused_by_not_exists_year_and_month() throws Exception {
+        this.mockMvc.perform(get("/api/employee/overtime")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("date", "2024-03"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
