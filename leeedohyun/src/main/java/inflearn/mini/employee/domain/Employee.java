@@ -39,7 +39,9 @@ public class Employee {
     private Team team;
 
     @Builder
-    public Employee(final String name, final boolean isManager, final LocalDate workStartDate, final LocalDate birthday) {
+    public Employee(final Long id, final String name, final boolean isManager, final LocalDate workStartDate,
+                    final LocalDate birthday) {
+        this.id = id;
         this.name = name;
         this.isManager = isManager;
         this.workStartDate = workStartDate;

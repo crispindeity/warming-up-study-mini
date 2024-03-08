@@ -1,15 +1,18 @@
 package inflearn.mini.employee.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -21,11 +24,20 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import inflearn.mini.employee.domain.Employee;
 import inflearn.mini.employee.domain.Role;
 import inflearn.mini.employee.dto.request.EmployeeRegisterRequestDto;
+import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
 import inflearn.mini.employee.dto.response.EmployeeResponse;
+import inflearn.mini.employee.dto.response.EmployeeWorkHistoryResponse;
+import inflearn.mini.employee.exception.AbsentEmployeeException;
+import inflearn.mini.employee.exception.AlreadyAtWorkException;
+import inflearn.mini.employee.exception.EmployeeNotFoundException;
 import inflearn.mini.employee.service.EmployeeService;
+import inflearn.mini.team.domain.Team;
 import inflearn.mini.team.exception.TeamNotFoundException;
+import inflearn.mini.employee.dto.response.DateWorkMinutes;
+import inflearn.mini.worktimehistory.service.WorkTimeHistoryService;
 
 @WebMvcTest(EmployeeController.class)
 class EmployeeControllerTest {
@@ -38,6 +50,9 @@ class EmployeeControllerTest {
 
     @MockBean
     private EmployeeService employeeService;
+
+    @MockBean
+    private WorkTimeHistoryService workTimeHistoryService;
 
     @Test
     void 직원을_등록한다() throws Exception {
@@ -102,6 +117,180 @@ class EmployeeControllerTest {
         // then
         mockMvc.perform(get("/api/v1/employees"))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void 출근한다() throws Exception {
+        // given
+        final Long employeeId = 1L;
+        final Employee employee = Employee.builder()
+                .id(employeeId)
+                .name("홍길동")
+                .isManager(false)
+                .birthday(LocalDate.of(1990, 1, 1))
+                .workStartDate(LocalDate.of(2021, 1, 1))
+                .build();
+        employee.joinTeam(new Team("개발팀"));
+
+        // when
+        doNothing().when(workTimeHistoryService).goToWork(anyLong());
+
+        // then
+        mockMvc.perform(post("/api/v1/employees/{employeeId}/work", employeeId)
+                        .param("employeeId", String.valueOf(employeeId)))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void 출근_시_등록된_직원이_아니면_실패한다() throws Exception {
+        // given
+        final Long employeeId = 1L;
+        final Employee employee = Employee.builder()
+                .id(employeeId)
+                .name("홍길동")
+                .isManager(false)
+                .birthday(LocalDate.of(1990, 1, 1))
+                .workStartDate(LocalDate.of(2021, 1, 1))
+                .build();
+        employee.joinTeam(new Team("개발팀"));
+
+        // when
+        doThrow(new EmployeeNotFoundException("등록된 직원이 아닙니다."))
+                .when(workTimeHistoryService).goToWork(anyLong());
+
+        // then
+        mockMvc.perform(post("/api/v1/employees/{employeeId}/work", employeeId)
+                        .param("employeeId", String.valueOf(employeeId)))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    void 출근_시_이미_출근한_직원인_경우_실패한다() throws Exception {
+        // given
+        final Long employeeId = 1L;
+        final Employee employee = Employee.builder()
+                .id(employeeId)
+                .name("홍길동")
+                .isManager(false)
+                .birthday(LocalDate.of(1990, 1, 1))
+                .workStartDate(LocalDate.of(2021, 1, 1))
+                .build();
+        employee.joinTeam(new Team("개발팀"));
+
+        // when
+        doThrow(new AlreadyAtWorkException("이미 출근한 직원입니다."))
+                .when(workTimeHistoryService).goToWork(anyLong());
+
+        // then
+        mockMvc.perform(post("/api/v1/employees/{employeeId}/work", employeeId)
+                        .param("employeeId", String.valueOf(employeeId)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    void 퇴근한다() throws Exception {
+        // given
+        final Long employeeId = 1L;
+        final Employee employee = Employee.builder()
+                .id(employeeId)
+                .name("홍길동")
+                .isManager(false)
+                .birthday(LocalDate.of(1990, 1, 1))
+                .workStartDate(LocalDate.of(2021, 1, 1))
+                .build();
+        employee.joinTeam(new Team("개발팀"));
+
+        // when
+        doNothing().when(workTimeHistoryService).leaveWork(anyLong());
+
+        // then
+        mockMvc.perform(patch("/api/v1/employees/{employeeId}/leave", 1L))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void 퇴근_시_등록된_직원이_아닌_경우_실패한다() throws Exception {
+        // given
+
+        // when
+        doThrow(new EmployeeNotFoundException("등록된 직원이 아닙니다."))
+                .when(workTimeHistoryService).leaveWork(anyLong());
+
+        // then
+        mockMvc.perform(patch("/api/v1/employees/{employeeId}/leave", 1L))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    void 퇴근_시_출근한_직원이_아닌_경우_실패한다() throws Exception {
+        // given
+        final Long employeeId = 1L;
+        final Employee employee = Employee.builder()
+                .id(employeeId)
+                .name("홍길동")
+                .isManager(false)
+                .birthday(LocalDate.of(1990, 1, 1))
+                .workStartDate(LocalDate.of(2021, 1, 1))
+                .build();
+        employee.joinTeam(new Team("개발팀"));
+
+        // when
+        doThrow(new AbsentEmployeeException("출근하지 않은 직원입니다."))
+                .when(workTimeHistoryService).leaveWork(anyLong());
+
+        // then
+        mockMvc.perform(patch("/api/v1/employees/{employeeId}/leave", 1L))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    void 특정_직원의_날짜별_근무_시간을_조회한다() throws Exception {
+        // given
+        final Employee employee = Employee.builder()
+                .id(1L)
+                .name("홍길동")
+                .isManager(false)
+                .birthday(LocalDate.of(1990, 1, 1))
+                .workStartDate(LocalDate.of(2021, 1, 1))
+                .build();
+        employee.joinTeam(new Team("개발팀"));
+
+        given(workTimeHistoryService.getEmployeeDailyWorkingHours(anyLong(), any()))
+                .willReturn(new EmployeeWorkHistoryResponse(List.of(
+                        new DateWorkMinutes(LocalDate.of(2024, 3, 4), 540),
+                        new DateWorkMinutes(LocalDate.of(2024, 3, 5), 540)
+                ), 1080));
+
+        // when
+
+        // then
+        mockMvc.perform(get("/api/v1/employees/{employeeId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3)))))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void 특정_직원의_날짜별_근무_시간을_조회_시_등록되지_않은_직원인_경우_실패한다() throws Exception {
+        // given
+        given(workTimeHistoryService.getEmployeeDailyWorkingHours(anyLong(), any()))
+                .willThrow(new EmployeeNotFoundException("등록된 직원이 아닙니다."));
+
+        // when
+
+        // then
+        mockMvc.perform(get("/api/v1/employees/{employeeId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3)))))
+                .andExpect(status().isNotFound())
                 .andDo(print());
     }
 }

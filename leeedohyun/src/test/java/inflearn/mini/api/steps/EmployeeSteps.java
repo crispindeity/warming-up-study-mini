@@ -30,4 +30,22 @@ public class EmployeeSteps {
                 .log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 출근(final Long 직원_아이디) {
+        return given().log().all()
+                .when()
+                .post(EMPLOYEE_BASE_URL + "/{employeeId}/work", 직원_아이디)
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 퇴근(final Long 직원_아이디) {
+        return given().log().all()
+                .when()
+                .patch(EMPLOYEE_BASE_URL + "/{employeeId}/leave", 직원_아이디)
+                .then()
+                .log().all()
+                .extract();
+    }
 }
