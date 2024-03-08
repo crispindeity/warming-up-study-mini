@@ -26,20 +26,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException e){
-        e.getStackTrace();
         log.error("MethodArgumentNotValidException", e);
         return createErrorResponse(ErrorCode.INVALID_INPUT_VALUE);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     protected ResponseEntity<ErrorResponse> handle(HttpMessageNotReadableException e){
-        e.getStackTrace();
         log.error("HttpMessageNotReadableException", e);
         return createErrorResponse(ErrorCode.MESSAGE_NOT_READABLE);
     }
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handle(Exception e){
-        e.getStackTrace();
         log.error("Exception", e);
         return createErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR);
     }

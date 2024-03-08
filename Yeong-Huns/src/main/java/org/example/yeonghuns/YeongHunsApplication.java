@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.Duration;
 import java.time.LocalDate;
-@Slf4j
 @SpringBootApplication
 public class YeongHunsApplication {
 
