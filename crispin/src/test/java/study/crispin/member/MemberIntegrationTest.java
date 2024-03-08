@@ -3,7 +3,6 @@ package study.crispin.member;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import study.crispin.ApiTest;
+import study.crispin.common.exception.ExceptionMessage;
 import study.crispin.member.application.request.MemberRegistrationRequest;
 import study.crispin.member.application.request.MemberUpdateRequest;
 import study.crispin.member.domain.Role;
@@ -46,7 +46,7 @@ public class MemberIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(request)
-                        .when().post("/api/v1/member")
+                        .when().post("/api/v1/members")
                         .then().log().all()
                         .extract();
 
@@ -73,7 +73,7 @@ public class MemberIntegrationTest extends ApiTest {
         class MemberRegistrationFailTest {
 
             @Test
-            @DisplayName("이미 등록된 멤버를 중복 등록하면, 500 응답을 반환해야 한다.")
+            @DisplayName("이미 등록된 멤버를 중복 등록하면, 400 응답을 반환해야 한다.")
             void 이미_등록된_멤버_중복_등록_실패_테스트() {
                 // given
                 MemberRegistrationRequest request = MemberRegistrationRequest.of(
@@ -89,12 +89,17 @@ public class MemberIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(request)
-                        .when().post("/api/v1/member")
+                        .when().post("/api/v1/members")
                         .then().log().all()
                         .extract();
 
                 // then
-                Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(response.statusCode())
+                            .isEqualTo(HttpStatus.BAD_REQUEST.value());
+                    softAssertions.assertThat(response.body().jsonPath().getString("message"))
+                            .isEqualTo(ExceptionMessage.MEMBER_ALREADY_EXISTS.getMessage());
+                });
             }
         }
     }
@@ -123,7 +128,7 @@ public class MemberIntegrationTest extends ApiTest {
                 // when
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all()
-                        .when().get("/api/v1/member")
+                        .when().get("/api/v1/members")
                         .then().log().all()
                         .extract();
 
@@ -173,7 +178,7 @@ public class MemberIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(updateRequest)
-                        .when().put("/api/v1/member")
+                        .when().put("/api/v1/members")
                         .then().log().all()
                         .extract();
 
@@ -192,7 +197,7 @@ public class MemberIntegrationTest extends ApiTest {
         class MemberUpdateFailTest {
 
             @Test
-            @DisplayName("이미 매니저가 등록되어 있는 경우, 매니저 등록 요청 시 500 응답을 반환해야 한다.")
+            @DisplayName("이미 매니저가 등록되어 있는 경우, 매니저 등록 요청 시 400 응답을 반환해야 한다.")
             void 중복_매니저_등록_실패_테스트() {
                 // given
                 MemberRegistrationRequest memberRegistrationRequest1 = MemberRegistrationRequest.of(
@@ -229,16 +234,21 @@ public class MemberIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(updateRequest2)
-                        .when().put("/api/v1/member")
+                        .when().put("/api/v1/members")
                         .then().log().all()
                         .extract();
 
                 // then
-                Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(response.statusCode())
+                            .isEqualTo(HttpStatus.BAD_REQUEST.value());
+                    softAssertions.assertThat(response.body().jsonPath().getString("message"))
+                            .isEqualTo(ExceptionMessage.ALREADY_MANAGER_REGISTERED.getMessage());
+                });
             }
 
             @Test
-            @DisplayName("수정하려는 멤버가 팀에 등록되어 있지 않다면, 매니저 등록 요청 시 500 응답을 반환해야 한다.")
+            @DisplayName("수정하려는 멤버가 팀에 등록되어 있지 않다면, 매니저 등록 요청 시 400 응답을 반환해야 한다.")
             void 팀에_등록_되지_않은_멤버_매니저_등록_실패_테스트() {
                 // given
                 MemberRegistrationRequest memberRegistrationRequest = MemberRegistrationRequest.of(
@@ -258,12 +268,17 @@ public class MemberIntegrationTest extends ApiTest {
                 ExtractableResponse<Response> response = RestAssured.given()
                         .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(updateRequest)
-                        .when().put("/api/v1/member")
+                        .when().put("/api/v1/members")
                         .then().log().all()
                         .extract();
 
                 // then
-                Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                SoftAssertions.assertSoftly(softAssertions -> {
+                    softAssertions.assertThat(response.statusCode())
+                            .isEqualTo(HttpStatus.BAD_REQUEST.value());
+                    softAssertions.assertThat(response.jsonPath().getString("message"))
+                            .isEqualTo(ExceptionMessage.NOT_MEMBER_OF_TEAM.getMessage());
+                });
             }
         }
     }

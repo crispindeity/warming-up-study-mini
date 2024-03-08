@@ -11,7 +11,7 @@ public class MemberSteps {
         RestAssured.given()
                 .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/api/v1/member")
+                .when().post("/api/v1/members")
                 .then().log().all()
                 .extract();
     }
@@ -20,7 +20,7 @@ public class MemberSteps {
         RestAssured.given()
                 .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(updateRequest)
-                .when().put("/api/v1/member")
+                .when().put("/api/v1/members")
                 .then().log().all()
                 .extract();
     }

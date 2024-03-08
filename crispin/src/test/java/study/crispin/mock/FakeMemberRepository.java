@@ -51,4 +51,26 @@ public class FakeMemberRepository implements MemberRepository {
                 .filter(member -> member.isTeamMember(teamName))
                 .count();
     }
+
+    @Override
+    public boolean existsByNameAndBirthdayAndWorkStartDate(String name, LocalDate birthday, LocalDate workStartDate) {
+        return storage.values()
+                .stream()
+                .anyMatch(member -> member.isEqualMember(name, birthday, workStartDate));
+    }
+
+    @Override
+    public Optional<Member> findById(Long memberId) {
+        return storage.values()
+                .stream()
+                .filter(member -> member.isMatchId(memberId))
+                .findFirst();
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return storage.values()
+                .stream()
+                .anyMatch(member -> member.isMatchId(id));
+    }
 }

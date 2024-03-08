@@ -7,7 +7,7 @@ import study.crispin.member.presentation.response.MemberRetrieveResponses;
 import study.crispin.member.presentation.response.MemberUpdateResponse;
 
 public interface MemberService {
-    MemberRegistrationResponse registration(MemberRegistrationRequest request);
+    MemberRegistrationResponse register(MemberRegistrationRequest request);
 
     MemberUpdateResponse updateRole(MemberUpdateRequest request);
 

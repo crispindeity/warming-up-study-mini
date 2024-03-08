@@ -20,19 +20,19 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("/member")
+    @GetMapping("/members")
     public ResponseEntity<MemberRetrieveResponses> retrieve() {
         return ResponseEntity.ok(memberService.retrieve());
     }
 
-    @PostMapping("/member")
+    @PostMapping("/members")
     public ResponseEntity<MemberRegistrationResponse> registration(
             @RequestBody @Valid MemberRegistrationRequest request
     ) {
-        return ResponseEntity.ok(memberService.registration(request));
+        return ResponseEntity.ok(memberService.register(request));
     }
 
-    @PutMapping("/member")
+    @PutMapping("/members")
     public ResponseEntity<MemberUpdateResponse> update(
             @RequestBody @Valid MemberUpdateRequest request
     ) {

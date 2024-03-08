@@ -11,7 +11,7 @@ public class TeamSteps {
         RestAssured.given()
                 .log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/api/v1/team")
+                .when().post("/api/v1/teams")
                 .then().log().all()
                 .extract();
     }

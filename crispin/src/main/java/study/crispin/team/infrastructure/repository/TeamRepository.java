@@ -14,4 +14,6 @@ public interface TeamRepository {
     List<Team> findAll();
 
     void updateTeamManager(Member member);
+
+    boolean existsByName(String name);
 }

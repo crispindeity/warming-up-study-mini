@@ -14,4 +14,10 @@ public interface MemberRepository {
     List<Member> findAll();
 
     Long countByTeamName(String name);
+
+    boolean existsByNameAndBirthdayAndWorkStartDate(String name, LocalDate birthday, LocalDate workStartDate);
+
+    Optional<Member> findById(Long memberId);
+
+    boolean existsById(Long id);
 }

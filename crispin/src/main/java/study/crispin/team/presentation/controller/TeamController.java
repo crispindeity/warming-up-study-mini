@@ -18,12 +18,12 @@ public class TeamController {
         this.teamService = teamService;
     }
 
-    @GetMapping("/team")
+    @GetMapping("/teams")
     public ResponseEntity<TeamRetrieveResponses> retrieve() {
         return ResponseEntity.ok(teamService.retrieve());
     }
 
-    @PostMapping("/team")
+    @PostMapping("/teams")
     public ResponseEntity<TeamRegistrationResponse> registration(
             @RequestBody @Valid TeamRegistrationRequest request
     ) {
