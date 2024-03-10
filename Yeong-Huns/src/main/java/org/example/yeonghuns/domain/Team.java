@@ -1,6 +1,7 @@
 package org.example.yeonghuns.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,12 +23,15 @@ public class Team {
 
     private String manager;
 
+    private int dayBeforeAnnual;
+
     @OneToMany(mappedBy = "team")
     private List<Member> memberList = new ArrayList<>();
 
     @Builder
-    public Team(String name) {
+    public Team(String name, int dayBeforeAnnual) {
         this.name = name;
+        this.dayBeforeAnnual = dayBeforeAnnual;
     }
 
     public int getMemberCount(){
@@ -38,4 +42,5 @@ public class Team {
         this.manager = manager;
     }
 
+    public void updateDayBeforeAnnual(int dayBeforeAnnual){ this.dayBeforeAnnual = dayBeforeAnnual; }
 }

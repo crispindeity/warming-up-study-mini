@@ -1,7 +1,9 @@
 package org.example.yeonghuns.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.yeonghuns.dto.team.request.CreateTeamRequest;
+import org.example.yeonghuns.dto.team.request.UpdateDayBeforeAnnualRequest;
 import org.example.yeonghuns.dto.team.response.GetAllTeamsResponse;
 import org.example.yeonghuns.service.team.TeamService;
 import org.springframework.http.HttpStatus;
@@ -28,4 +30,8 @@ public class TeamController {
         return ResponseEntity.ok().body(allTeamsList);
     }
 
+    @PutMapping("/team/day-before-annual")
+    public void updateDayBeforeAnnual(@RequestBody @Valid UpdateDayBeforeAnnualRequest request){
+        teamService.updateDayBeforeAnnual(request);
+    }
 }

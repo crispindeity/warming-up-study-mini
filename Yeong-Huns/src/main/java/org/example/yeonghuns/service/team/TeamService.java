@@ -8,6 +8,7 @@ import org.example.yeonghuns.domain.Member;
 import org.example.yeonghuns.domain.Team;
 import org.example.yeonghuns.dto.member.request.SaveMemberRequest;
 import org.example.yeonghuns.dto.team.request.CreateTeamRequest;
+import org.example.yeonghuns.dto.team.request.UpdateDayBeforeAnnualRequest;
 import org.example.yeonghuns.dto.team.response.GetAllTeamsResponse;
 import org.example.yeonghuns.repository.MemberRepository;
 import org.example.yeonghuns.repository.TeamRepository;
@@ -41,6 +42,12 @@ public class TeamService {
             team.updateManager(member.getName());
         }
         teamRepository.save(team);
+    }
+
+    @Transactional
+    public void updateDayBeforeAnnual(UpdateDayBeforeAnnualRequest request){
+        Team team = teamRepository.findById(request.id()).orElseThrow(TeamNotFoundException::new);
+        team.updateDayBeforeAnnual(request.day());
     }
 
     @Transactional(readOnly = true)

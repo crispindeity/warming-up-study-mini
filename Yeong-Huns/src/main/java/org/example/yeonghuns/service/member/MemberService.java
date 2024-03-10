@@ -1,6 +1,7 @@
 package org.example.yeonghuns.service.member;
 
 import lombok.RequiredArgsConstructor;
+import org.example.yeonghuns.config.Error.exception.member.MemberNotFoundException;
 import org.example.yeonghuns.domain.Member;
 import org.example.yeonghuns.domain.Team;
 import org.example.yeonghuns.dto.member.request.SaveMemberRequest;
@@ -29,5 +30,9 @@ public class MemberService {
     @Transactional(readOnly = true)
     public List<GetAllMembersResponse> getAllMembers() {
         return memberRepository.findAll().stream().map(GetAllMembersResponse::from).toList();
+    }
+
+    public Member findMemberById(long id) {
+        return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
     }
 }
