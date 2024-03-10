@@ -1,5 +1,6 @@
 package inflearn.mini.annualleave.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -16,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import inflearn.mini.annualleave.dto.request.AnnualLeaveRequestDto;
+import inflearn.mini.annualleave.dto.request.RemainingAnnualLeaveRequestDto;
+import inflearn.mini.annualleave.dto.response.RemainingAnnualLeaveResponseDto;
 import inflearn.mini.annualleave.exception.InvalidAnnualLeaveRequestException;
 import inflearn.mini.annualleave.repository.AnnualLeaveRepository;
 import inflearn.mini.employee.domain.Employee;
@@ -93,5 +96,23 @@ class AnnualLeaveServiceTest {
         assertThatThrownBy(() -> annualLeaveService.requestAnnualLeave(request))
                 .isInstanceOf(InvalidAnnualLeaveRequestException.class)
                 .hasMessage("연차 신청 기간이 아닙니다.");
+    }
+
+    @Test
+    void 남은_연차_조회() {
+        // given
+        final RemainingAnnualLeaveRequestDto request = new RemainingAnnualLeaveRequestDto(1L);
+        final Employee employee = Employee.builder()
+                .workStartDate(LocalDate.of(2020, 1, 1))
+                .build();
+
+        given(employeeRepository.findById(anyLong()))
+                .willReturn(Optional.of(employee));
+
+        // when
+        final RemainingAnnualLeaveResponseDto remainingAnnualLeave = annualLeaveService.getRemainingAnnualLeave(request);
+
+        // then
+        assertThat(remainingAnnualLeave.remainingAnnualLeaveDays()).isEqualTo(15);
     }
 }

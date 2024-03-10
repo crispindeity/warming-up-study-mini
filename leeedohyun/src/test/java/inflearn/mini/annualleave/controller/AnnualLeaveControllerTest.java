@@ -2,7 +2,9 @@ package inflearn.mini.annualleave.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.doNothing;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import inflearn.mini.annualleave.dto.request.AnnualLeaveRequestDto;
+import inflearn.mini.annualleave.dto.request.RemainingAnnualLeaveRequestDto;
+import inflearn.mini.annualleave.dto.response.RemainingAnnualLeaveResponseDto;
 import inflearn.mini.annualleave.exception.InvalidAnnualLeaveRequestException;
 import inflearn.mini.annualleave.service.AnnualLeaveService;
 
@@ -61,5 +65,22 @@ class AnnualLeaveControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 남은_연차_조회한다() throws Exception {
+        // given
+        final RemainingAnnualLeaveRequestDto request = new RemainingAnnualLeaveRequestDto(1L);
+
+        given(annualLeaveService.getRemainingAnnualLeave(any()))
+                .willReturn(new RemainingAnnualLeaveResponseDto(15));
+
+        // when
+
+        // then
+        mockMvc.perform(get("/api/v1/annual-leaves")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
     }
 }

@@ -1,5 +1,6 @@
 package inflearn.mini.api;
 
+import static inflearn.mini.api.steps.AnnualLeaveSteps.연차_남은_연차_조회;
 import static inflearn.mini.api.steps.AnnualLeaveSteps.연차_신청;
 import static inflearn.mini.api.steps.EmployeeSteps.직원_등록;
 import static inflearn.mini.api.steps.TeamSteps.팀_등록;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
 import inflearn.mini.annualleave.dto.request.AnnualLeaveRequestDto;
+import inflearn.mini.annualleave.dto.request.RemainingAnnualLeaveRequestDto;
 import inflearn.mini.employee.dto.request.EmployeeRegisterRequestDto;
 import inflearn.mini.team.dto.request.TeamRegisterRequestDto;
 import io.restassured.response.ExtractableResponse;
@@ -36,5 +38,25 @@ public class AnnualLeaveApiTest extends ApiTest {
 
         // then
         assertThat(연차_신청_응답.statusCode()).isEqualTo(OK.value());
+    }
+
+    @Test
+    void 남은_연차를_조회한다() {
+        // given
+        팀_등록(new TeamRegisterRequestDto("개발팀"));
+        직원_등록(EmployeeRegisterRequestDto.builder()
+                .employeeName("홍길동")
+                .teamName("개발팀")
+                .isManager(false)
+                .birthday(LocalDate.of(1990, 1, 1))
+                .workStartDate(LocalDate.of(2021, 1, 1))
+                .build());
+        final RemainingAnnualLeaveRequestDto 남은_연차_조회_요청 = new RemainingAnnualLeaveRequestDto(1L);
+
+        // when
+        final ExtractableResponse<Response> 남은_연차_조회_응답 = 연차_남은_연차_조회(남은_연차_조회_요청);
+
+        // then
+        assertThat(남은_연차_조회_응답.statusCode()).isEqualTo(OK.value());
     }
 }

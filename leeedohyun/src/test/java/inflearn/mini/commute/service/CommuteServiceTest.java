@@ -19,19 +19,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import inflearn.mini.commute.domain.Commute;
+import inflearn.mini.commute.dto.request.CommutingRequestDto;
+import inflearn.mini.commute.dto.request.EndOfWorkRequestDto;
+import inflearn.mini.commute.repsoitory.CommuteRepository;
+import inflearn.mini.employee.domain.Employee;
 import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
 import inflearn.mini.employee.dto.response.DateWorkMinutes;
 import inflearn.mini.employee.dto.response.EmployeeWorkHistoryResponse;
-import inflearn.mini.employee.domain.Employee;
 import inflearn.mini.employee.exception.AbsentEmployeeException;
 import inflearn.mini.employee.exception.AlreadyAtWorkException;
 import inflearn.mini.employee.exception.EmployeeNotFoundException;
 import inflearn.mini.employee.repository.EmployeeRepository;
 import inflearn.mini.team.domain.Team;
-import inflearn.mini.commute.domain.Commute;
-import inflearn.mini.commute.dto.request.CommutingRequestDto;
-import inflearn.mini.commute.dto.request.EndOfWorkRequestDto;
-import inflearn.mini.commute.repsoitory.CommuteRepository;
 
 @ExtendWith(MockitoExtension.class)
 class CommuteServiceTest {
