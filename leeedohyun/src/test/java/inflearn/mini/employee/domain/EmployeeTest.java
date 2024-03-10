@@ -18,6 +18,7 @@ class EmployeeTest {
         // given
         final Employee employee = Employee.builder()
                 .isManager(true)
+                .workStartDate(LocalDate.of(2020, 1, 1))
                 .build();
 
         // when
@@ -32,6 +33,7 @@ class EmployeeTest {
         // given
         final Employee employee = Employee.builder()
                 .isManager(false)
+                .workStartDate(LocalDate.of(2020, 1, 1))
                 .build();
 
         // when

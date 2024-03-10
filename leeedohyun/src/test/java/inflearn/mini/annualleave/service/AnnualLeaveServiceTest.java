@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import inflearn.mini.annualleave.dto.request.AnnualLeaveRequestDto;
+import inflearn.mini.annualleave.exception.InvalidAnnualLeaveRequestException;
 import inflearn.mini.annualleave.repository.AnnualLeaveRepository;
 import inflearn.mini.employee.domain.Employee;
 import inflearn.mini.employee.exception.EmployeeNotFoundException;
@@ -90,7 +91,7 @@ class AnnualLeaveServiceTest {
 
         // then
         assertThatThrownBy(() -> annualLeaveService.requestAnnualLeave(request))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidAnnualLeaveRequestException.class)
                 .hasMessage("연차 신청 기간이 아닙니다.");
     }
 }

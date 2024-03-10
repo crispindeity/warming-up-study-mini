@@ -17,6 +17,7 @@ class CommuteTest {
         final Employee employee = Employee.builder()
                 .name("테스트")
                 .isManager(true)
+                .workStartDate(LocalDate.of(2020, 1, 1))
                 .build();
         final Commute commute = new Commute(employee);
         final LocalDate workStartDate = LocalDate.of(2021, 1, 1);
@@ -35,6 +36,7 @@ class CommuteTest {
         final Employee employee = Employee.builder()
                 .name("테스트")
                 .isManager(true)
+                .workStartDate(LocalDate.of(2020, 1, 1))
                 .build();
         final Commute commute = new Commute(employee);
         final LocalDate workStartDate = LocalDate.of(2021, 1, 2);

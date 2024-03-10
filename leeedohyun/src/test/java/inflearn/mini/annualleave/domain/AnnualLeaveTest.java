@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
+import inflearn.mini.annualleave.exception.InvalidAnnualLeaveRequestException;
 import inflearn.mini.employee.domain.Employee;
 import inflearn.mini.team.domain.Team;
 
@@ -28,7 +29,7 @@ class AnnualLeaveTest {
 
         // then
         assertThatThrownBy(() -> annualLeave.validateLeaveRegistrationAdvanceDays(team))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidAnnualLeaveRequestException.class)
                 .hasMessage("연차 신청 기간이 아닙니다.");
     }
 }

@@ -52,6 +52,7 @@ class CommuteServiceTest {
                 .id(1L)
                 .name("홍길동")
                 .isManager(false)
+                .workStartDate(LocalDate.of(2020, 1, 1))
                 .build();
         employee.joinTeam(new Team("개발팀"));
 
@@ -92,7 +93,9 @@ class CommuteServiceTest {
         final CommutingRequestDto commutingRequest = new CommutingRequestDto(1L);
 
         given(employeeRepository.findById(anyLong()))
-                .willReturn(Optional.of(Employee.builder().build()));
+                .willReturn(Optional.of(Employee.builder()
+                        .workStartDate(LocalDate.of(2020, 1, 1))
+                        .build()));
 
         given(commuteRepository.existsByEmployeeAndWorkEndTimeIsNull(any()))
                 .willReturn(true);
@@ -112,6 +115,7 @@ class CommuteServiceTest {
                 .id(1L)
                 .name("홍길동")
                 .isManager(false)
+                .workStartDate(LocalDate.of(2020, 1, 1))
                 .build();
         employee.joinTeam(new Team("개발팀"));
         final Commute commute = new Commute(employee);
@@ -152,6 +156,7 @@ class CommuteServiceTest {
                 .id(1L)
                 .name("홍길동")
                 .isManager(false)
+                .workStartDate(LocalDate.of(2020, 1, 1))
                 .build();
         employee.joinTeam(new Team("개발팀"));
         final EndOfWorkRequestDto endOfWorkRequest = new EndOfWorkRequestDto(1L);
@@ -176,6 +181,7 @@ class CommuteServiceTest {
                 .id(1L)
                 .name("홍길동")
                 .isManager(false)
+                .workStartDate(LocalDate.of(2020, 1, 1))
                 .build();
         employee.joinTeam(new Team("개발팀"));
 
