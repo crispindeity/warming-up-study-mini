@@ -1,7 +1,6 @@
 package inflearn.mini.commute.repsoitory;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,5 +19,5 @@ public interface CommuteRepository extends JpaRepository<Commute, Long> {
     )
     Optional<Commute> findWorkTimeHistoryForDate(final Employee employee, final LocalDateTime workStartDate, final LocalDateTime workEndDate);
 
-    List<Commute> findAllByEmployeeAndWorkStartTimeBetween(final Employee employee, final LocalDateTime start, final LocalDateTime end);
+    Optional<Commute> findByEmployeeAndWorkStartTimeBetween(final Employee employee, final LocalDateTime workStartDate, final LocalDateTime workEndDate);
 }

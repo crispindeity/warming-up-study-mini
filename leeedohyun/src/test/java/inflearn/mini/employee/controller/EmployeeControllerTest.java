@@ -131,8 +131,8 @@ class EmployeeControllerTest {
 
         given(commuteService.getEmployeeDailyWorkingHours(anyLong(), any()))
                 .willReturn(new EmployeeWorkHistoryResponse(List.of(
-                        new DateWorkMinutes(LocalDate.of(2024, 3, 4), 540),
-                        new DateWorkMinutes(LocalDate.of(2024, 3, 5), 540)
+                        new DateWorkMinutes(LocalDate.of(2024, 3, 4), 540, false),
+                        new DateWorkMinutes(LocalDate.of(2024, 3, 5), 540, false)
                 ), 1080));
 
         // when

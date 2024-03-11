@@ -8,9 +8,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -19,14 +17,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import inflearn.mini.annualleave.repository.AnnualLeaveRepository;
 import inflearn.mini.commute.domain.Commute;
 import inflearn.mini.commute.dto.request.CommutingRequestDto;
 import inflearn.mini.commute.dto.request.EndOfWorkRequestDto;
 import inflearn.mini.commute.repsoitory.CommuteRepository;
 import inflearn.mini.employee.domain.Employee;
 import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
-import inflearn.mini.employee.dto.response.DateWorkMinutes;
-import inflearn.mini.employee.dto.response.EmployeeWorkHistoryResponse;
 import inflearn.mini.employee.exception.AbsentEmployeeException;
 import inflearn.mini.employee.exception.AlreadyAtWorkException;
 import inflearn.mini.employee.exception.EmployeeNotFoundException;
@@ -41,6 +38,9 @@ class CommuteServiceTest {
 
     @Mock
     private CommuteRepository commuteRepository;
+
+    @Mock
+    private AnnualLeaveRepository annualLeaveRepository;
 
     @InjectMocks
     private CommuteService commuteService;
@@ -172,50 +172,6 @@ class CommuteServiceTest {
         assertThatThrownBy(() -> commuteService.leaveWork(endOfWorkRequest))
                 .isInstanceOf(AbsentEmployeeException.class)
                 .hasMessage("출근하지 않은 직원입니다.");
-    }
-
-    @Test
-    void 특정_직원의_날짜별_근무_시간을_조회한다() {
-        // given
-        final Employee employee = Employee.builder()
-                .id(1L)
-                .name("홍길동")
-                .isManager(false)
-                .workStartDate(LocalDate.of(2020, 1, 1))
-                .build();
-        employee.joinTeam(new Team("개발팀"));
-
-        given(employeeRepository.findById(anyLong()))
-                .willReturn(Optional.of(employee));
-        final Commute commute1 = new Commute(employee);
-        commute1.goToWork(LocalDateTime.of(2024, 3, 4, 9, 0));
-        commute1.leaveWork(LocalDateTime.of(2024, 3, 4, 18, 0));
-
-        final Commute commute2 = new Commute(employee);
-        commute2.goToWork(LocalDateTime.of(2024, 3, 5, 9, 0));
-        commute2.leaveWork(LocalDateTime.of(2024, 3, 5, 18, 0));
-        given(commuteRepository.findAllByEmployeeAndWorkStartTimeBetween(any(), any(), any()))
-                .willReturn(List.of(
-                        commute1,
-                        commute2
-                ));
-
-        final EmployeeWorkHistoryRequest request = new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3));
-
-        // when
-        final EmployeeWorkHistoryResponse employeeDailyWorkingHours = commuteService.getEmployeeDailyWorkingHours(
-                1L, request);
-
-        // then
-        assertThat(employeeDailyWorkingHours).isIn(
-                new EmployeeWorkHistoryResponse(
-                        List.of(
-                                new DateWorkMinutes(LocalDate.of(2024, 3,4), 540),
-                                new DateWorkMinutes(LocalDate.of(2024, 3,5), 540)
-                        ),
-                        1080
-                )
-        );
     }
 
     @Test

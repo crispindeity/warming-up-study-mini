@@ -2,12 +2,13 @@ package inflearn.mini.commute.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import inflearn.mini.annualleave.repository.AnnualLeaveRepository;
 import inflearn.mini.commute.domain.Commute;
 import inflearn.mini.commute.dto.request.CommutingRequestDto;
 import inflearn.mini.commute.dto.request.EndOfWorkRequestDto;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CommuteService {
 
+    private final AnnualLeaveRepository annualLeaveRepository;
     private final EmployeeRepository employeeRepository;
     private final CommuteRepository commuteRepository;
 
@@ -61,28 +63,34 @@ public class CommuteService {
         final Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("등록된 직원이 아닙니다."));
 
-        final LocalDateTime start = LocalDateTime.of(request.year(), request.month(), 1, 0, 0);
-        final LocalDateTime end = LocalDateTime.of(request.getEndOfMonth(), LocalTime.of(23, 59, 59));
-
-        final List<Commute> workTimeHistories = commuteRepository
-                .findAllByEmployeeAndWorkStartTimeBetween(employee, start, end);
-
-        final List<DateWorkMinutes> detail = getDateWorkHours(workTimeHistories);
-        final long sum = calculateSumWorkHour(workTimeHistories);
-
+        final List<DateWorkMinutes> detail = getDateWorkMinutes(request, employee);
+        final long sum = calculateSumWorkHour(detail);
         return new EmployeeWorkHistoryResponse(detail, sum);
     }
 
-    private List<DateWorkMinutes> getDateWorkHours(final List<Commute> workTimeHistories) {
-        return workTimeHistories.stream()
-                .map(workTimeHistory -> DateWorkMinutes.of(workTimeHistory.getWorkStartDate(),
-                        workTimeHistory.calculateWorkingHours()))
-                .toList();
+    private List<DateWorkMinutes> getDateWorkMinutes(final EmployeeWorkHistoryRequest request, final Employee employee) {
+        final List<DateWorkMinutes> detail = new ArrayList<>();
+        for (int i = 1; i <= request.getEndOfMonth().getDayOfMonth(); i++) {
+            final LocalDate day = request.yearMonth().atDay(i);
+            addWorkDetailForDate(employee, day, detail);
+        }
+        return detail;
     }
 
-    private long calculateSumWorkHour(final List<Commute> workTimeHistories) {
-        return workTimeHistories.stream()
-                .mapToLong(Commute::calculateWorkingHours)
+    private void addWorkDetailForDate(final Employee employee, final LocalDate day, final List<DateWorkMinutes> detail) {
+        final boolean isUsedAnnualLeave = annualLeaveRepository.existsByEmployeeAndUseDate(employee, day);
+        if (isUsedAnnualLeave) {
+            detail.add(new DateWorkMinutes(day, 0, true));
+            return;
+        }
+        final Commute commute = commuteRepository.findByEmployeeAndWorkStartTimeBetween(employee, day.atStartOfDay(), day.atTime(23, 59, 59))
+                .get();
+        detail.add(new DateWorkMinutes(day, commute.calculateWorkingHours(), false));
+    }
+
+    private long calculateSumWorkHour(final List<DateWorkMinutes> detail) {
+        return detail.stream()
+                .mapToLong(DateWorkMinutes::workMinutes)
                 .sum();
     }
 }
