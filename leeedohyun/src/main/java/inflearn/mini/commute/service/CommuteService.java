@@ -69,7 +69,8 @@ public class CommuteService {
                 .orElseThrow(() -> new EmployeeNotFoundException("등록된 직원이 아닙니다."));
     }
 
-    private List<DateWorkMinutes> getDateWorkMinutes(final EmployeeWorkHistoryRequest request, final Employee employee) {
+    private List<DateWorkMinutes> getDateWorkMinutes(final EmployeeWorkHistoryRequest request,
+                                                     final Employee employee) {
         final List<DateWorkMinutes> detail = new ArrayList<>();
         for (int i = 1; i <= request.getEndOfMonth().getDayOfMonth(); i++) {
             final LocalDate day = request.yearMonth().atDay(i);
@@ -78,14 +79,16 @@ public class CommuteService {
         return detail;
     }
 
-    private void addWorkDetailForDate(final Employee employee, final LocalDate day, final List<DateWorkMinutes> detail) {
+    private void addWorkDetailForDate(final Employee employee,
+                                      final LocalDate day,
+                                      final List<DateWorkMinutes> detail) {
         final boolean isUsedAnnualLeave = annualLeaveRepository.existsByEmployeeAndUseDate(employee, day);
         if (isUsedAnnualLeave) {
             detail.add(new DateWorkMinutes(day, 0, true));
             return;
         }
-        final Commute commute = commuteRepository.findByEmployeeAndWorkStartTimeBetween(employee, day.atStartOfDay(), day.atTime(23, 59, 59))
-                .get();
+        final Commute commute = commuteRepository.findByEmployeeAndWorkStartTimeBetween(employee, day.atStartOfDay(),
+                        day.atTime(23, 59, 59)).get();
         detail.add(new DateWorkMinutes(day, commute.calculateWorkingHours(), false));
     }
 
