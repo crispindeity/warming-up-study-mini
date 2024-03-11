@@ -33,8 +33,7 @@ public class CommuteService {
 
     @Transactional
     public void goToWork(final CommutingRequestDto commutingRequestDto) {
-        final Employee employee = employeeRepository.findById(commutingRequestDto.employeeId())
-                .orElseThrow(() -> new EmployeeNotFoundException("등록된 직원이 아닙니다."));
+        final Employee employee = getEmployee(commutingRequestDto.employeeId());
 
         if (commuteRepository.existsByEmployeeAndWorkEndTimeIsNull(employee)) {
             throw new AlreadyAtWorkException("이미 출근한 직원입니다.");
@@ -47,8 +46,7 @@ public class CommuteService {
 
     @Transactional
     public void leaveWork(final EndOfWorkRequestDto request) {
-        final Employee employee = employeeRepository.findById(request.employeeId())
-                .orElseThrow(() -> new EmployeeNotFoundException("등록된 직원이 아닙니다."));
+        final Employee employee = getEmployee(request.employeeId());
         final LocalDate now = LocalDate.now();
         final Commute commute = commuteRepository
                 .findWorkTimeHistoryForDate(employee, now.atStartOfDay(), now.plusDays(1).atStartOfDay())
@@ -60,12 +58,15 @@ public class CommuteService {
     @Transactional(readOnly = true)
     public EmployeeWorkHistoryResponse getEmployeeDailyWorkingHours(final Long employeeId,
                                                                     final EmployeeWorkHistoryRequest request) {
-        final Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException("등록된 직원이 아닙니다."));
-
+        final Employee employee = getEmployee(employeeId);
         final List<DateWorkMinutes> detail = getDateWorkMinutes(request, employee);
         final long sum = calculateSumWorkHour(detail);
         return new EmployeeWorkHistoryResponse(detail, sum);
+    }
+
+    private Employee getEmployee(final Long employeeId) {
+        return employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException("등록된 직원이 아닙니다."));
     }
 
     private List<DateWorkMinutes> getDateWorkMinutes(final EmployeeWorkHistoryRequest request, final Employee employee) {

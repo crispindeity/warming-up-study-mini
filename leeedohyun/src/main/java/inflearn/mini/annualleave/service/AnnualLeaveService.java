@@ -24,8 +24,7 @@ public class AnnualLeaveService {
 
     @Transactional
     public void requestAnnualLeave(final AnnualLeaveRequestDto request) {
-        final Employee findEmployee = employeeRepository.findById(request.employeeId())
-                .orElseThrow(() -> new EmployeeNotFoundException("등록된 직원이 없습니다."));
+        final Employee findEmployee = getEmployee(request.employeeId());
         findEmployee.useAnnualLeave();
         final AnnualLeave annualLeave = new AnnualLeave(LocalDate.now(), request.annualLeaveDate(), findEmployee);
         annualLeave.validateLeaveRegistrationAdvanceDays(findEmployee.getTeam());
@@ -34,8 +33,12 @@ public class AnnualLeaveService {
 
     @Transactional(readOnly = true)
     public RemainingAnnualLeaveResponseDto getRemainingAnnualLeave(final RemainingAnnualLeaveRequestDto request) {
-        final Employee findEmployee = employeeRepository.findById(request.employeeId())
-                .orElseThrow(() -> new EmployeeNotFoundException("등록된 직원이 없습니다."));
+        final Employee findEmployee = getEmployee(request.employeeId());
         return new RemainingAnnualLeaveResponseDto(findEmployee.getAnnualLeaveNumber());
+    }
+
+    private Employee getEmployee(final Long employeeId) {
+        return employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException("등록된 직원이 없습니다."));
     }
 }
