@@ -236,6 +236,9 @@ user.gradle
 target/
 build/
 out/
+.github/
+.idea/
+
 
 *.DS_Store
 *.class
