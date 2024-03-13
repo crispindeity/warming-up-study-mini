@@ -14,7 +14,7 @@ import inflearn.mini.commute.dto.request.CommutingRequestDto;
 import inflearn.mini.commute.dto.request.EndOfWorkRequestDto;
 import inflearn.mini.commute.repsoitory.CommuteRepository;
 import inflearn.mini.employee.domain.Employee;
-import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
+import inflearn.mini.employee.dto.request.EmployeeDailyWorkingHoursRequest;
 import inflearn.mini.employee.dto.response.DateWorkMinutes;
 import inflearn.mini.employee.dto.response.EmployeeCommuteResponse;
 import inflearn.mini.employee.exception.AbsentEmployeeException;
@@ -57,7 +57,7 @@ public class CommuteService {
 
     @Transactional(readOnly = true)
     public EmployeeCommuteResponse getEmployeeDailyWorkingHours(final Long employeeId,
-                                                                final EmployeeWorkHistoryRequest request) {
+                                                                final EmployeeDailyWorkingHoursRequest request) {
         final Employee employee = getEmployee(employeeId);
         final List<DateWorkMinutes> detail = getDateWorkMinutes(request, employee);
         final long sum = calculateSumWorkHour(detail);
@@ -69,7 +69,7 @@ public class CommuteService {
                 .orElseThrow(() -> new EmployeeNotFoundException("등록된 직원이 아닙니다."));
     }
 
-    private List<DateWorkMinutes> getDateWorkMinutes(final EmployeeWorkHistoryRequest request,
+    private List<DateWorkMinutes> getDateWorkMinutes(final EmployeeDailyWorkingHoursRequest request,
                                                      final Employee employee) {
         final List<DateWorkMinutes> detail = new ArrayList<>();
         for (int i = 1; i <= request.getEndOfMonth().getDayOfMonth(); i++) {

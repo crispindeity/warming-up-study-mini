@@ -23,7 +23,7 @@ import inflearn.mini.commute.dto.request.CommutingRequestDto;
 import inflearn.mini.commute.dto.request.EndOfWorkRequestDto;
 import inflearn.mini.commute.repsoitory.CommuteRepository;
 import inflearn.mini.employee.domain.Employee;
-import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
+import inflearn.mini.employee.dto.request.EmployeeDailyWorkingHoursRequest;
 import inflearn.mini.employee.exception.AbsentEmployeeException;
 import inflearn.mini.employee.exception.AlreadyAtWorkException;
 import inflearn.mini.employee.exception.EmployeeNotFoundException;
@@ -183,7 +183,7 @@ class CommuteServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> commuteService.getEmployeeDailyWorkingHours(1L, new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3))))
+        assertThatThrownBy(() -> commuteService.getEmployeeDailyWorkingHours(1L, new EmployeeDailyWorkingHoursRequest(YearMonth.of(2024, 3))))
                 .isInstanceOf(EmployeeNotFoundException.class)
                 .hasMessage("등록된 직원이 없습니다.");
     }

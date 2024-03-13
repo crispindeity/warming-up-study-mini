@@ -2,6 +2,8 @@ package inflearn.mini.employee.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import inflearn.mini.employee.dto.request.EmployeeRegisterRequestDto;
-import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
+import inflearn.mini.employee.dto.request.EmployeeDailyWorkingHoursRequest;
 import inflearn.mini.employee.dto.response.EmployeeResponse;
 import inflearn.mini.employee.dto.response.EmployeeCommuteResponse;
 import inflearn.mini.employee.service.EmployeeService;
@@ -27,7 +29,7 @@ public class EmployeeController {
     private final CommuteService commuteService;
 
     @PostMapping("/register")
-    public void registerEmployee(@RequestBody EmployeeRegisterRequestDto request) {
+    public void registerEmployee(@RequestBody @Valid EmployeeRegisterRequestDto request) {
         employeeService.registerEmployee(request);
     }
 
@@ -38,7 +40,7 @@ public class EmployeeController {
 
     @GetMapping("/{employeeId}")
     public ResponseEntity<EmployeeCommuteResponse> getEmployeeDailyWorkingHours(@PathVariable final Long employeeId,
-                                                                                @RequestBody final EmployeeWorkHistoryRequest request) {
+                                                                                @RequestBody @Valid final EmployeeDailyWorkingHoursRequest request) {
         return ResponseEntity.ok(commuteService.getEmployeeDailyWorkingHours(employeeId, request));
     }
 }

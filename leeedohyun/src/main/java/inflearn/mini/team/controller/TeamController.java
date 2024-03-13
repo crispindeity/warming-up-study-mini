@@ -2,6 +2,8 @@ package inflearn.mini.team.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +24,7 @@ public class TeamController {
     private final TeamService teamService;
 
     @PostMapping("/register")
-    public void registerTeam(@RequestBody TeamRegisterRequestDto request) {
+    public void registerTeam(@RequestBody @Valid TeamRegisterRequestDto request) {
         teamService.registerTeam(request);
     }
 

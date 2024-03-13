@@ -1,4 +1,6 @@
 package inflearn.mini.annualleave.dto.request;
 
-public record RemainingAnnualLeaveRequestDto(Long employeeId) {
+import jakarta.validation.constraints.NotNull;
+
+public record RemainingAnnualLeaveRequestDto(@NotNull Long employeeId) {
 }

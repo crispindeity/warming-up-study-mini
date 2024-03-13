@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import inflearn.mini.employee.domain.Employee;
 import inflearn.mini.employee.domain.Role;
 import inflearn.mini.employee.dto.request.EmployeeRegisterRequestDto;
-import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
+import inflearn.mini.employee.dto.request.EmployeeDailyWorkingHoursRequest;
 import inflearn.mini.employee.dto.response.DateWorkMinutes;
 import inflearn.mini.employee.dto.response.EmployeeResponse;
 import inflearn.mini.employee.dto.response.EmployeeCommuteResponse;
@@ -137,7 +137,7 @@ class EmployeeControllerTest {
         // when & then
         mockMvc.perform(get("/api/v1/employees/{employeeId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3)))))
+                        .content(objectMapper.writeValueAsString(new EmployeeDailyWorkingHoursRequest(YearMonth.of(2024, 3)))))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -151,7 +151,7 @@ class EmployeeControllerTest {
         // when & then
         mockMvc.perform(get("/api/v1/employees/{employeeId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3)))))
+                        .content(objectMapper.writeValueAsString(new EmployeeDailyWorkingHoursRequest(YearMonth.of(2024, 3)))))
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }

@@ -1,5 +1,7 @@
 package inflearn.mini.commute.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +21,12 @@ public class CommuteController {
     private final CommuteService commuteService;
 
     @PostMapping("/work")
-    public void goToWork(@RequestBody final CommutingRequestDto commutingRequestDto) {
+    public void goToWork(@RequestBody @Valid final CommutingRequestDto commutingRequestDto) {
         commuteService.goToWork(commutingRequestDto);
     }
 
     @PatchMapping("/leave")
-    public void leaveWork(@RequestBody final EndOfWorkRequestDto endOfWorkRequest) {
+    public void leaveWork(@RequestBody @Valid final EndOfWorkRequestDto endOfWorkRequest) {
         commuteService.leaveWork(endOfWorkRequest);
     }
 }

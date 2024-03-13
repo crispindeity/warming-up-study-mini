@@ -1,5 +1,7 @@
 package inflearn.mini.annualleave.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +23,14 @@ public class AnnualLeaveController {
     private final AnnualLeaveService annualLeaveService;
 
     @PostMapping
-    public void requestAnnualLeave(@RequestBody final AnnualLeaveRequestDto request) {
+    public void requestAnnualLeave(@RequestBody @Valid final AnnualLeaveRequestDto request) {
         annualLeaveService.requestAnnualLeave(request);
     }
 
     @GetMapping
-    public ResponseEntity<RemainingAnnualLeaveResponseDto> getRemainingAnnualLeave(@RequestBody final RemainingAnnualLeaveRequestDto request) {
+    public ResponseEntity<RemainingAnnualLeaveResponseDto> getRemainingAnnualLeave(
+            @RequestBody @Valid final RemainingAnnualLeaveRequestDto request
+    ) {
         final RemainingAnnualLeaveResponseDto remainingAnnualLeave = annualLeaveService.getRemainingAnnualLeave(request);
         return ResponseEntity.ok().body(remainingAnnualLeave);
     }
