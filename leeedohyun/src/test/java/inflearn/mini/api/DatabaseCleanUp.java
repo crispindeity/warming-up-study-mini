@@ -18,11 +18,6 @@ import com.google.common.base.CaseFormat;
 @Component
 public class DatabaseCleanUp implements InitializingBean {
 
-    private static final String TRUNCATE_SQL_MESSAGE = "TRUNCATE TABLE %s";
-    private static final String SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE = "SET FOREIGN_KEY_CHECKS = %s";
-    private static final String DISABLE_REFERENTIAL_QUERY = String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, false);
-    private static final String ENABLE_REFERENTIAL_QUERY = String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, true);
-
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -38,25 +33,14 @@ public class DatabaseCleanUp implements InitializingBean {
 
     @Transactional
     public void execute() {
-        disableReferentialIntegrity();
-        executeTruncate();
-        enableReferentialIntegrity();
-    }
+        entityManager.flush();
+        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
 
-    private void disableReferentialIntegrity() {
-        entityManager.createNativeQuery(DISABLE_REFERENTIAL_QUERY);
-    }
-
-    private void executeTruncate() {
         for (final String tableName : tableNames) {
-            final String TRUNCATE_QUERY = String.format(TRUNCATE_SQL_MESSAGE, tableName);
-
-            entityManager.createNativeQuery(TRUNCATE_QUERY);
+            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
+            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN " + tableName + "_ID RESTART WITH 1").executeUpdate();
         }
-    }
-
-    private void enableReferentialIntegrity() {
-        entityManager.createNativeQuery(ENABLE_REFERENTIAL_QUERY);
+        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
 
     private String getTableName(final EntityType<?> e) {
