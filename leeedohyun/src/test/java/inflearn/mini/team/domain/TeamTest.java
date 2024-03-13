@@ -2,6 +2,8 @@ package inflearn.mini.team.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.Test;
 
 import inflearn.mini.employee.domain.Employee;
@@ -14,6 +16,7 @@ class TeamTest {
         final Employee manager = Employee.builder()
                 .name("홍길동")
                 .isManager(true)
+                .workStartDate(LocalDate.of(2020, 1, 1))
                 .build();
         final Team team = new Team("팀명");
         manager.joinTeam(team);
@@ -31,6 +34,7 @@ class TeamTest {
         final Employee employee = Employee.builder()
                 .name("홍길동")
                 .isManager(false)
+                .workStartDate(LocalDate.of(2020, 1, 1))
                 .build();
         final Team team = new Team("팀명");
         employee.joinTeam(team);
@@ -48,6 +52,7 @@ class TeamTest {
         final Employee employee = Employee.builder()
                 .name("홍길동")
                 .isManager(false)
+                .workStartDate(LocalDate.of(2020, 1, 1))
                 .build();
         final Team team = new Team("팀명");
         employee.joinTeam(team);

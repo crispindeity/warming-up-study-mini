@@ -59,9 +59,7 @@ class TeamControllerTest {
         doThrow(new TeamAlreadyExistException("이미 등록된 팀입니다."))
                 .when(teamService).registerTeam(request);
 
-        // when
-
-        // then
+        // when & then
         mockMvc.perform(post("/api/v1/teams/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -86,8 +84,7 @@ class TeamControllerTest {
         given(teamService.getTeams())
                 .willReturn(responses);
 
-        // when
-        // then
+        // when & then
         mockMvc.perform(get("/api/v1/teams"))
                 .andExpect(status().isOk())
                 .andDo(print());

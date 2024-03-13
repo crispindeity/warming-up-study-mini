@@ -2,9 +2,10 @@ package inflearn.mini.employee.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import inflearn.mini.employee.dto.request.EmployeeRegisterRequestDto;
-import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
+import inflearn.mini.employee.dto.request.EmployeeDailyWorkingHoursRequest;
 import inflearn.mini.employee.dto.response.EmployeeResponse;
-import inflearn.mini.employee.dto.response.EmployeeWorkHistoryResponse;
+import inflearn.mini.employee.dto.response.EmployeeCommuteResponse;
 import inflearn.mini.employee.service.EmployeeService;
-import inflearn.mini.worktimehistory.service.WorkTimeHistoryService;
+import inflearn.mini.commute.service.CommuteService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,16 +26,11 @@ import lombok.RequiredArgsConstructor;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
-    private final WorkTimeHistoryService workTimeHistoryService;
+    private final CommuteService commuteService;
 
     @PostMapping("/register")
-    public void registerEmployee(@RequestBody EmployeeRegisterRequestDto request) {
+    public void registerEmployee(@RequestBody @Valid EmployeeRegisterRequestDto request) {
         employeeService.registerEmployee(request);
-    }
-
-    @PostMapping("/{employeeId}/work")
-    public void goToWork(@PathVariable final Long employeeId) {
-        workTimeHistoryService.goToWork(employeeId);
     }
 
     @GetMapping
@@ -42,14 +38,9 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.getEmployees());
     }
 
-    @PatchMapping("/{employeeId}/leave")
-    public void leaveWork(@PathVariable final Long employeeId) {
-        workTimeHistoryService.leaveWork(employeeId);
-    }
-
     @GetMapping("/{employeeId}")
-    public ResponseEntity<EmployeeWorkHistoryResponse> getEmployeeDailyWorkingHours(@PathVariable final Long employeeId,
-                                                                                    @RequestBody final EmployeeWorkHistoryRequest request) {
-        return ResponseEntity.ok(workTimeHistoryService.getEmployeeDailyWorkingHours(employeeId, request));
+    public ResponseEntity<EmployeeCommuteResponse> getEmployeeDailyWorkingHours(@PathVariable final Long employeeId,
+                                                                                @RequestBody @Valid final EmployeeDailyWorkingHoursRequest request) {
+        return ResponseEntity.ok(commuteService.getEmployeeDailyWorkingHours(employeeId, request));
     }
 }

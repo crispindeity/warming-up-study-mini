@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import inflearn.mini.annualleave.exception.ExhaustedAnnualLeaveException;
+import inflearn.mini.annualleave.exception.InvalidAnnualLeaveRequestException;
 import inflearn.mini.employee.exception.AbsentEmployeeException;
 import inflearn.mini.employee.exception.AlreadyAtWorkException;
 import inflearn.mini.employee.exception.AlreadyLeftException;
@@ -28,7 +30,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             TeamAlreadyExistException.class, AlreadyAtWorkException.class, AlreadyLeftException.class,
-            AbsentEmployeeException.class
+            AbsentEmployeeException.class, ExhaustedAnnualLeaveException.class, InvalidAnnualLeaveRequestException.class
     })
     public ResponseEntity<ExceptionResponse> handleBadRequestException(final BadRequestException e) {
         log.error("TeamAlreadyExistsException: {}", e.getMessage());

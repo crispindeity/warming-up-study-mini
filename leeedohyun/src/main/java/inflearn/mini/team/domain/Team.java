@@ -28,11 +28,18 @@ public class Team {
     @Column(name = "team_name")
     private String name;
 
+    private int leaveRegistrationAdvanceDays;
+
     @OneToMany(mappedBy = "team")
     private List<Employee> employees = new ArrayList<>();
 
     public Team(final String name) {
         this.name = name;
+    }
+
+    public Team(final String name, final int leaveRegistrationAdvanceDays) {
+        this.name = name;
+        this.leaveRegistrationAdvanceDays = leaveRegistrationAdvanceDays;
     }
 
     public void addEmployee(final Employee employee) {

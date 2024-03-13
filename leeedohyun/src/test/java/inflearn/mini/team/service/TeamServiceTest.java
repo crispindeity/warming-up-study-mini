@@ -49,9 +49,7 @@ class TeamServiceTest {
         doThrow(new RuntimeException("이미 등록된 팀입니다."))
                 .when(teamRepository).findByName(anyString());
 
-        // when
-
-        // then
+        // when & then
         assertThatThrownBy(() -> teamService.registerTeam(request))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("이미 등록된 팀입니다.");
