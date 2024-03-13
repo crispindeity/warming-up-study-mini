@@ -123,7 +123,7 @@ class CommuteServiceTest {
 
         given(employeeRepository.findById(anyLong()))
                 .willReturn(Optional.of(employee));
-        given(commuteRepository.findWorkTimeHistoryForDate(any(), any(), any()))
+        given(commuteRepository.findCommuteForDate(any(), any(), any()))
                 .willReturn(Optional.of(commute));
 
         // when
@@ -163,7 +163,7 @@ class CommuteServiceTest {
 
         given(employeeRepository.findById(anyLong()))
                 .willReturn(Optional.of(employee));
-        given(commuteRepository.findWorkTimeHistoryForDate(any(), any(), any()))
+        given(commuteRepository.findCommuteForDate(any(), any(), any()))
                 .willThrow(new AbsentEmployeeException("출근하지 않은 직원입니다."));
 
         // when

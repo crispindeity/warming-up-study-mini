@@ -16,7 +16,7 @@ import inflearn.mini.commute.repsoitory.CommuteRepository;
 import inflearn.mini.employee.domain.Employee;
 import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
 import inflearn.mini.employee.dto.response.DateWorkMinutes;
-import inflearn.mini.employee.dto.response.EmployeeWorkHistoryResponse;
+import inflearn.mini.employee.dto.response.EmployeeCommuteResponse;
 import inflearn.mini.employee.exception.AbsentEmployeeException;
 import inflearn.mini.employee.exception.AlreadyAtWorkException;
 import inflearn.mini.employee.exception.EmployeeNotFoundException;
@@ -49,19 +49,19 @@ public class CommuteService {
         final Employee employee = getEmployee(request.employeeId());
         final LocalDate now = LocalDate.now();
         final Commute commute = commuteRepository
-                .findWorkTimeHistoryForDate(employee, now.atStartOfDay(), now.plusDays(1).atStartOfDay())
+                .findCommuteForDate(employee, now.atStartOfDay(), now.plusDays(1).atStartOfDay())
                 .orElseThrow(() -> new AbsentEmployeeException("출근하지 않은 직원입니다."));
 
         commute.leaveWork(LocalDateTime.now());
     }
 
     @Transactional(readOnly = true)
-    public EmployeeWorkHistoryResponse getEmployeeDailyWorkingHours(final Long employeeId,
-                                                                    final EmployeeWorkHistoryRequest request) {
+    public EmployeeCommuteResponse getEmployeeDailyWorkingHours(final Long employeeId,
+                                                                final EmployeeWorkHistoryRequest request) {
         final Employee employee = getEmployee(employeeId);
         final List<DateWorkMinutes> detail = getDateWorkMinutes(request, employee);
         final long sum = calculateSumWorkHour(detail);
-        return new EmployeeWorkHistoryResponse(detail, sum);
+        return new EmployeeCommuteResponse(detail, sum);
     }
 
     private Employee getEmployee(final Long employeeId) {

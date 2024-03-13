@@ -29,7 +29,7 @@ import inflearn.mini.employee.dto.request.EmployeeRegisterRequestDto;
 import inflearn.mini.employee.dto.request.EmployeeWorkHistoryRequest;
 import inflearn.mini.employee.dto.response.DateWorkMinutes;
 import inflearn.mini.employee.dto.response.EmployeeResponse;
-import inflearn.mini.employee.dto.response.EmployeeWorkHistoryResponse;
+import inflearn.mini.employee.dto.response.EmployeeCommuteResponse;
 import inflearn.mini.employee.exception.EmployeeNotFoundException;
 import inflearn.mini.employee.service.EmployeeService;
 import inflearn.mini.team.domain.Team;
@@ -130,7 +130,7 @@ class EmployeeControllerTest {
         employee.joinTeam(new Team("개발팀"));
 
         given(commuteService.getEmployeeDailyWorkingHours(anyLong(), any()))
-                .willReturn(new EmployeeWorkHistoryResponse(List.of(
+                .willReturn(new EmployeeCommuteResponse(List.of(
                         new DateWorkMinutes(LocalDate.of(2024, 3, 4), 540, false),
                         new DateWorkMinutes(LocalDate.of(2024, 3, 5), 540, false)
                 ), 1080));

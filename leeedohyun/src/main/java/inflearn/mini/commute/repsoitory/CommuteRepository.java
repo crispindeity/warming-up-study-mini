@@ -17,7 +17,7 @@ public interface CommuteRepository extends JpaRepository<Commute, Long> {
             + "and w.workStartTime >= :workStartDate and w.workStartTime < :workEndDate "
             + "and w.workEndTime is null"
     )
-    Optional<Commute> findWorkTimeHistoryForDate(final Employee employee, final LocalDateTime workStartDate, final LocalDateTime workEndDate);
+    Optional<Commute> findCommuteForDate(final Employee employee, final LocalDateTime workStartDate, final LocalDateTime workEndDate);
 
     Optional<Commute> findByEmployeeAndWorkStartTimeBetween(final Employee employee, final LocalDateTime workStartDate, final LocalDateTime workEndDate);
 }
