@@ -25,9 +25,7 @@ class AnnualLeaveTest {
                 LocalDate.of(2024, 3, 15),
                 employee);
 
-        // when
-
-        // then
+        // when & then
         assertThatThrownBy(() -> annualLeave.validateLeaveRegistrationAdvanceDays(team))
                 .isInstanceOf(InvalidAnnualLeaveRequestException.class)
                 .hasMessage("연차 신청 기간이 아닙니다.");

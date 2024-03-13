@@ -75,8 +75,7 @@ class EmployeeServiceTest {
         given(teamRepository.findByName(anyString()))
                 .willThrow(new TeamNotFoundException("존재하지 않는 팀입니다."));
 
-        // when
-        // then
+        // when & then
         assertThatThrownBy(() -> employeeService.registerEmployee(request))
                 .isInstanceOf(TeamNotFoundException.class)
                 .hasMessage("존재하지 않는 팀입니다.");

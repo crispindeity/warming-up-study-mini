@@ -75,9 +75,7 @@ class AnnualLeaveControllerTest {
         given(annualLeaveService.getRemainingAnnualLeave(any()))
                 .willReturn(new RemainingAnnualLeaveResponseDto(15));
 
-        // when
-
-        // then
+        // when & then
         mockMvc.perform(get("/api/v1/annual-leaves")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))

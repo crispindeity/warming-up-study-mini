@@ -110,8 +110,7 @@ class EmployeeControllerTest {
         given(employeeService.getEmployees())
                 .willReturn(List.of(response));
 
-        // when
-        // then
+        // when & then
         mockMvc.perform(get("/api/v1/employees"))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -135,9 +134,7 @@ class EmployeeControllerTest {
                         new DateWorkMinutes(LocalDate.of(2024, 3, 5), 540, false)
                 ), 1080));
 
-        // when
-
-        // then
+        // when & then
         mockMvc.perform(get("/api/v1/employees/{employeeId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3)))))
@@ -151,9 +148,7 @@ class EmployeeControllerTest {
         given(commuteService.getEmployeeDailyWorkingHours(anyLong(), any()))
                 .willThrow(new EmployeeNotFoundException("등록된 직원이 아닙니다."));
 
-        // when
-
-        // then
+        // when & then
         mockMvc.perform(get("/api/v1/employees/{employeeId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new EmployeeWorkHistoryRequest(YearMonth.of(2024, 3)))))

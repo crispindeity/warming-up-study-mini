@@ -68,9 +68,7 @@ class AnnualLeaveServiceTest {
         given(employeeRepository.findById(anyLong()))
                 .willThrow(new EmployeeNotFoundException("등록된 직원이 없습니다."));
 
-        // when
-
-        // then
+        // when & then
         assertThatThrownBy(() -> annualLeaveService.requestAnnualLeave(request))
                 .isInstanceOf(EmployeeNotFoundException.class)
                 .hasMessage("등록된 직원이 없습니다.");
@@ -90,9 +88,7 @@ class AnnualLeaveServiceTest {
         given(employeeRepository.findById(anyLong()))
                 .willReturn(Optional.of(employee));
 
-        // when
-
-        // then
+        // when & then
         assertThatThrownBy(() -> annualLeaveService.requestAnnualLeave(request))
                 .isInstanceOf(InvalidAnnualLeaveRequestException.class)
                 .hasMessage("연차 신청 기간이 아닙니다.");
